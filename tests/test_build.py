@@ -1,3 +1,5 @@
+import subprocess
+
 import build
 
 
@@ -42,3 +44,45 @@ def testTypesTableComplete():
     assert len(build.TYPES) == 18
     for key, info in build.TYPES.items():
         assert set(info) == {"name", "color", "emoji"}
+
+
+def testRenderPrecacheJsListsGen1AssetUrls():
+    out = build.renderPrecacheJs([1, 25])
+    assert out.startswith("const RAFADEX_PRECACHE=")
+    for url in ("assets/sprites/thumb/1.webp", "assets/sprites/full/25.webp",
+                "assets/cries/25.m4a"):
+        assert f'"{url}"' in out
+    assert "/rafadex/" not in out  # relative URLs only
+
+
+def testConvertSpriteAndCryProduceFiles(tmp_path):
+    srcPng = tmp_path / "in.png"
+    subprocess.run(["ffmpeg", "-loglevel", "error", "-f", "lavfi", "-i",
+                    "color=red:size=64x64", "-frames:v", "1", str(srcPng)], check=True)
+    dstWebp = tmp_path / "out.webp"
+    build.convertSprite(srcPng, dstWebp, 32)
+    assert dstWebp.exists() and dstWebp.stat().st_size > 0
+
+    srcOgg = tmp_path / "in.ogg"
+    subprocess.run(["ffmpeg", "-loglevel", "error", "-f", "lavfi", "-i",
+                    "sine=frequency=440:duration=0.2", str(srcOgg)], check=True)
+    dstM4a = tmp_path / "out.m4a"
+    build.convertCry(srcOgg, dstM4a)
+    assert dstM4a.exists() and dstM4a.stat().st_size > 0
+
+
+def testBuildAssetsSkipsUpToDateOutputs(tmp_path, monkeypatch):
+    calls = []
+    monkeypatch.setattr(build, "convertSprite", lambda s, d, w: calls.append(d) or d.write_bytes(b"x"))
+    monkeypatch.setattr(build, "convertCry", lambda s, d: calls.append(d) or d.write_bytes(b"x"))
+    root = tmp_path / "pokedex"
+    for rel in ("data/sprites/official", "data/cries"):
+        (root / rel).mkdir(parents=True)
+    (root / "data/sprites/official/1.png").write_bytes(b"png")
+    (root / "data/cries/1.ogg").write_bytes(b"ogg")
+    monkeypatch.chdir(tmp_path)
+    build.buildAssets([1], root)
+    assert len(calls) == 3  # thumb + full + cry
+    calls.clear()
+    build.buildAssets([1], root)
+    assert calls == []  # second run skips everything
