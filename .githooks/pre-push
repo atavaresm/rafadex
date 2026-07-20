@@ -1,0 +1,28 @@
+#!/bin/sh
+# Versioned pre-push hook. Enable once per clone with:
+#   git config core.hooksPath .githooks
+# 1) Block direct pushes to protected branches.
+PROTECTED="master develop"
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+for protected in $PROTECTED; do
+    if [ "$BRANCH" = "$protected" ]; then
+        echo ""
+        echo "  ✗ Direct push to '$BRANCH' is not allowed."
+        echo "  Open a pull request and merge through the repository UI."
+        echo ""
+        exit 1
+    fi
+done
+
+# 2) Run lint and tests when the tooling is present.
+if command -v ruff >/dev/null 2>&1; then
+    echo "[pre-push] ruff check"
+    ruff check . || exit 1
+fi
+if command -v pytest >/dev/null 2>&1 && pytest --collect-only -q >/dev/null 2>&1; then
+    echo "[pre-push] pytest"
+    pytest -q || exit 1
+fi
+
+echo "[pre-push] ok"
+exit 0
