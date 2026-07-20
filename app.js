@@ -1,6 +1,7 @@
 "use strict";
 const elApp = document.getElementById("app");
 const byId = Object.fromEntries(window.DEX.map(m => [m.id, m]));
+let contextIds = [];                  // ordered ids of the active browsing context
 
 function el(tag, cls, html) {
   const node = document.createElement(tag);
@@ -10,6 +11,17 @@ function el(tag, cls, html) {
 }
 function sprite(id, kind) { return `assets/sprites/${kind}/${id}.webp`; }
 function go(hash) { location.hash = hash; }
+
+function currentList() { return contextIds; }
+
+function topbar(title, backHash, tint) {
+  const bar = el("div", "topbar");
+  const back = el("button", "back-btn bounce", "⬅️");
+  back.onclick = () => go(backHash);
+  bar.append(back, el("span", "title", title));
+  if (tint) document.body.style.background = tint + "33"; else document.body.style.background = "";
+  return bar;
+}
 
 function renderHome() {
   elApp.innerHTML = "";
@@ -31,8 +43,50 @@ function renderHome() {
 }
 
 function renderShelf() {}              // Task 8
-function renderType(key) {}            // Task 5
-function renderDetail(id) {}           // Task 5
+
+function renderType(key) {
+  const info = window.TYPES[key];
+  contextIds = window.DEX.filter(m => m.types.includes(key)).map(m => m.id);
+  elApp.innerHTML = "";
+  elApp.append(topbar(`${info.emoji} ${info.name}`, "#home", info.color));
+  const grid = el("div", "mon-grid");
+  for (const id of contextIds) {
+    const mon = byId[id];
+    const card = el("button", "mon-card bounce",
+      `<img loading="lazy" src="${sprite(id, "thumb")}" alt=""><span class="name">${mon.name}</span>`);
+    card.querySelector("img").onerror = e => { e.target.src = ""; e.target.style.background = "#ddd"; };
+    card.onclick = () => go(`#dex/${id}`);
+    grid.append(card);
+  }
+  elApp.append(grid);
+}
+
+function renderDetail(id) {
+  const mon = byId[id];
+  if (!mon) return go("#home");
+  if (!contextIds.length) contextIds = window.DEX.map(m => m.id);
+  const tint = window.TYPES[mon.types[0]].color;
+  elApp.innerHTML = "";
+  elApp.append(topbar(mon.types.map(t => window.TYPES[t].emoji).join(" "),
+    `#type/${mon.types[0]}`, tint));
+  const box = el("div", "detail");
+  box.append(el("img", "hero", undefined));
+  box.querySelector("img").src = sprite(id, "full");
+  box.append(el("div", "mon-name", mon.name));
+  box.append(el("div", "sound-row", ""), el("div", "", ""));
+  box.children[2].id = "soundBtns";
+  box.children[3].id = "favBtn";
+  box.append(el("div", "", "")); box.lastChild.id = "evoStrip";
+  elApp.append(box);
+  const idx = contextIds.indexOf(id);
+  const arrows = el("div", "nav-arrows");
+  const prev = el("button", "bounce", "‹"), next = el("button", "bounce", "›");
+  prev.onclick = () => go(`#dex/${contextIds[(idx - 1 + contextIds.length) % contextIds.length]}`);
+  next.onclick = () => go(`#dex/${contextIds[(idx + 1) % contextIds.length]}`);
+  arrows.append(prev, next);
+  elApp.append(arrows);
+}
+
 function renderGame() {}               // Task 10
 
 function renderRoute() {

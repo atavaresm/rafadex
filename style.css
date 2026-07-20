@@ -35,3 +35,24 @@ button { font: inherit; border: none; cursor: pointer; }
 .shelf { display: flex; gap: 10px; overflow-x: auto; padding: 4px 0 14px; }
 .shelf img { width: 72px; height: 72px; background: var(--card);
   border-radius: 20px; box-shadow: var(--shadow); }
+
+/* Type world + detail */
+.topbar { display: flex; align-items: center; gap: 10px; padding: 6px 0 14px; }
+.back-btn { font-size: 26px; padding: 10px 18px; border-radius: 22px;
+  background: var(--card); box-shadow: var(--shadow); }
+.topbar .title { font-size: 24px; font-weight: 800; }
+.mon-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.mon-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 10px; display: flex; flex-direction: column; align-items: center; }
+.mon-card img { width: 100%; aspect-ratio: 1; }
+.mon-card .name { font-weight: 700; font-size: 15px; }
+.detail { display: flex; flex-direction: column; align-items: center; }
+.detail .hero { width: min(78vw, 340px); aspect-ratio: 1; }
+.detail .mon-name { font-size: 32px; font-weight: 800; margin: 4px 0 0; }
+.nav-arrows { position: fixed; top: 42%; left: 0; right: 0; display: flex;
+  justify-content: space-between; padding: 0 6px; pointer-events: none; }
+.nav-arrows button { pointer-events: auto; font-size: 30px; padding: 12px 16px;
+  border-radius: 50%; background: rgba(255,255,255,.85); box-shadow: var(--shadow); }
+.sound-row { display: flex; gap: 16px; margin: 14px 0; }
+.sound-row button { width: 74px; height: 74px; border-radius: 50%; font-size: 32px;
+  background: var(--card); box-shadow: var(--shadow); }
