@@ -1,7 +1,9 @@
 """RafaDex pipeline: reads the pokedex project's data and emits dex.js + optimized assets."""
 import argparse
 import json
+import os
 import re
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -69,7 +71,23 @@ def buildDataset(root=POKEDEX_ROOT, outPath=Path("data/dex.js")):
     return entries
 
 
-FFMPEG = "/opt/homebrew/opt/ffmpeg-full/bin/ffmpeg"
+def resolveFfmpeg():
+    envPath = os.environ.get("RAFADEX_FFMPEG")
+    if envPath:
+        return envPath
+    candidates = ("ffmpeg", "/opt/homebrew/opt/ffmpeg-full/bin/ffmpeg",
+                  "/usr/local/opt/ffmpeg-full/bin/ffmpeg")
+    for candidate in candidates:
+        found = shutil.which(candidate)
+        if not found:
+            continue
+        probe = subprocess.run([found, "-hide_banner", "-encoders"], capture_output=True)
+        if b"webp" in probe.stdout:
+            return found
+    return "ffmpeg"
+
+
+FFMPEG = resolveFfmpeg()
 
 
 def runFfmpeg(args):
@@ -126,7 +144,10 @@ def main():
     buildAssets(allIds, force=args.force)
     gen1Ids = [entry["id"] for entry in entries if entry["gen"] == 1]
     Path("precache.js").write_text(renderPrecacheJs(gen1Ids))
-    missing = [i for i in allIds if not Path(f"assets/cries/{i}.m4a").exists()]
+    missing = [i for i in allIds
+               if not (Path(f"assets/sprites/thumb/{i}.webp").exists()
+                       and Path(f"assets/sprites/full/{i}.webp").exists()
+                       and Path(f"assets/cries/{i}.m4a").exists())]
     if missing:
         raise SystemExit(f"missing outputs for ids: {missing[:20]}...")
 
