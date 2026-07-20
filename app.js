@@ -40,6 +40,13 @@ function renderHome() {
     grid.append(btn);
   }
   elApp.append(grid);
+  const gear = el("button", "gear", "⚙️");
+  let panelOpen = false;
+  gear.onclick = () => {
+    if (panelOpen) { elApp.querySelector(".parent-panel")?.remove(); panelOpen = false; return; }
+    elApp.append(renderParentPanel()); panelOpen = true;
+  };
+  elApp.append(gear);
 }
 
 function renderShelf() {}              // Task 8
@@ -100,3 +107,50 @@ function renderRoute() {
 }
 window.addEventListener("hashchange", renderRoute);
 renderRoute();
+
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+  navigator.serviceWorker.register("sw.js");
+  navigator.storage?.persist?.();
+}
+
+async function cachedFullIds() {
+  if (!("caches" in window)) return new Set();
+  const runtime = await caches.open("rafadex-runtime");
+  const keys = await runtime.keys();
+  const ids = new Set();
+  for (const req of keys) {
+    const match = req.url.match(/sprites\/full\/(\d+)\.webp$/);
+    if (match) ids.add(Number(match[1]));
+  }
+  return ids;
+}
+
+function genAssets(gen) {
+  return window.DEX.filter(m => m.gen === gen).flatMap(m =>
+    [sprite(m.id, "thumb"), sprite(m.id, "full"), `assets/cries/${m.id}.m4a`]);
+}
+
+async function cacheGen(gen, onProgress) {
+  const urls = genAssets(gen);
+  let done = 0;
+  for (const url of urls) {
+    await fetch(url).catch(() => {});   // sw fetch handler stores it
+    onProgress(++done, urls.length);
+  }
+}
+
+function renderParentPanel() {
+  const panel = el("div", "parent-panel");
+  panel.append(el("div", "title", "Baixar para usar sem internet"));
+  const gens = [...new Set(window.DEX.map(m => m.gen))];
+  for (const gen of gens) {
+    const row = el("button", "gen-row bounce", `Geração ${gen}`);
+    row.onclick = async () => {
+      row.disabled = true;
+      await cacheGen(gen, (done, total) => { row.textContent = `Geração ${gen} — ${done}/${total}`; });
+      row.textContent = `Geração ${gen} ✓`;
+    };
+    panel.append(row);
+  }
+  return panel;
+}
