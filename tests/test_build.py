@@ -71,6 +71,11 @@ def testConvertSpriteAndCryProduceFiles(tmp_path):
     assert dstM4a.exists() and dstM4a.stat().st_size > 0
 
 
+def testResolveFfmpegPrefersEnvVar(monkeypatch):
+    monkeypatch.setenv("RAFADEX_FFMPEG", "/custom/ffmpeg")
+    assert build.resolveFfmpeg() == "/custom/ffmpeg"
+
+
 def testBuildAssetsSkipsUpToDateOutputs(tmp_path, monkeypatch):
     calls = []
     monkeypatch.setattr(build, "convertSprite", lambda s, d, w: calls.append(d) or d.write_bytes(b"x"))
