@@ -10,6 +10,7 @@
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; background: var(--bg); color: var(--ink);
   font-family: "Baloo 2", system-ui, sans-serif; overscroll-behavior: none; }
+body { min-height: 100dvh; }
 #app { max-width: 520px; margin: 0 auto; padding: 12px 12px calc(20px + env(safe-area-inset-bottom)); }
 
 button { font: inherit; border: none; cursor: pointer; }

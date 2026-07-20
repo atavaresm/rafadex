@@ -19,7 +19,7 @@ function topbar(title, backHash, tint) {
   const back = el("button", "back-btn bounce", "⬅️");
   back.onclick = () => go(backHash);
   bar.append(back, el("span", "title", title));
-  if (tint) document.body.style.background = tint + "33"; else document.body.style.background = "";
+  if (tint) document.body.style.background = tint + "33";
   return bar;
 }
 
@@ -90,6 +90,7 @@ function renderDetail(id) {
 function renderGame() {}               // Task 10
 
 function renderRoute() {
+  document.body.style.background = "";
   const [route, arg] = location.hash.replace(/^#/, "").split("/");
   window.scrollTo(0, 0);
   if (route === "type") renderType(arg);
