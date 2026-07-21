@@ -88,6 +88,15 @@ function renderDetail(id) {
   box.children[2].id = "soundBtns";
   box.children[3].id = "favBtn";
   box.append(el("div", "", "")); box.lastChild.id = "evoStrip";
+  const sounds = box.querySelector("#soundBtns") || box.children[2];
+  const nameBtn = el("button", "bounce", "🔊");
+  nameBtn.onclick = () => Sound.speak(mon.name);
+  const cryBtn = el("button", "bounce", "⚡");
+  cryBtn.onclick = () => Sound.cry(id);
+  const readBtn = el("button", "bounce", "📖");
+  readBtn.onclick = () => Sound.speak(`${mon.name}. ${mon.cat}. ${mon.flavor}`);
+  if (!window.speechSynthesis) { nameBtn.hidden = true; readBtn.hidden = true; }
+  sounds.append(nameBtn, cryBtn, readBtn);
   elApp.append(box);
   const idx = contextIds.indexOf(id);
   const arrows = el("div", "nav-arrows");
@@ -102,6 +111,7 @@ function renderGame() {}               // Task 10
 
 function renderRoute() {
   document.body.style.background = "";
+  Sound.stopSpeech();
   const [route, arg] = location.hash.replace(/^#/, "").split("/");
   window.scrollTo(0, 0);
   if (route === "type") renderType(arg);
@@ -111,6 +121,10 @@ function renderRoute() {
 }
 window.addEventListener("hashchange", renderRoute);
 renderRoute();
+
+document.addEventListener("pointerdown", e => {
+  if (e.target.closest("button")) Sound.pop();
+});
 
 if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
   navigator.serviceWorker.register("sw.js");
