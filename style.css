@@ -72,3 +72,14 @@ button { font: inherit; border: none; cursor: pointer; }
 .parent-panel .title { font-weight: 700; margin-bottom: 8px; }
 .gen-row { display: block; width: 100%; text-align: left; padding: 10px 12px; margin: 6px 0;
   border-radius: 14px; background: var(--bg); font-size: 15px; }
+
+/* Game */
+.game-stage { position: relative; display: flex; flex-direction: column;
+  align-items: center; gap: 14px; padding-top: 10px; }
+.game-stage img { width: min(78vw, 340px); aspect-ratio: 1; transition: filter .3s; }
+.game-stage img.silhouette { filter: brightness(0); }
+.game-hint { font-size: 26px; font-weight: 800; }
+.confetti { position: absolute; top: 20%; width: 12px; height: 12px; border-radius: 3px;
+  animation: fall 1.5s ease-in forwards; }
+@keyframes fall { to { transform: translateY(70vh) rotate(540deg); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .confetti { display: none; } }

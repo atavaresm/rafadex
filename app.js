@@ -156,7 +156,59 @@ function renderDetail(id) {
   elApp.append(arrows);
 }
 
-function renderGame() {}               // Task 10
+async function gameCandidates() {
+  const gen1 = window.DEX.filter(m => m.gen === 1).map(m => m.id);
+  const cached = await cachedFullIds();
+  return [...new Set([...gen1, ...cached])];
+}
+
+function renderGame() {
+  elApp.innerHTML = "";
+  elApp.append(topbar("❓", "#home", "#ffcb05"));
+  const stage = el("div", "game-stage");
+  elApp.append(stage);
+  let revealed = false;
+  let current = null;
+
+  async function nextRound() {
+    const pool = await gameCandidates();
+    current = pool[Math.floor(Math.random() * pool.length)];
+    revealed = false;
+    stage.innerHTML = "";
+    const img = el("img", "silhouette");
+    img.src = sprite(current, "full");
+    stage.append(img, el("div", "game-hint", "Quem é esse Pokémon?"));
+    Sound.cry(current);
+    img.onclick = reveal;
+    stage.onclick = reveal;
+  }
+
+  function reveal() {
+    if (revealed || current === null) return;
+    revealed = true;
+    stage.querySelector("img").classList.remove("silhouette");
+    stage.querySelector(".game-hint").textContent = byId[current].name;
+    Sound.fanfare();
+    setTimeout(() => Sound.speak(`É o ${byId[current].name}!`), 500);
+    confettiBurst(stage);
+    const next = el("button", "game-btn bounce", "➡️ Próximo");
+    next.onclick = e => { e.stopPropagation(); nextRound(); };
+    stage.append(next);
+  }
+
+  nextRound();
+}
+
+function confettiBurst(parent) {
+  for (let i = 0; i < 24; i++) {
+    const bit = el("span", "confetti");
+    bit.style.left = 50 + (Math.random() * 60 - 30) + "%";
+    bit.style.background = ["#e3350d", "#ffcb05", "#6890f0", "#78c850"][i % 4];
+    bit.style.animationDelay = Math.random() * .3 + "s";
+    parent.append(bit);
+    setTimeout(() => bit.remove(), 1800);
+  }
+}
 
 function renderRoute() {
   document.body.style.background = "";
