@@ -1,9 +1,17 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <title>RafaDex icon generator</title>
+<style>
+@font-face {
+  font-family: "Baloo 2";
+  src: url("../assets/fonts/baloo2.woff2") format("woff2");
+  font-weight: 400 800;
+}
+</style>
 <body style="font-family:sans-serif">
 <p>Icons download automatically. Move them to assets/icons/.</p>
 <script>
+document.fonts.load('bold 86px "Baloo 2"').then(() => {
 for (const size of [180, 192, 512]) {
   const c = document.createElement("canvas");
   c.width = c.height = size;
@@ -27,4 +35,5 @@ for (const size of [180, 192, 512]) {
   const a = document.createElement("a");
   a.download = `icon-${size}.png`; a.href = c.toDataURL("image/png"); a.click();
 }
+});
 </script>
