@@ -41,6 +41,7 @@ function renderHome() {
   }
   elApp.append(grid);
   const gear = el("button", "gear", "⚙️");
+  gear.setAttribute("aria-label", "Downloads para uso offline");
   let panelOpen = false;
   gear.onclick = () => {
     if (panelOpen) { elApp.querySelector(".parent-panel")?.remove(); panelOpen = false; return; }
@@ -132,11 +133,15 @@ function genAssets(gen) {
 
 async function cacheGen(gen, onProgress) {
   const urls = genAssets(gen);
-  let done = 0;
+  let done = 0, failed = 0;
   for (const url of urls) {
-    await fetch(url).catch(() => {});   // sw fetch handler stores it
+    try {
+      const response = await fetch(url);
+      if (!response.ok) failed++;
+    } catch (err) { failed++; }
     onProgress(++done, urls.length);
   }
+  return failed;
 }
 
 function renderParentPanel() {
@@ -147,8 +152,13 @@ function renderParentPanel() {
     const row = el("button", "gen-row bounce", `Geração ${gen}`);
     row.onclick = async () => {
       row.disabled = true;
-      await cacheGen(gen, (done, total) => { row.textContent = `Geração ${gen} — ${done}/${total}`; });
-      row.textContent = `Geração ${gen} ✓`;
+      const failed = await cacheGen(gen, (done, total) => { row.textContent = `Geração ${gen} — ${done}/${total}`; });
+      if (failed === 0) {
+        row.textContent = `Geração ${gen} ✓`;
+      } else {
+        row.textContent = `Geração ${gen} — ⚠ ${failed} falharam`;
+        row.disabled = false;
+      }
     };
     panel.append(row);
   }
