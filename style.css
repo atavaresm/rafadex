@@ -59,6 +59,12 @@ button { font: inherit; border: none; cursor: pointer; }
 .sound-row button { width: 74px; height: 74px; border-radius: 50%; font-size: 32px;
   background: var(--card); box-shadow: var(--shadow); }
 .heart { font-size: 34px; background: none; margin-top: 4px; }
+.evo-strip { display: flex; align-items: center; gap: 6px; margin: 10px 0;
+  overflow-x: auto; max-width: 100%; }
+.evo-strip img { width: 84px; height: 84px; background: var(--card);
+  border-radius: 20px; box-shadow: var(--shadow); flex-shrink: 0; }
+.evo-strip img.current { outline: 4px solid var(--red); }
+.evo-arrow { font-size: 20px; }
 
 .gear { display: block; margin: 22px auto 0; background: none; font-size: 20px; opacity: .45; }
 .parent-panel { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);

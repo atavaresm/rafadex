@@ -123,6 +123,29 @@ function renderDetail(id) {
   const heart = el("button", "heart bounce", Favs.has(id) ? "❤️" : "🤍");
   heart.onclick = () => { Favs.toggle(id); heart.textContent = Favs.has(id) ? "❤️" : "🤍"; };
   favMount.append(heart);
+
+  const evoMount = box.querySelector("#evoStrip") || box.lastChild;
+  const chain = mon.evo.flat().filter(evoId => byId[evoId]);
+  if (chain.length > 1) {
+    const strip = el("div", "evo-strip");
+    chain.forEach((evoId, i) => {
+      if (i > 0) strip.append(el("span", "evo-arrow", "➡️"));
+      const img = el("img", "bounce" + (evoId === id ? " current" : ""));
+      img.src = sprite(evoId, "thumb");
+      img.onclick = () => {
+        if (evoId === id) { Sound.speak(byId[evoId].name); return; }
+        const fromName = byId[id].name, toName = byId[evoId].name;
+        go(`#dex/${evoId}`);
+        const stageOfCurrent = mon.evo.findIndex(s => s.includes(id));
+        const stageOfTarget = mon.evo.findIndex(s => s.includes(evoId));
+        if (stageOfTarget > stageOfCurrent) Sound.speak(`${fromName} evolui para ${toName}!`);
+        else Sound.speak(toName);
+      };
+      strip.append(img);
+    });
+    evoMount.append(strip);
+  }
+
   elApp.append(box);
   const idx = contextIds.indexOf(id);
   const arrows = el("div", "nav-arrows");
