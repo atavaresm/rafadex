@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>RafaDex icon generator</title>
+<style>
+@font-face {
+  font-family: "Baloo 2";
+  src: url("../assets/fonts/baloo2.woff2") format("woff2");
+  font-weight: 400 800;
+}
+</style>
+<body style="font-family:sans-serif">
+<p>Icons download automatically. Move them to assets/icons/.</p>
+<script>
+document.fonts.load('bold 86px "Baloo 2"').then(() => {
+for (const size of [180, 192, 512]) {
+  const c = document.createElement("canvas");
+  c.width = c.height = size;
+  const x = c.getContext("2d");
+  const s = size / 512;
+  x.fillStyle = "#fdf6ee"; x.fillRect(0, 0, size, size);
+  x.beginPath(); x.arc(256 * s, 256 * s, 200 * s, Math.PI, 0);
+  x.fillStyle = "#e3350d"; x.fill();
+  x.beginPath(); x.arc(256 * s, 256 * s, 200 * s, 0, Math.PI);
+  x.fillStyle = "#ffffff"; x.fill();
+  x.fillStyle = "#222"; x.fillRect(56 * s, 240 * s, 400 * s, 32 * s);
+  x.beginPath(); x.arc(256 * s, 256 * s, 74 * s, 0, 2 * Math.PI);
+  x.fillStyle = "#222"; x.fill();
+  x.beginPath(); x.arc(256 * s, 256 * s, 56 * s, 0, 2 * Math.PI);
+  x.fillStyle = "#fff"; x.fill();
+  x.fillStyle = "#e3350d";
+  x.font = `bold ${86 * s}px "Baloo 2", "Arial Rounded MT Bold", sans-serif`;
+  x.textAlign = "center"; x.textBaseline = "middle";
+  x.fillText("R", 256 * s, 260 * s);
+  document.body.append(c);
+  const a = document.createElement("a");
+  a.download = `icon-${size}.png`; a.href = c.toDataURL("image/png"); a.click();
+}
+});
+</script>
