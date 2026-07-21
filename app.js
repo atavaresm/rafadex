@@ -3,6 +3,17 @@ const elApp = document.getElementById("app");
 const byId = Object.fromEntries(window.DEX.map(m => [m.id, m]));
 let contextIds = [];                  // ordered ids of the active browsing context
 
+const Favs = {
+  key: "rafadex.favorites",
+  list() { try { return JSON.parse(localStorage.getItem(this.key)) || []; } catch { return []; } },
+  has(id) { return this.list().includes(id); },
+  toggle(id) {
+    const list = this.list();
+    const next = list.includes(id) ? list.filter(x => x !== id) : [...list, id];
+    localStorage.setItem(this.key, JSON.stringify(next));
+  },
+};
+
 function el(tag, cls, html) {
   const node = document.createElement(tag);
   if (cls) node.className = cls;
@@ -50,7 +61,18 @@ function renderHome() {
   elApp.append(gear);
 }
 
-function renderShelf() {}              // Task 8
+function renderShelf() {
+  const ids = Favs.list();
+  if (!ids.length) return;
+  const shelf = el("div", "shelf");
+  for (const id of ids) {
+    const img = el("img", "bounce");
+    img.src = sprite(id, "thumb");
+    img.onclick = () => { contextIds = Favs.list(); go(`#dex/${id}`); };
+    shelf.append(img);
+  }
+  elApp.append(shelf);
+}
 
 function renderType(key) {
   const info = window.TYPES[key];
@@ -97,6 +119,10 @@ function renderDetail(id) {
   readBtn.onclick = () => Sound.speak(`${mon.name}. ${mon.cat}. ${mon.flavor}`);
   if (!window.speechSynthesis) { nameBtn.hidden = true; readBtn.hidden = true; }
   sounds.append(nameBtn, cryBtn, readBtn);
+  const favMount = box.querySelector("#favBtn") || box.children[3];
+  const heart = el("button", "heart bounce", Favs.has(id) ? "❤️" : "🤍");
+  heart.onclick = () => { Favs.toggle(id); heart.textContent = Favs.has(id) ? "❤️" : "🤍"; };
+  favMount.append(heart);
   elApp.append(box);
   const idx = contextIds.indexOf(id);
   const arrows = el("div", "nav-arrows");

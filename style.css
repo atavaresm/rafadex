@@ -58,6 +58,7 @@ button { font: inherit; border: none; cursor: pointer; }
 .sound-row { display: flex; gap: 16px; margin: 14px 0; }
 .sound-row button { width: 74px; height: 74px; border-radius: 50%; font-size: 32px;
   background: var(--card); box-shadow: var(--shadow); }
+.heart { font-size: 34px; background: none; margin-top: 4px; }
 
 .gear { display: block; margin: 22px auto 0; background: none; font-size: 20px; opacity: .45; }
 .parent-panel { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
