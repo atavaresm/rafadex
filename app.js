@@ -79,7 +79,10 @@ function renderDetail(id) {
     `#type/${mon.types[0]}`, tint));
   const box = el("div", "detail");
   box.append(el("img", "hero", undefined));
-  box.querySelector("img").src = sprite(id, "full");
+  const hero = box.querySelector("img");
+  hero.src = sprite(id, "full");
+  const blankPixel = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBTAA7";
+  hero.onerror = () => { hero.src = blankPixel; hero.classList.add("hero-missing"); };
   box.append(el("div", "mon-name", mon.name));
   box.append(el("div", "sound-row", ""), el("div", "", ""));
   box.children[2].id = "soundBtns";
