@@ -82,7 +82,13 @@ function renderType(key) {
   const grid = el("div", "mon-grid");
   for (const id of contextIds) {
     const mon = byId[id];
+    const numStr = String(id).padStart(3, "0");
+    const typeIcons = mon.types.map(t => window.TYPES[t].emoji).join("");
     const card = el("button", "mon-card bounce",
+      `<div class="mon-meta"><span class="mon-num">#${numStr}</span>` +
+      `<span class="mon-gen">G${mon.gen}</span>` +
+      `<span class="mon-types">${typeIcons}</span>` +
+      `<span class="mon-power">${mon.power}</span></div>` +
       `<img loading="lazy" src="${sprite(id, "thumb")}" alt=""><span class="name">${mon.name}</span>`);
     card.querySelector("img").onerror = e => { e.target.src = ""; e.target.style.background = "#ddd"; };
     card.onclick = () => go(`#dex/${id}`);
@@ -111,12 +117,26 @@ function renderDetail(id) {
   box.children[3].id = "favBtn";
   box.append(el("div", "", "")); box.lastChild.id = "evoStrip";
   const sounds = box.querySelector("#soundBtns") || box.children[2];
+  let speaking = null;
+  function setSpeaking(which) {
+    speaking = which;
+    nameBtn.classList.toggle("speaking", which === "name");
+    readBtn.classList.toggle("speaking", which === "read");
+  }
   const nameBtn = el("button", "bounce", "🔊");
-  nameBtn.onclick = () => Sound.speak(mon.name);
+  nameBtn.onclick = () => {
+    if (speaking === "name") { Sound.stopSpeech(); setSpeaking(null); return; }
+    setSpeaking("name");
+    Sound.speak(mon.speak || mon.name, () => setSpeaking(null));
+  };
   const cryBtn = el("button", "bounce", "⚡");
   cryBtn.onclick = () => Sound.cry(id);
   const readBtn = el("button", "bounce", "📖");
-  readBtn.onclick = () => Sound.speak(`${mon.name}. ${mon.cat}. ${mon.flavor}`);
+  readBtn.onclick = () => {
+    if (speaking === "read") { Sound.stopSpeech(); setSpeaking(null); return; }
+    setSpeaking("read");
+    Sound.speak(`${mon.speak || mon.name}. ${mon.cat}. ${mon.flavor}`, () => setSpeaking(null));
+  };
   if (!window.speechSynthesis) { nameBtn.hidden = true; readBtn.hidden = true; }
   sounds.append(nameBtn, cryBtn, readBtn);
   const favMount = box.querySelector("#favBtn") || box.children[3];
@@ -133,8 +153,8 @@ function renderDetail(id) {
       const img = el("img", "bounce" + (evoId === id ? " current" : ""));
       img.src = sprite(evoId, "thumb");
       img.onclick = () => {
-        if (evoId === id) { Sound.speak(byId[evoId].name); return; }
-        const fromName = byId[id].name, toName = byId[evoId].name;
+        if (evoId === id) { Sound.speak(byId[evoId].speak || byId[evoId].name); return; }
+        const fromName = byId[id].speak || byId[id].name, toName = byId[evoId].speak || byId[evoId].name;
         go(`#dex/${evoId}`);
         const stageOfCurrent = mon.evo.findIndex(s => s.includes(id));
         const stageOfTarget = mon.evo.findIndex(s => s.includes(evoId));
@@ -148,12 +168,27 @@ function renderDetail(id) {
 
   elApp.append(box);
   const idx = contextIds.indexOf(id);
+  const goToIndex = delta => go(`#dex/${contextIds[(idx + delta + contextIds.length) % contextIds.length]}`);
   const arrows = el("div", "nav-arrows");
   const prev = el("button", "bounce", "‹"), next = el("button", "bounce", "›");
-  prev.onclick = () => go(`#dex/${contextIds[(idx - 1 + contextIds.length) % contextIds.length]}`);
-  next.onclick = () => go(`#dex/${contextIds[(idx + 1) % contextIds.length]}`);
+  prev.onclick = () => goToIndex(-1);
+  next.onclick = () => goToIndex(1);
   arrows.append(prev, next);
   elApp.append(arrows);
+
+  let touchStartX = 0, touchStartY = 0, touchOnEvoStrip = false;
+  box.addEventListener("touchstart", e => {
+    touchOnEvoStrip = !!e.target.closest(".evo-strip");
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  box.addEventListener("touchend", e => {
+    if (touchOnEvoStrip) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy)) return;
+    goToIndex(dx < 0 ? 1 : -1);
+  }, { passive: true });
 }
 
 async function gameCandidates() {
@@ -189,7 +224,7 @@ function renderGame() {
     stage.querySelector("img").classList.remove("silhouette");
     stage.querySelector(".game-hint").textContent = byId[current].name;
     Sound.fanfare();
-    setTimeout(() => Sound.speak(`É o ${byId[current].name}!`), 500);
+    setTimeout(() => Sound.speak(`É o ${byId[current].speak || byId[current].name}!`), 500);
     confettiBurst(stage);
     const next = el("button", "game-btn bounce", "➡️ Próximo");
     next.onclick = e => { e.stopPropagation(); nextRound(); };

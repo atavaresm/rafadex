@@ -1,3 +1,4 @@
+import json
 import subprocess
 
 import build
@@ -16,19 +17,58 @@ def testParseI18nDexExtractsEntries():
 def testBuildDexEntriesMergesI18nWithEnglishFallback():
     pokemon = [
         {"id": 1, "name": "Bulbasaur", "gen": 1, "types": ["grass", "poison"],
-         "evolution": {"stages": [[1], [2], [3]]},
+         "evolution": {"stages": [[1], [2], [3]]}, "stats": {"total": 318},
          "category": "Seed Pokémon", "flavorText": "A strange seed."},
         {"id": 999, "name": "Gimmighoul", "gen": 9, "types": ["ghost"],
-         "evolution": {"stages": [[999], [1000]]},
+         "evolution": {"stages": [[999], [1000]]}, "stats": {"total": 300},
          "category": "Coin Chest Pokémon", "flavorText": "It hides in a chest."},
     ]
     i18n = {1: {"category": "Pokémon Semente", "flavor": "Uma semente estranha."}}
     entries = build.buildDexEntries(pokemon, i18n)
     assert entries[0] == {"id": 1, "name": "Bulbasaur", "gen": 1,
                           "types": ["grass", "poison"], "evo": [[1], [2], [3]],
-                          "cat": "Pokémon Semente", "flavor": "Uma semente estranha."}
+                          "cat": "Pokémon Semente", "flavor": "Uma semente estranha.",
+                          "power": 318}
     assert entries[1]["cat"] == "Coin Chest Pokémon"  # english fallback
     assert entries[1]["flavor"] == "It hides in a chest."
+    assert entries[1]["power"] == 300
+    assert "speak" not in entries[0]  # no pronounce override passed
+
+
+def testParsePronounceDexExtractsEntries():
+    text = '''window.PRONOUNCE = {
+  6: "Tcharizárd",
+  25: "Pikatchu",
+};'''
+    parsed = build.parsePronounceDex(text)
+    assert parsed == {6: "Tcharizárd", 25: "Pikatchu"}
+
+
+def testBuildDexEntriesAppliesPronounceOverride():
+    pokemon = [
+        {"id": 6, "name": "Charizard", "gen": 1, "types": ["fire", "flying"],
+         "evolution": {"stages": [[4], [5], [6]]}, "stats": {"total": 534},
+         "category": "Flame Pokémon", "flavorText": "It spits fire."},
+    ]
+    entries = build.buildDexEntries(pokemon, {}, {6: "Tcharizárd"})
+    assert entries[0]["speak"] == "Tcharizárd"
+    assert entries[0]["name"] == "Charizard"  # displayed name never changes
+
+
+def testBuildDatasetToleratesMissingPronounceFile(tmp_path, monkeypatch):
+    root = tmp_path / "pokedex"
+    (root / "data").mkdir(parents=True)
+    (root / "data" / "pokemon.json").write_text(json.dumps([
+        {"id": 1, "name": "Bulbasaur", "gen": 1, "types": ["grass"],
+         "evolution": {"stages": [[1]]}, "stats": {"total": 318},
+         "category": "Seed Pokémon", "flavorText": "A strange seed."},
+    ]))
+    (root / "i18n-dex.js").write_text("window.I18N.pokemon = {};")
+    monkeypatch.chdir(tmp_path)
+    entries = build.buildDataset(root=root, outPath=tmp_path / "data" / "dex.js",
+                                  pronouncePath=tmp_path / "pronounce-dex.js")
+    assert entries[0]["power"] == 318
+    assert "speak" not in entries[0]
 
 
 def testRenderDexJsEmitsWindowGlobals():

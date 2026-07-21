@@ -42,16 +42,33 @@ def parseI18nDex(text):
     return parsed
 
 
-def buildDexEntries(pokemon, i18n):
+PRONOUNCE_LINE = re.compile(r'^\s*(\d+):\s*"(.*?)",?\s*$')
+
+
+def parsePronounceDex(text):
+    parsed = {}
+    for line in text.splitlines():
+        match = PRONOUNCE_LINE.match(line)
+        if match:
+            parsed[int(match.group(1))] = match.group(2)
+    return parsed
+
+
+def buildDexEntries(pokemon, i18n, pronounce=None):
+    pronounce = pronounce or {}
     entries = []
     for mon in pokemon:
         override = i18n.get(mon["id"], {})
-        entries.append({
+        entry = {
             "id": mon["id"], "name": mon["name"], "gen": mon["gen"], "types": mon["types"],
             "evo": mon["evolution"]["stages"],
             "cat": override.get("category", mon["category"]),
             "flavor": override.get("flavor", mon["flavorText"]),
-        })
+            "power": mon["stats"]["total"],
+        }
+        if mon["id"] in pronounce:
+            entry["speak"] = pronounce[mon["id"]]
+        entries.append(entry)
     return entries
 
 
@@ -61,13 +78,17 @@ def renderDexJs(entries):
     return f"window.DEX={dex};\nwindow.TYPES={types};\n"
 
 
-def buildDataset(root=POKEDEX_ROOT, outPath=Path("data/dex.js")):
+def buildDataset(root=POKEDEX_ROOT, outPath=Path("data/dex.js"),
+                  pronouncePath=Path("pronounce-dex.js")):
     pokemon = json.loads((root / "data" / "pokemon.json").read_text())
     i18n = parseI18nDex((root / "i18n-dex.js").read_text())
-    entries = buildDexEntries(pokemon, i18n)
+    pronounceText = pronouncePath.read_text() if pronouncePath.exists() else ""
+    pronounce = parsePronounceDex(pronounceText)
+    entries = buildDexEntries(pokemon, i18n, pronounce)
     outPath.parent.mkdir(parents=True, exist_ok=True)
     outPath.write_text(renderDexJs(entries))
-    print(f"dex.js: {len(entries)} entries, {sum(1 for m in pokemon if m['id'] in i18n)} pt-BR")
+    print(f"dex.js: {len(entries)} entries, {sum(1 for m in pokemon if m['id'] in i18n)} pt-BR, "
+          f"{len(pronounce)} pronounce overrides")
     return entries
 
 
