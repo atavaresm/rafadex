@@ -148,12 +148,27 @@ function renderDetail(id) {
 
   elApp.append(box);
   const idx = contextIds.indexOf(id);
+  const goToIndex = delta => go(`#dex/${contextIds[(idx + delta + contextIds.length) % contextIds.length]}`);
   const arrows = el("div", "nav-arrows");
   const prev = el("button", "bounce", "‹"), next = el("button", "bounce", "›");
-  prev.onclick = () => go(`#dex/${contextIds[(idx - 1 + contextIds.length) % contextIds.length]}`);
-  next.onclick = () => go(`#dex/${contextIds[(idx + 1) % contextIds.length]}`);
+  prev.onclick = () => goToIndex(-1);
+  next.onclick = () => goToIndex(1);
   arrows.append(prev, next);
   elApp.append(arrows);
+
+  let touchStartX = 0, touchStartY = 0, touchOnEvoStrip = false;
+  box.addEventListener("touchstart", e => {
+    touchOnEvoStrip = !!e.target.closest(".evo-strip");
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  box.addEventListener("touchend", e => {
+    if (touchOnEvoStrip) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy)) return;
+    goToIndex(dx < 0 ? 1 : -1);
+  }, { passive: true });
 }
 
 async function gameCandidates() {
