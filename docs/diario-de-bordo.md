@@ -9,6 +9,33 @@
 
 ---
 
+## 21/07/2026 13:28 — Execução por subagentes: pipeline e casca do app no ar
+
+Peguei o plano de 13 tasks e comecei a execução via subagent-driven-development: um
+implementador novo por task, revisor independente depois, ciclo de correção quando
+sobra achado. Fechei as Tasks 1–6 (scaffold do repo, pipeline de dados, conversão de
+mídia, casca do app + Home, telas de mundo/detalhe, service worker) — todas com
+revisão aprovada, algumas só depois de rodada de correção.
+
+Pegou bug de verdade em quase toda revisão. O revisor achou que a home ficava com a
+cor do último tipo visitado grudada (corrigi centralizando o reset no router). O maior
+susto foi o service worker: o `cache.addAll()` é atômico, e como os ícones do app só
+nascem na Task 11, uma 404 deles derrubava a instalação inteira — o app ficava sem
+offline nenhum. Separei em núcleo obrigatório + ícones opcionais tolerantes a falha.
+Testei offline **de verdade** matando o processo do servidor (não só o toggle do
+DevTools) e confirmei por `curl` que a porta morreu — nesse teste vi o segundo bug: a
+tela de detalhe mostrava o ícone de imagem quebrada do navegador pra Pokémon nunca
+cacheado, contra a exigência explícita da spec ("nunca imagem quebrada"). Troquei por
+um pixel transparente + fundo cinza arredondado, confirmado por computed style, não só
+por olhômetro. Também bati de frente com cache HTTP obsoleto do meu próprio servidor
+de desenvolvimento de longa duração mascarando os fixes — resolvido trocando de porta
+a cada rodada de verificação. Dois subagentes corretores travaram no meio do caminho
+(um por stall, um por limite de sessão) — nos dois casos assumi eu mesmo terminar o
+commit em vez de redespachar do zero. Restam 7 tasks: áudio, favoritos, evolução,
+jogo, ícones, deploy no GitHub Pages e a verificação final no iPhone de verdade.
+
+---
+
 ## 19/07/2026 22:57 — Nasce o RafaDex
 
 Gostei tanto da pokedex que decidi transformá-la em presente: um app pro Rafa ver os
