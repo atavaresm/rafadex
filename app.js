@@ -138,8 +138,8 @@ function renderDetail(id) {
         go(`#dex/${evoId}`);
         const stageOfCurrent = mon.evo.findIndex(s => s.includes(id));
         const stageOfTarget = mon.evo.findIndex(s => s.includes(evoId));
-        if (stageOfTarget > stageOfCurrent) Sound.speak(`${fromName} evolui para ${toName}!`);
-        else Sound.speak(toName);
+        const phrase = stageOfTarget > stageOfCurrent ? `${fromName} evolui para ${toName}!` : toName;
+        setTimeout(() => Sound.speak(phrase), 50);
       };
       strip.append(img);
     });
