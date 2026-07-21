@@ -9,6 +9,26 @@
 
 ---
 
+## 21/07/2026 19:38 — Rafael testando de verdade, já surgiu a v1.1
+
+O RafaDex tava no ar fazia poucas horas e o Rafael já começou a usar de verdade —
+exatamente a Task 13 (verificação no iPhone real) acontecendo na prática. Veio uma
+lista boa de feedback de uso real: navegar arrastando o card (além das setas), parar
+a narração longa no meio sem sair do Pokémon, nomes que a voz pt-BR pronuncia errado,
+e o card do grid enriquecido com número/geração/tipo/poder (ele curte a ideia tipo
+carta de Pokémon de verdade). Design mais moderno fica pra depois, ele mesmo pediu.
+
+Fiz o brainstorm dessas quatro frentes. A mais interessante de resolver foi a
+pronúncia: em vez de mudar o nome que aparece na tela, vou criar um dicionário
+`pronounce-dex.js` (mesmo padrão das traduções pt-BR) só com a "respelling" fonética
+pros nomes que saem errados — a tela sempre mostra o nome de verdade, só a voz recebe
+a versão ajustada. Vou ouvir os 151 nomes da Gen 1 numa voz pt-BR real antes de
+lançar, pra já cobrir a maior parte do uso diário dele desde o início. Parar
+narração vai funcionar tocando o mesmo botão de novo (liga/desliga, como botão de
+play/pause). Aguardando aprovação da spec pra virar plano.
+
+---
+
 ## 21/07/2026 19:15 — RafaDex no ar
 
 Fechei as tasks 9–12 e o RafaDex já está publicado de verdade:
