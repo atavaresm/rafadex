@@ -111,12 +111,26 @@ function renderDetail(id) {
   box.children[3].id = "favBtn";
   box.append(el("div", "", "")); box.lastChild.id = "evoStrip";
   const sounds = box.querySelector("#soundBtns") || box.children[2];
+  let speaking = null;
+  function setSpeaking(which) {
+    speaking = which;
+    nameBtn.classList.toggle("speaking", which === "name");
+    readBtn.classList.toggle("speaking", which === "read");
+  }
   const nameBtn = el("button", "bounce", "🔊");
-  nameBtn.onclick = () => Sound.speak(mon.name);
+  nameBtn.onclick = () => {
+    if (speaking === "name") { Sound.stopSpeech(); setSpeaking(null); return; }
+    setSpeaking("name");
+    Sound.speak(mon.speak || mon.name, () => setSpeaking(null));
+  };
   const cryBtn = el("button", "bounce", "⚡");
   cryBtn.onclick = () => Sound.cry(id);
   const readBtn = el("button", "bounce", "📖");
-  readBtn.onclick = () => Sound.speak(`${mon.name}. ${mon.cat}. ${mon.flavor}`);
+  readBtn.onclick = () => {
+    if (speaking === "read") { Sound.stopSpeech(); setSpeaking(null); return; }
+    setSpeaking("read");
+    Sound.speak(`${mon.speak || mon.name}. ${mon.cat}. ${mon.flavor}`, () => setSpeaking(null));
+  };
   if (!window.speechSynthesis) { nameBtn.hidden = true; readBtn.hidden = true; }
   sounds.append(nameBtn, cryBtn, readBtn);
   const favMount = box.querySelector("#favBtn") || box.children[3];
@@ -133,8 +147,8 @@ function renderDetail(id) {
       const img = el("img", "bounce" + (evoId === id ? " current" : ""));
       img.src = sprite(evoId, "thumb");
       img.onclick = () => {
-        if (evoId === id) { Sound.speak(byId[evoId].name); return; }
-        const fromName = byId[id].name, toName = byId[evoId].name;
+        if (evoId === id) { Sound.speak(byId[evoId].speak || byId[evoId].name); return; }
+        const fromName = byId[id].speak || byId[id].name, toName = byId[evoId].speak || byId[evoId].name;
         go(`#dex/${evoId}`);
         const stageOfCurrent = mon.evo.findIndex(s => s.includes(id));
         const stageOfTarget = mon.evo.findIndex(s => s.includes(evoId));
@@ -204,7 +218,7 @@ function renderGame() {
     stage.querySelector("img").classList.remove("silhouette");
     stage.querySelector(".game-hint").textContent = byId[current].name;
     Sound.fanfare();
-    setTimeout(() => Sound.speak(`É o ${byId[current].name}!`), 500);
+    setTimeout(() => Sound.speak(`É o ${byId[current].speak || byId[current].name}!`), 500);
     confettiBurst(stage);
     const next = el("button", "game-btn bounce", "➡️ Próximo");
     next.onclick = e => { e.stopPropagation(); nextRound(); };

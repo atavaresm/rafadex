@@ -41,13 +41,14 @@ const Sound = (() => {
     return new Promise(resolve => { cryEl.onended = resolve; cryEl.onerror = resolve; });
   }
 
-  function speak(text) {
+  function speak(text, onEnd) {
     if (!window.speechSynthesis) return;
     stopSpeech();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "pt-BR";
     if (voice) utterance.voice = voice;
     utterance.rate = .95;
+    if (onEnd) utterance.onend = onEnd;
     speechSynthesis.speak(utterance);
   }
 
