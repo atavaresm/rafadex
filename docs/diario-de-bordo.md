@@ -9,6 +9,28 @@
 
 ---
 
+## 22/07/2026 08:53 — Design visual inspirado nas cartas oficiais
+
+Peguei referência de verdade dessa vez: fui na página oficial de cartas do Pokémon
+(pokemon.com/br) ver o design de uma carta de Charizard de perto — moldura dourada,
+fundo em gradiente por tipo, tipografia robusta, selo circular de energia. Usei pela
+primeira vez o companheiro visual de brainstorm (uma aba no navegador com mockups
+lado a lado) pra decidir com calma quanto do estilo "carta" trazer pro RafaDex.
+
+Fechamos numa síntese: gradiente diagonal por tipo (sem moldura rígida — mantém o
+clima solto de hoje), selo circular pro ícone de tipo só nos lugares pequenos
+(card do grid, badges do detalhe), ícone bem maior nos botões da Home. Duas rodadas
+de correção valeram a pena: o usuário pegou que a informação do canto ia empilhando
+e podia invadir a imagem do Pokémon com mais de um tipo — resolvido virando uma
+linha horizontal única; e que eu tinha derrubado sem querer o fundo branco com
+número em laranja dos selos numa correção anterior — trouxe de volta.
+
+Já escrevi a spec e o plano (6 tasks: helpers de cor, botões da Home, mecanismo
+compartilhado do topbar, cabeçalho do detalhe, cards do grid, deploy). Ambos
+commitados, prontos pra execução.
+
+---
+
 ## 22/07/2026 01:43 — v1.2: bug real corrigido e uma lição boa sobre service worker
 
 Fechei o v1.2 (backlog reportado logo depois do v1.1 ir ao ar). O achado mais

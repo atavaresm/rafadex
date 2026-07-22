@@ -23,14 +23,50 @@ function el(tag, cls, html) {
 function sprite(id, kind) { return `assets/sprites/${kind}/${id}.webp`; }
 function go(hash) { location.hash = hash; }
 
+function shadeColor(hex, percent) {
+  const num = parseInt(hex.slice(1), 16);
+  let r = (num >> 16) & 255, g = (num >> 8) & 255, b = num & 255;
+  if (percent >= 0) {
+    r = Math.round(r + (255 - r) * percent);
+    g = Math.round(g + (255 - g) * percent);
+    b = Math.round(b + (255 - b) * percent);
+  } else {
+    r = Math.round(r * (1 + percent));
+    g = Math.round(g * (1 + percent));
+    b = Math.round(b * (1 + percent));
+  }
+  return "#" + [r, g, b].map(c => c.toString(16).padStart(2, "0")).join("");
+}
+
+function typeGradient(hex, shape) {
+  const light = shadeColor(hex, 0.35);
+  const dark = shadeColor(hex, -0.25);
+  if (shape === "radial") return `radial-gradient(circle at 30% 30%, ${light}, ${hex} 60%, ${dark})`;
+  return `linear-gradient(160deg, ${light} 0%, ${hex} 55%, ${dark} 100%)`;
+}
+
+function typeBadgeHtml(typeKey, sizePx) {
+  const info = window.TYPES[typeKey];
+  return `<span class="type-badge" style="width:${sizePx}px;height:${sizePx}px;` +
+    `font-size:${Math.round(sizePx * 0.55)}px;background:${typeGradient(info.color, "radial")}">${info.emoji}</span>`;
+}
+
+function pill(text) { return el("span", "pill", text); }
+
 function currentList() { return contextIds; }
 
-function topbar(title, backHash, tint) {
+function topbar(title, backHash, tint, rightContent) {
   const bar = el("div", "topbar");
   const back = el("button", "back-btn bounce", "⬅️");
   back.onclick = () => go(backHash);
-  bar.append(back, el("span", "title", title));
-  if (tint) document.body.style.background = tint + "33";
+  bar.append(back);
+  if (rightContent) {
+    bar.classList.add("split");
+    bar.append(rightContent);
+  } else {
+    bar.append(el("span", "title", title));
+  }
+  if (tint) document.body.style.background = typeGradient(tint);
   return bar;
 }
 
@@ -46,7 +82,7 @@ function renderHome() {
   for (const [key, info] of Object.entries(window.TYPES)) {
     const btn = el("button", "type-btn bounce",
       `<span class="emoji">${info.emoji}</span><span class="label">${info.name}</span>`);
-    btn.style.background = info.color;
+    btn.style.background = typeGradient(info.color);
     btn.onclick = () => go(`#type/${key}`);
     grid.append(btn);
   }
@@ -98,13 +134,12 @@ function renderType(key) {
   for (const id of contextIds) {
     const mon = byId[id];
     const numStr = String(id).padStart(3, "0");
-    const typeIcons = mon.types.map(t => window.TYPES[t].emoji).join("");
+    const typeBadges = mon.types.map(t => typeBadgeHtml(t, 20)).join("");
     const card = el("button", "mon-card bounce",
-      `<div class="mon-meta"><span class="mon-num">#${numStr}</span>` +
-      `<span class="mon-gen">G${mon.gen}</span>` +
-      `<span class="mon-types">${typeIcons}</span>` +
-      `<span class="mon-power">${mon.power}</span></div>` +
+      `<div class="mon-meta"><span class="pill">#${numStr} · G${mon.gen}</span>` +
+      `<span class="mon-typepower">${typeBadges}<span class="pill">${mon.power}</span></span></div>` +
       `<img loading="lazy" src="${sprite(id, "thumb")}" alt=""><span class="name">${mon.name}</span>`);
+    card.style.background = typeGradient(window.TYPES[mon.types[0]].color);
     card.querySelector("img").onerror = e => { e.target.src = ""; e.target.style.background = "#ddd"; };
     card.onclick = () => go(`#dex/${id}`);
     grid.append(card);
@@ -118,8 +153,10 @@ function renderDetail(id) {
   if (!contextIds.length) contextIds = window.DEX.map(m => m.id);
   const tint = window.TYPES[mon.types[0]].color;
   elApp.innerHTML = "";
-  elApp.append(topbar(mon.types.map(t => window.TYPES[t].emoji).join(" "),
-    `#type/${mon.types[0]}`, tint));
+  const numStr = String(id).padStart(3, "0");
+  elApp.append(topbar("", `#type/${mon.types[0]}`, tint, pill(`#${numStr} · G${mon.gen}`)));
+  const typeBadges = mon.types.map(t => typeBadgeHtml(t, 26)).join("");
+  elApp.append(el("div", "type-power-row", `${typeBadges}<span class="pill">${mon.power}</span>`));
   const box = el("div", "detail");
   box.append(el("img", "hero", undefined));
   const hero = box.querySelector("img");
