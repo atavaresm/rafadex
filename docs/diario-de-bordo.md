@@ -9,6 +9,37 @@
 
 ---
 
+## 22/07/2026 14:30 — Design visual no ar (e um susto de última hora)
+
+Executei o plano do sistema de design visual por subagentes: 5 tasks (helpers de
+gradiente, botões da Home, topbar compartilhado, tela de detalhe, cards do grid), cada
+uma com implementador novo + revisor independente, todas aprovadas de primeira. O app
+inteiro trocou o visual chapado por gradientes diagonais por tipo (fórmula clarear/
+escurecer canal-a-canal, não HSL — mais suave), badges circulares pro emoji de tipo, e
+selos brancos com número/geração à esquerda e tipo+poder à direita, sempre em uma
+única linha (a correção que pedi no brainstorm, pra não sobrepor a arte do Pokémon
+em tipos duplos).
+
+Antes de ir pro ar, rodei uma revisão final de branch inteira (modelo mais capaz,
+olhando as 5 tasks juntas) — e ela pegou um bug que nenhuma revisão por task veria: o
+carimbo de versão do service worker continuava idêntico ao de produção. Como o app
+serve `app.js`/`style.css` com cache-first, isso significa que **ninguém com o app já
+instalado veria o redesign** — inclusive o iPhone do Rafael. A correção já estava até
+meio pronta (um `python3 build.py` de uma verificação anterior tinha deixado o arquivo
+sujo, mas não commitado). Rodei o pipeline de novo, gerei um carimbo novo, testes
+passando, commitei. Boa lembrança de que revisão de branch inteira pega coisa que
+revisão tarefa-a-tarefa estruturalmente não consegue.
+
+Deploy no ar, testei ao vivo em produção simulando um usuário que já tinha o app
+instalado (desregistrei o service worker e limpei o cache antes, pra forçar o cenário
+real). Bateu tudo: gradientes claro/escuro sem lavar nem escurecer demais (testei Fada
+e Sombrio, os dois extremos), cards do grid sem sobrepor sprite em tipo duplo, toque
+nos selos ainda navega certo, header fixo continua fixo, scroll volta na posição exata,
+busca funciona, a tira de evolução do Eevee (8 ramos, o bug da v1.2) continua sem
+estourar a tela. Falta só o Rafael conferir no iPhone de verdade.
+
+---
+
 ## 22/07/2026 08:53 — Design visual inspirado nas cartas oficiais
 
 Peguei referência de verdade dessa vez: fui na página oficial de cartas do Pokémon
