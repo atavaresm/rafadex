@@ -11,7 +11,7 @@
 html, body { margin: 0; background: var(--bg); color: var(--ink);
   font-family: "Baloo 2", system-ui, sans-serif; overscroll-behavior: none; }
 body { min-height: 100dvh; }
-#app { max-width: 520px; margin: 0 auto; padding: 60px 12px calc(20px + env(safe-area-inset-bottom)); }
+#app { max-width: 520px; margin: 0 auto; padding: 60px 12px calc(46px + env(safe-area-inset-bottom)); }
 
 button { font: inherit; border: none; cursor: pointer; }
 .bounce { transition: transform .15s cubic-bezier(.34,1.56,.64,1); }
@@ -27,6 +27,10 @@ button { font: inherit; border: none; cursor: pointer; }
 .app-header .ball { width: 26px; height: 26px; border-radius: 50%; border: 3px solid #222;
   background: linear-gradient(180deg, var(--red) 46%, #222 46% 54%, #fff 54%); flex-shrink: 0; }
 .app-header .name { font-size: 18px; font-weight: 800; color: var(--red); }
+.app-footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
+  padding: 6px 16px calc(6px + env(safe-area-inset-bottom));
+  background: var(--bg); border-top: 1px solid rgba(0,0,0,.06);
+  text-align: center; font-size: 11px; color: #999; }
 
 /* Home */
 .game-btn { width: 100%; padding: 18px; margin-bottom: 14px; border-radius: var(--radius);

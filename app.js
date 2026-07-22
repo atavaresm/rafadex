@@ -310,6 +310,9 @@ function renderRoute() {
   window.scrollTo(0, scrollPositions[location.hash] || 0);
   previousHash = location.hash;
 }
+document.getElementById("footerText").textContent =
+  `amaix.com · ${window.APP_VERSION} · ${window.APP_BUILD_DATE}`;
+
 window.addEventListener("hashchange", renderRoute);
 renderRoute();
 
