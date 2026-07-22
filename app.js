@@ -23,6 +23,36 @@ function el(tag, cls, html) {
 function sprite(id, kind) { return `assets/sprites/${kind}/${id}.webp`; }
 function go(hash) { location.hash = hash; }
 
+function shadeColor(hex, percent) {
+  const num = parseInt(hex.slice(1), 16);
+  let r = (num >> 16) & 255, g = (num >> 8) & 255, b = num & 255;
+  if (percent >= 0) {
+    r = Math.round(r + (255 - r) * percent);
+    g = Math.round(g + (255 - g) * percent);
+    b = Math.round(b + (255 - b) * percent);
+  } else {
+    r = Math.round(r * (1 + percent));
+    g = Math.round(g * (1 + percent));
+    b = Math.round(b * (1 + percent));
+  }
+  return "#" + [r, g, b].map(c => c.toString(16).padStart(2, "0")).join("");
+}
+
+function typeGradient(hex, shape) {
+  const light = shadeColor(hex, 0.35);
+  const dark = shadeColor(hex, -0.25);
+  if (shape === "radial") return `radial-gradient(circle at 30% 30%, ${light}, ${hex} 60%, ${dark})`;
+  return `linear-gradient(160deg, ${light} 0%, ${hex} 55%, ${dark} 100%)`;
+}
+
+function typeBadgeHtml(typeKey, sizePx) {
+  const info = window.TYPES[typeKey];
+  return `<span class="type-badge" style="width:${sizePx}px;height:${sizePx}px;` +
+    `font-size:${Math.round(sizePx * 0.55)}px;background:${typeGradient(info.color, "radial")}">${info.emoji}</span>`;
+}
+
+function pill(text) { return el("span", "pill", text); }
+
 function currentList() { return contextIds; }
 
 function topbar(title, backHash, tint) {
