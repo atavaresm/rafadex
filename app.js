@@ -245,15 +245,20 @@ function confettiBurst(parent) {
   }
 }
 
+const scrollPositions = {};
+let previousHash = null;
+
 function renderRoute() {
+  if (previousHash !== null) scrollPositions[previousHash] = window.scrollY;
   document.body.style.background = "";
   Sound.stopSpeech();
   const [route, arg] = location.hash.replace(/^#/, "").split("/");
-  window.scrollTo(0, 0);
   if (route === "type") renderType(arg);
   else if (route === "dex") renderDetail(Number(arg));
   else if (route === "game") renderGame();
   else renderHome();
+  window.scrollTo(0, scrollPositions[location.hash] || 0);
+  previousHash = location.hash;
 }
 window.addEventListener("hashchange", renderRoute);
 renderRoute();
