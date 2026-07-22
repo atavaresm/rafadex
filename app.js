@@ -76,7 +76,7 @@ function renderHome() {
   for (const [key, info] of Object.entries(window.TYPES)) {
     const btn = el("button", "type-btn bounce",
       `<span class="emoji">${info.emoji}</span><span class="label">${info.name}</span>`);
-    btn.style.background = info.color;
+    btn.style.background = typeGradient(info.color);
     btn.onclick = () => go(`#type/${key}`);
     grid.append(btn);
   }
