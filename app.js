@@ -134,13 +134,12 @@ function renderType(key) {
   for (const id of contextIds) {
     const mon = byId[id];
     const numStr = String(id).padStart(3, "0");
-    const typeIcons = mon.types.map(t => window.TYPES[t].emoji).join("");
+    const typeBadges = mon.types.map(t => typeBadgeHtml(t, 20)).join("");
     const card = el("button", "mon-card bounce",
-      `<div class="mon-meta"><span class="mon-num">#${numStr}</span>` +
-      `<span class="mon-gen">G${mon.gen}</span>` +
-      `<span class="mon-types">${typeIcons}</span>` +
-      `<span class="mon-power">${mon.power}</span></div>` +
+      `<div class="mon-meta"><span class="pill">#${numStr} · G${mon.gen}</span>` +
+      `<span class="mon-typepower">${typeBadges}<span class="pill">${mon.power}</span></span></div>` +
       `<img loading="lazy" src="${sprite(id, "thumb")}" alt=""><span class="name">${mon.name}</span>`);
+    card.style.background = typeGradient(window.TYPES[mon.types[0]].color);
     card.querySelector("img").onerror = e => { e.target.src = ""; e.target.style.background = "#ddd"; };
     card.onclick = () => go(`#dex/${id}`);
     grid.append(card);
