@@ -133,10 +133,8 @@ def testBuildAssetsSkipsUpToDateOutputs(tmp_path, monkeypatch):
     assert calls == []  # second run skips everything
 
 
-def testRenderSwVersionJsProducesTimestampConstant():
-    out = build.renderSwVersionJs()
-    assert out.startswith('const SW_BUILD = "')
-    assert out.rstrip().endswith('";')
-    stamp = out.split('"')[1]
-    assert stamp.isdigit()
-    assert len(stamp) == 14
+def testRenderServiceWorkerInjectsTimestamp():
+    template = 'const VERSION = "__SW_BUILD__";\nconsole.log(VERSION);\n'
+    out = build.renderServiceWorker(template, "20260722040414")
+    assert out == 'const VERSION = "20260722040414";\nconsole.log(VERSION);\n'
+    assert "__SW_BUILD__" not in out

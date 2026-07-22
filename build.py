@@ -157,9 +157,8 @@ def renderPrecacheJs(ids):
     return f"const RAFADEX_PRECACHE={json.dumps(urls)};\n"
 
 
-def renderSwVersionJs():
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
-    return f'const SW_BUILD = "{stamp}";\n'
+def renderServiceWorker(template, stamp):
+    return template.replace("__SW_BUILD__", stamp)
 
 
 def main():
@@ -171,7 +170,9 @@ def main():
     buildAssets(allIds, force=args.force)
     gen1Ids = [entry["id"] for entry in entries if entry["gen"] == 1]
     Path("precache.js").write_text(renderPrecacheJs(gen1Ids))
-    Path("sw-version.js").write_text(renderSwVersionJs())
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+    swTemplate = Path("sw.template.js").read_text()
+    Path("sw.js").write_text(renderServiceWorker(swTemplate, stamp))
     missing = [i for i in allIds
                if not (Path(f"assets/sprites/thumb/{i}.webp").exists()
                        and Path(f"assets/sprites/full/{i}.webp").exists()
