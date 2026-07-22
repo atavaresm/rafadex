@@ -9,6 +9,40 @@
 
 ---
 
+## 22/07/2026 20:40 — Cabeçalho e rodapé fixos, e mais um bug offline pego a tempo
+
+Pedido novo: cabeçalho ("RafaDex") e um rodapé (empresa amaix.com + versão + data)
+sempre fixos na tela, mesmo com fonte menor. Passei pelo processo completo de novo —
+brainstorm curto (duas perguntas: escopo em todas as telas ou só a Home; versão manual
+com data automática ou tudo automático) e spec — e implementei em 3 tasks por
+subagentes: um `VERSION` arquivo editável à mão + `build.py` gerando `version.js` (mesmo
+padrão do carimbo do service worker), o cabeçalho fixo (saiu do ciclo de re-render de
+tela e virou elemento fixo no `index.html`, com a barra de contexto de cada tela
+descendo pra caber embaixo dele), e o rodapé fixo consumindo esse `version.js`.
+
+A revisão final de branch pegou outro achado de cache que só aparece quando tudo
+está junto: o `version.js` novo nunca entrou na lista de precache do service worker,
+então **offline** (o modo principal do app instalado) o rodapé ia mostrar
+"amaix.com · undefined · undefined". O subagente de correção travou no meio da própria
+verificação ao vivo — terminei eu mesmo: confirmei o código já estava certo, rodei os
+testes, e fiz a verificação offline de verdade (matei o processo do servidor, não só o
+toggle do DevTools) — rodapé mostrou o valor real mesmo com o servidor morto. Também
+apliquei de novo, proativamente dessa vez, o carimbo de versão do service worker (lição
+da rodada anterior: qualquer mudança em `app.js`/`style.css`/`index.html` exige um
+carimbo novo pra chegar em quem já instalou o app).
+
+No teste em produção quase me enganei sozinho: limpei o cache do site errado (a aba
+ainda estava no servidor local) antes de recarregar a produção, e o rodapé simplesmente
+não existia na tela — parecia um bug real. Era só eu tendo testado a origem errada.
+Corrigido, testei nas telas certas: Home, mundo da Água (o maior grid), detalhe do Eevee
+(a tela mais alta, com as 8 evoluções), jogo, scroll-restore — tudo intacto. Fica pendente
+pro Rafael verificar no iPhone real: o cabeçalho fixo não tem reserva de área segura pro
+notch/Dynamic Island (o rodapé tem, o cabeçalho não), então pode encostar na barra de
+status em alguns aparelhos — decidi não mexer no CSS sem confirmação real, já que o
+`.brand` antigo nunca deu esse problema em nenhuma rodada anterior.
+
+---
+
 ## 22/07/2026 14:30 — Design visual no ar (e um susto de última hora)
 
 Executei o plano do sistema de design visual por subagentes: 5 tasks (helpers de
