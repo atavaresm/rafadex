@@ -154,8 +154,10 @@ function renderDetail(id) {
   if (!contextIds.length) contextIds = window.DEX.map(m => m.id);
   const tint = window.TYPES[mon.types[0]].color;
   elApp.innerHTML = "";
-  elApp.append(topbar(mon.types.map(t => window.TYPES[t].emoji).join(" "),
-    `#type/${mon.types[0]}`, tint));
+  const numStr = String(id).padStart(3, "0");
+  elApp.append(topbar("", `#type/${mon.types[0]}`, tint, pill(`#${numStr} · G${mon.gen}`)));
+  const typeBadges = mon.types.map(t => typeBadgeHtml(t, 26)).join("");
+  elApp.append(el("div", "type-power-row", `${typeBadges}<span class="pill">${mon.power}</span>`));
   const box = el("div", "detail");
   box.append(el("img", "hero", undefined));
   const hero = box.querySelector("img");

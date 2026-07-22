@@ -56,7 +56,9 @@ button { font: inherit; border: none; cursor: pointer; }
 .detail { display: flex; flex-direction: column; align-items: center; }
 .detail .hero { width: min(78vw, 340px); aspect-ratio: 1; }
 .detail .hero.hero-missing { background: #ddd; border-radius: var(--radius); }
-.detail .mon-name { font-size: 32px; font-weight: 800; margin: 4px 0 0; }
+.type-power-row { display: flex; justify-content: flex-end; align-items: center; gap: 6px; margin: -6px 0 10px; }
+.detail .mon-name { font-size: 32px; font-weight: 800; margin: 4px 0 0; color: #fff;
+  text-shadow: 0 2px 4px rgba(0,0,0,.35); }
 .nav-arrows { position: fixed; top: 42%; left: 0; right: 0; display: flex;
   justify-content: space-between; padding: 0 6px; pointer-events: none; }
 .nav-arrows button { pointer-events: auto; font-size: 30px; padding: 12px 16px;
