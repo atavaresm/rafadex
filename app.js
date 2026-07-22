@@ -55,12 +55,18 @@ function pill(text) { return el("span", "pill", text); }
 
 function currentList() { return contextIds; }
 
-function topbar(title, backHash, tint) {
+function topbar(title, backHash, tint, rightContent) {
   const bar = el("div", "topbar");
   const back = el("button", "back-btn bounce", "⬅️");
   back.onclick = () => go(backHash);
-  bar.append(back, el("span", "title", title));
-  if (tint) document.body.style.background = tint + "33";
+  bar.append(back);
+  if (rightContent) {
+    bar.classList.add("split");
+    bar.append(rightContent);
+  } else {
+    bar.append(el("span", "title", title));
+  }
+  if (tint) document.body.style.background = typeGradient(tint);
   return bar;
 }
 
