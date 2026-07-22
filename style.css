@@ -38,7 +38,8 @@ button { font: inherit; border: none; cursor: pointer; }
   border-radius: 20px; box-shadow: var(--shadow); }
 
 /* Type world + detail */
-.topbar { display: flex; align-items: center; gap: 10px; padding: 6px 0 14px; }
+.topbar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 10px;
+  padding: 14px 12px; margin: 0 -12px 14px; background: var(--bg); }
 .back-btn { font-size: 26px; padding: 10px 18px; border-radius: 22px;
   background: var(--card); box-shadow: var(--shadow); }
 .topbar .title { font-size: 24px; font-weight: 800; }
@@ -66,13 +67,23 @@ button { font: inherit; border: none; cursor: pointer; }
 .sound-row button.speaking { background: var(--red); color: #fff; }
 .heart { font-size: 34px; background: none; margin-top: 4px; }
 .evo-strip { display: flex; align-items: center; gap: 6px; margin: 10px 0;
-  overflow-x: auto; max-width: 100%; }
+  overflow-x: auto; max-width: 100%; min-width: 0; }
 .evo-strip img { width: 84px; height: 84px; background: var(--card);
   border-radius: 20px; box-shadow: var(--shadow); flex-shrink: 0; }
 .evo-strip img.current { outline: 4px solid var(--red); }
 .evo-arrow { font-size: 20px; }
 
-.gear { display: block; margin: 22px auto 0; background: none; font-size: 20px; opacity: .45; }
+.tool-row { display: flex; justify-content: center; gap: 18px; margin-top: 22px; }
+.gear { display: block; background: none; font-size: 20px; opacity: .45; }
+.search-panel { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 14px; margin-top: 10px; }
+.search-input { width: 100%; padding: 10px 12px; border-radius: 14px; border: 2px solid var(--bg);
+  font: inherit; font-size: 16px; background: var(--bg); }
+.search-results { margin-top: 8px; max-height: 260px; overflow-y: auto; }
+.search-result { display: flex; align-items: center; gap: 10px; width: 100%; padding: 6px;
+  border-radius: 12px; text-align: left; background: none; }
+.search-result img { width: 40px; height: 40px; background: var(--card); border-radius: 10px; }
+.search-result span { font-size: 15px; }
 .parent-panel { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
   padding: 14px; margin-top: 10px; }
 .parent-panel .title { font-weight: 700; margin-bottom: 8px; }

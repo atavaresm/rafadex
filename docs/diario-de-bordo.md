@@ -9,6 +9,35 @@
 
 ---
 
+## 21/07/2026 20:45 — v1.1 no ar: swipe, pronúncia real, cards ricos
+
+Fechei o v1.1 inteiro e já está publicado. O ponto alto foi a pronúncia: eu tinha
+prometido "ouvir" os nomes numa voz de verdade pra corrigir, mas percebi no meio do
+brainstorm que **não tenho como perceber áudio** — corrigi isso com o usuário antes de
+prosseguir. Ele resolveu do jeito melhor possível: me passou de próprio punho as
+pronúncias certas pra praticamente toda a Pokédex (807 nomes, Gens 1–7, não só a Gen 1
+como o plano original previa). Casei cada nome com o id certo por normalização de texto
+(removendo acento/pontuação) e um fallback de prefixo único pros ~24 Pokémon com forma
+alternativa no dado (tipo "Deoxys" → "Deoxys-Normal"); só 4 nomes tinham erro de
+digitação, corrigidos à mão. Zero perdido, zero colisão.
+
+Também apliquei a pronúncia em todos os lugares que falam o nome (não só os dois
+botões do plano original) — fita de evolução e revelação do jogo também, senão ficaria
+inconsistente agora que os dados cobrem quase tudo. Swipe no card de detalhe e o botão
+de parar narração no meio (tocar de novo pra interromper) saíram de primeira. Cards do
+grid agora mostram número/geração/tipo(s)/poder discretos no canto — testei ao vivo em
+produção e o Charizard aparece #006, G1, 🔥🪽, poder 534, exatamente certo.
+
+**Achado importante na verificação final:** como o `sw.js` não mudou de versão entre o
+v1 e o v1.1, o app **já instalado** no iPhone provavelmente vai continuar servindo os
+arquivos antigos mesmo com um "recarregar" comum — o navegador só reinstala o service
+worker quando o `sw.js` em si muda de conteúdo. Preciso avisar o usuário pra limpar os
+dados do site nas configurações do Safari (ou desinstalar/reinstalar o ícone) antes de
+testar, e isso vira candidato forte pro backlog v1.2: versionar o cache do SW a cada
+deploy para isso nunca mais ser um problema silencioso.
+
+---
+
 ## 21/07/2026 19:38 — Rafael testando de verdade, já surgiu a v1.1
 
 O RafaDex tava no ar fazia poucas horas e o Rafael já começou a usar de verdade —

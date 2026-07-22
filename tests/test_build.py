@@ -131,3 +131,12 @@ def testBuildAssetsSkipsUpToDateOutputs(tmp_path, monkeypatch):
     calls.clear()
     build.buildAssets([1], root)
     assert calls == []  # second run skips everything
+
+
+def testRenderSwVersionJsProducesTimestampConstant():
+    out = build.renderSwVersionJs()
+    assert out.startswith('const SW_BUILD = "')
+    assert out.rstrip().endswith('";')
+    stamp = out.split('"')[1]
+    assert stamp.isdigit()
+    assert len(stamp) == 14
