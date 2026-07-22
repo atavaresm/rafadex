@@ -138,3 +138,8 @@ def testRenderServiceWorkerInjectsTimestamp():
     out = build.renderServiceWorker(template, "20260722040414")
     assert out == 'const VERSION = "20260722040414";\nconsole.log(VERSION);\n'
     assert "__SW_BUILD__" not in out
+
+
+def testRenderVersionJsEmitsWindowGlobals():
+    out = build.renderVersionJs("v1.3", "22/07/2026")
+    assert out == 'window.APP_VERSION = "v1.3";\nwindow.APP_BUILD_DATE = "22/07/2026";\n'

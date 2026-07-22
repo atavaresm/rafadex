@@ -1,8 +1,8 @@
 importScripts("precache.js");
-const VERSION = "20260722142313";
+const VERSION = "20260722174244";
 const SHELL = `rafadex-shell-${VERSION}`;
 const RUNTIME = "rafadex-runtime";
-const SHELL_CORE = ["./", "index.html", "style.css", "app.js", "audio.js",
+const SHELL_CORE = ["./", "index.html", "style.css", "app.js", "version.js", "audio.js",
   "data/dex.js", "manifest.json", "assets/fonts/baloo2.woff2"];
 const SHELL_OPTIONAL = ["assets/icons/icon-180.png", "assets/icons/icon-192.png",
   "assets/icons/icon-512.png"];
