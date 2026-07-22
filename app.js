@@ -72,8 +72,6 @@ function topbar(title, backHash, tint, rightContent) {
 
 function renderHome() {
   elApp.innerHTML = "";
-  const brand = el("div", "brand", `<div class="ball"></div><h1>RafaDex</h1>`);
-  elApp.append(brand);
   const gameBtn = el("button", "game-btn bounce", "❓ Quem é esse Pokémon?");
   gameBtn.onclick = () => go("#game");
   elApp.append(gameBtn);
