@@ -9,6 +9,35 @@
 
 ---
 
+## 22/07/2026 01:43 — v1.2: bug real corrigido e uma lição boa sobre service worker
+
+Fechei o v1.2 (backlog reportado logo depois do v1.1 ir ao ar). O achado mais
+satisfatório: a fita de evolução do Eevee realmente estourava a tela — causa raiz
+era o clássico `min-width: auto` padrão de item flex, que se recusa a encolher
+dentro do `.detail`. Corrigi com `min-width: 0`. Também botei uma rede de segurança
+(`overflow-x: hidden` no html/body) que, testando ao vivo, **quebrou o header fixo**
+(`position: sticky`) — vira e mexe uma correção interage mal com a próxima tarefa.
+Removi a rede de segurança depois de confirmar que o fix de verdade já bastava
+sozinho. Scroll restaurado ao voltar do card, header fixo, e busca por nome pro pai
+saíram redondos, testados ao vivo com evidência real (contextIds, filtro em tempo
+real, exclusão mútua dos painéis).
+
+O capítulo mais longo foi o versionamento automático do cache do service worker —
+a correção pro achado do v1.1. Minha primeira tentativa (arquivo `sw-version.js`
+separado, importado via `importScripts`) passou na revisão de código mas **falhou
+no teste real contra produção**: descobri que o GitHub Pages manda
+`Cache-Control: max-age=600`, e a especificação de Service Worker só garante que o
+script principal ignora esse cache na checagem de atualização — arquivos
+importados não têm essa garantia (`updateViaCache: "imports"` é o padrão). Troquei
+pra deixar o `sw.js` virar ele mesmo um artefato gerado (mesmo padrão do
+`data/dex.js`), com o timestamp embutido direto no corpo do script principal —
+esse sim é o jeito certo, usado por PWAs de verdade. Não consegui ver a transição
+de "instalando" no meu ambiente de automação do Chrome mesmo depois do fix (pode
+ser um throttling da própria ferramenta), então a prova final fica pro próximo
+deploy real, verificado no iPhone de verdade.
+
+---
+
 ## 21/07/2026 20:45 — v1.1 no ar: swipe, pronúncia real, cards ricos
 
 Fechei o v1.1 inteiro e já está publicado. O ponto alto foi a pronúncia: eu tinha
