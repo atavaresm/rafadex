@@ -5,6 +5,7 @@ import os
 import re
 import shutil
 import subprocess
+from datetime import datetime, timezone
 from pathlib import Path
 
 POKEDEX_ROOT = Path("/Users/amais/project/pokedex")
@@ -156,6 +157,11 @@ def renderPrecacheJs(ids):
     return f"const RAFADEX_PRECACHE={json.dumps(urls)};\n"
 
 
+def renderSwVersionJs():
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+    return f'const SW_BUILD = "{stamp}";\n'
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--force", action="store_true", help="re-convert all media")
@@ -165,6 +171,7 @@ def main():
     buildAssets(allIds, force=args.force)
     gen1Ids = [entry["id"] for entry in entries if entry["gen"] == 1]
     Path("precache.js").write_text(renderPrecacheJs(gen1Ids))
+    Path("sw-version.js").write_text(renderSwVersionJs())
     missing = [i for i in allIds
                if not (Path(f"assets/sprites/thumb/{i}.webp").exists()
                        and Path(f"assets/sprites/full/{i}.webp").exists()
