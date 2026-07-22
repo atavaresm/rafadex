@@ -1,5 +1,5 @@
-importScripts("precache.js");
-const VERSION = "v1";
+importScripts("precache.js", "sw-version.js");
+const VERSION = SW_BUILD;
 const SHELL = `rafadex-shell-${VERSION}`;
 const RUNTIME = "rafadex-runtime";
 const SHELL_CORE = ["./", "index.html", "style.css", "app.js", "audio.js",
