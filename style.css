@@ -73,7 +73,17 @@ button { font: inherit; border: none; cursor: pointer; }
 .evo-strip img.current { outline: 4px solid var(--red); }
 .evo-arrow { font-size: 20px; }
 
-.gear { display: block; margin: 22px auto 0; background: none; font-size: 20px; opacity: .45; }
+.tool-row { display: flex; justify-content: center; gap: 18px; margin-top: 22px; }
+.gear { display: block; background: none; font-size: 20px; opacity: .45; }
+.search-panel { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 14px; margin-top: 10px; }
+.search-input { width: 100%; padding: 10px 12px; border-radius: 14px; border: 2px solid var(--bg);
+  font: inherit; font-size: 16px; background: var(--bg); }
+.search-results { margin-top: 8px; max-height: 260px; overflow-y: auto; }
+.search-result { display: flex; align-items: center; gap: 10px; width: 100%; padding: 6px;
+  border-radius: 12px; text-align: left; background: none; }
+.search-result img { width: 40px; height: 40px; background: var(--card); border-radius: 10px; }
+.search-result span { font-size: 15px; }
 .parent-panel { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
   padding: 14px; margin-top: 10px; }
 .parent-panel .title { font-weight: 700; margin-bottom: 8px; }

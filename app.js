@@ -53,12 +53,27 @@ function renderHome() {
   elApp.append(grid);
   const gear = el("button", "gear", "⚙️");
   gear.setAttribute("aria-label", "Downloads para uso offline");
-  let panelOpen = false;
+  const search = el("button", "gear", "🔍");
+  search.setAttribute("aria-label", "Buscar Pokémon por nome");
+  let panelOpen = null;
+  function closePanels() {
+    elApp.querySelector(".parent-panel")?.remove();
+    elApp.querySelector(".search-panel")?.remove();
+    panelOpen = null;
+  }
   gear.onclick = () => {
-    if (panelOpen) { elApp.querySelector(".parent-panel")?.remove(); panelOpen = false; return; }
-    elApp.append(renderParentPanel()); panelOpen = true;
+    const wasOpen = panelOpen === "gear";
+    closePanels();
+    if (!wasOpen) { elApp.append(renderParentPanel()); panelOpen = "gear"; }
   };
-  elApp.append(gear);
+  search.onclick = () => {
+    const wasOpen = panelOpen === "search";
+    closePanels();
+    if (!wasOpen) { elApp.append(renderSearchPanel()); panelOpen = "search"; }
+  };
+  const toolRow = el("div", "tool-row");
+  toolRow.append(gear, search);
+  elApp.append(toolRow);
 }
 
 function renderShelf() {
@@ -300,6 +315,34 @@ async function cacheGen(gen, onProgress) {
     onProgress(++done, urls.length);
   }
   return failed;
+}
+
+function normalizeSearch(text) {
+  return text.normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase();
+}
+
+function renderSearchPanel() {
+  const panel = el("div", "search-panel");
+  const input = el("input", "search-input");
+  input.type = "text";
+  input.placeholder = "Buscar por nome...";
+  panel.append(input);
+  const results = el("div", "search-results");
+  panel.append(results);
+
+  input.oninput = () => {
+    const query = normalizeSearch(input.value.trim());
+    results.innerHTML = "";
+    if (!query) return;
+    const matches = window.DEX.filter(m => normalizeSearch(m.name).includes(query)).slice(0, 20);
+    for (const mon of matches) {
+      const row = el("button", "search-result bounce",
+        `<img src="${sprite(mon.id, "thumb")}" alt=""><span>${mon.name}</span>`);
+      row.onclick = () => { contextIds = window.DEX.map(m => m.id); go(`#dex/${mon.id}`); };
+      results.append(row);
+    }
+  };
+  return panel;
 }
 
 function renderParentPanel() {
