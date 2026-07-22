@@ -9,7 +9,8 @@
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; background: var(--bg); color: var(--ink);
-  font-family: "Baloo 2", system-ui, sans-serif; overscroll-behavior: none; }
+  font-family: "Baloo 2", system-ui, sans-serif; overscroll-behavior: none;
+  overflow-x: hidden; }
 body { min-height: 100dvh; }
 #app { max-width: 520px; margin: 0 auto; padding: 12px 12px calc(20px + env(safe-area-inset-bottom)); }
 
@@ -66,7 +67,7 @@ button { font: inherit; border: none; cursor: pointer; }
 .sound-row button.speaking { background: var(--red); color: #fff; }
 .heart { font-size: 34px; background: none; margin-top: 4px; }
 .evo-strip { display: flex; align-items: center; gap: 6px; margin: 10px 0;
-  overflow-x: auto; max-width: 100%; }
+  overflow-x: auto; max-width: 100%; min-width: 0; }
 .evo-strip img { width: 84px; height: 84px; background: var(--card);
   border-radius: 20px; box-shadow: var(--shadow); flex-shrink: 0; }
 .evo-strip img.current { outline: 4px solid var(--red); }
