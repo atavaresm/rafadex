@@ -161,6 +161,10 @@ def renderServiceWorker(template, stamp):
     return template.replace("__SW_BUILD__", stamp)
 
 
+def renderVersionJs(version, buildDate):
+    return f'window.APP_VERSION = "{version}";\nwindow.APP_BUILD_DATE = "{buildDate}";\n'
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--force", action="store_true", help="re-convert all media")
@@ -173,6 +177,9 @@ def main():
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
     swTemplate = Path("sw.template.js").read_text()
     Path("sw.js").write_text(renderServiceWorker(swTemplate, stamp))
+    version = Path("VERSION").read_text().strip()
+    buildDate = datetime.now(timezone.utc).strftime("%d/%m/%Y")
+    Path("version.js").write_text(renderVersionJs(version, buildDate))
     missing = [i for i in allIds
                if not (Path(f"assets/sprites/thumb/{i}.webp").exists()
                        and Path(f"assets/sprites/full/{i}.webp").exists()
