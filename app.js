@@ -125,7 +125,7 @@ function topbar(title, backHash, tint, rightContent) {
   } else {
     bar.append(el("span", "title", title));
   }
-  if (tint) document.body.style.background = typeGradient(tint);
+  if (tint) document.body.style.background = vividColor(tint);
   return bar;
 }
 
