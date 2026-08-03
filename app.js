@@ -93,10 +93,10 @@ function vividColor(hex) {
 }
 
 const TYPE_ICONS = {
-  normal: "", fire: "", water: "", electric: "",
-  grass: "", ice: "", fighting: "", poison: "",
-  ground: "", flying: "", psychic: "", bug: "",
-  rock: "", dark: "", steel: "", fairy: "",
+  normal: "", fire: "", water: "", electric: "",
+  grass: "", ice: "", fighting: "", poison: "",
+  ground: "", flying: "", psychic: "", bug: "",
+  rock: "", dark: "", steel: "", fairy: "",
 };
 // Ghost and Dragon are deliberately absent — no good Material Symbols match
 // was found for either; typeBadgeHtml() falls back to their emoji below.
