@@ -23,28 +23,6 @@ function el(tag, cls, html) {
 function sprite(id, kind) { return `assets/sprites/${kind}/${id}.webp`; }
 function go(hash) { location.hash = hash; }
 
-function shadeColor(hex, percent) {
-  const num = parseInt(hex.slice(1), 16);
-  let r = (num >> 16) & 255, g = (num >> 8) & 255, b = num & 255;
-  if (percent >= 0) {
-    r = Math.round(r + (255 - r) * percent);
-    g = Math.round(g + (255 - g) * percent);
-    b = Math.round(b + (255 - b) * percent);
-  } else {
-    r = Math.round(r * (1 + percent));
-    g = Math.round(g * (1 + percent));
-    b = Math.round(b * (1 + percent));
-  }
-  return "#" + [r, g, b].map(c => c.toString(16).padStart(2, "0")).join("");
-}
-
-function typeGradient(hex, shape) {
-  const light = shadeColor(hex, 0.35);
-  const dark = shadeColor(hex, -0.25);
-  if (shape === "radial") return `radial-gradient(circle at 30% 30%, ${light}, ${hex} 60%, ${dark})`;
-  return `linear-gradient(160deg, ${light} 0%, ${hex} 55%, ${dark} 100%)`;
-}
-
 function hexToHsl(hex) {
   const num = parseInt(hex.slice(1), 16);
   const r = ((num >> 16) & 255) / 255, g = ((num >> 8) & 255) / 255, b = (num & 255) / 255;
@@ -193,11 +171,11 @@ function renderType(key) {
     const mon = byId[id];
     const numStr = String(id).padStart(3, "0");
     const typeBadges = mon.types.map(t => typeBadgeHtml(t, 20)).join("");
-    const card = el("button", "mon-card bounce",
+    const card = el("button", "mon-card bounce shine",
       `<div class="mon-meta"><span class="pill">#${numStr} · G${mon.gen}</span>` +
       `<span class="mon-typepower">${typeBadges}<span class="pill">${mon.power}</span></span></div>` +
       `<img loading="lazy" src="${sprite(id, "thumb")}" alt=""><span class="name">${mon.name}</span>`);
-    card.style.background = typeGradient(window.TYPES[mon.types[0]].color);
+    card.style.background = vividColor(window.TYPES[mon.types[0]].color);
     card.querySelector("img").onerror = e => { e.target.src = ""; e.target.style.background = "#ddd"; };
     card.onclick = () => go(`#dex/${id}`);
     grid.append(card);
