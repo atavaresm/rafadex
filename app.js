@@ -137,9 +137,10 @@ function renderHome() {
   renderShelf();                       // no-op until Task 8
   const grid = el("div", "type-grid");
   for (const [key, info] of Object.entries(window.TYPES)) {
-    const btn = el("button", "type-btn bounce",
-      `<span class="emoji">${info.emoji}</span><span class="label">${info.name}</span>`);
-    btn.style.background = typeGradient(info.color);
+    const icon = TYPE_ICONS[key];
+    const iconHtml = icon ? `<span class="emoji icon">${icon}</span>` : `<span class="emoji">${info.emoji}</span>`;
+    const btn = el("button", "type-btn bounce shine", `${iconHtml}<span class="label">${info.name}</span>`);
+    btn.style.background = vividColor(info.color);
     btn.onclick = () => go(`#type/${key}`);
     grid.append(btn);
   }
