@@ -23,32 +23,81 @@ function el(tag, cls, html) {
 function sprite(id, kind) { return `assets/sprites/${kind}/${id}.webp`; }
 function go(hash) { location.hash = hash; }
 
-function shadeColor(hex, percent) {
+function hexToHsl(hex) {
   const num = parseInt(hex.slice(1), 16);
-  let r = (num >> 16) & 255, g = (num >> 8) & 255, b = num & 255;
-  if (percent >= 0) {
-    r = Math.round(r + (255 - r) * percent);
-    g = Math.round(g + (255 - g) * percent);
-    b = Math.round(b + (255 - b) * percent);
-  } else {
-    r = Math.round(r * (1 + percent));
-    g = Math.round(g * (1 + percent));
-    b = Math.round(b * (1 + percent));
+  const r = ((num >> 16) & 255) / 255, g = ((num >> 8) & 255) / 255, b = (num & 255) / 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h, s;
+  const l = (max + min) / 2;
+  if (max === min) { h = s = 0; }
+  else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
+    else if (max === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+    h /= 6;
   }
-  return "#" + [r, g, b].map(c => c.toString(16).padStart(2, "0")).join("");
+  return [h, s, l];
 }
 
-function typeGradient(hex, shape) {
-  const light = shadeColor(hex, 0.35);
-  const dark = shadeColor(hex, -0.25);
-  if (shape === "radial") return `radial-gradient(circle at 30% 30%, ${light}, ${hex} 60%, ${dark})`;
-  return `linear-gradient(160deg, ${light} 0%, ${hex} 55%, ${dark} 100%)`;
+function hslToHex(h, s, l) {
+  const hue2rgb = (p, q, t) => {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1 / 6) return p + (q - p) * 6 * t;
+    if (t < 1 / 2) return q;
+    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+    return p;
+  };
+  let r, g, b;
+  if (s === 0) { r = g = b = l; }
+  else {
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    r = hue2rgb(p, q, h + 1 / 3);
+    g = hue2rgb(p, q, h);
+    b = hue2rgb(p, q, h - 1 / 3);
+  }
+  const toHex = c => Math.round(Math.min(1, Math.max(0, c)) * 255).toString(16).padStart(2, "0");
+  return "#" + toHex(r) + toHex(g) + toHex(b);
 }
+
+const VIVID_OVERRIDES = {
+  grass: "#4bc45e", bug: "#bac464", steel: "#9aa5c9", fairy: "#e87d95",
+};
+// The global formula overshoots on a few hues: yellow-green (grass, bug) reads
+// as neon at the same saturation boost that looks right on orange/blue, and
+// fairy's naturally light/pastel base gets crushed into a hot pink by the
+// lightness clamp. Found during the full-18-type live comparison pass;
+// steel and grass match the exact colors approved in the brainstorming
+// mockups, bug/fairy are hand-picked in the same spirit (softer than the
+// formula's output, still vivid).
+
+function vividColor(hex, typeKey) {
+  if (typeKey && VIVID_OVERRIDES[typeKey]) return VIVID_OVERRIDES[typeKey];
+  const [h, s, l] = hexToHsl(hex);
+  const vs = Math.min(1, s * 1.2 + 0.1);
+  const vl = Math.min(0.60, Math.max(0.44, 0.5 + (l - 0.5) * 0.5));
+  return hslToHex(h, vs, vl);
+}
+
+const TYPE_ICONS = {
+  normal: "", fire: "", water: "", electric: "",
+  grass: "", ice: "", fighting: "", poison: "",
+  ground: "", flying: "", psychic: "", bug: "",
+  rock: "", dark: "", steel: "", fairy: "",
+};
+// Ghost and Dragon are deliberately absent — no good Material Symbols match
+// was found for either; typeBadgeHtml() falls back to their emoji below.
 
 function typeBadgeHtml(typeKey, sizePx) {
   const info = window.TYPES[typeKey];
-  return `<span class="type-badge" style="width:${sizePx}px;height:${sizePx}px;` +
-    `font-size:${Math.round(sizePx * 0.55)}px;background:${typeGradient(info.color, "radial")}">${info.emoji}</span>`;
+  const icon = TYPE_ICONS[typeKey];
+  const glyph = icon || info.emoji;
+  const cls = icon ? "type-badge icon" : "type-badge";
+  return `<span class="${cls}" style="width:${sizePx}px;height:${sizePx}px;` +
+    `font-size:${Math.round(sizePx * (icon ? 0.62 : 0.55))}px;background:${vividColor(info.color, typeKey)}">${glyph}</span>`;
 }
 
 function pill(text) { return el("span", "pill", text); }
@@ -66,7 +115,7 @@ function topbar(title, backHash, tint, rightContent) {
   } else {
     bar.append(el("span", "title", title));
   }
-  if (tint) document.body.style.background = typeGradient(tint);
+  if (tint) document.body.style.background = vividColor(tint);
   return bar;
 }
 
@@ -78,9 +127,10 @@ function renderHome() {
   renderShelf();                       // no-op until Task 8
   const grid = el("div", "type-grid");
   for (const [key, info] of Object.entries(window.TYPES)) {
-    const btn = el("button", "type-btn bounce",
-      `<span class="emoji">${info.emoji}</span><span class="label">${info.name}</span>`);
-    btn.style.background = typeGradient(info.color);
+    const icon = TYPE_ICONS[key];
+    const iconHtml = icon ? `<span class="emoji icon">${icon}</span>` : `<span class="emoji">${info.emoji}</span>`;
+    const btn = el("button", "type-btn bounce shine", `${iconHtml}<span class="label">${info.name}</span>`);
+    btn.style.background = vividColor(info.color, key);
     btn.onclick = () => go(`#type/${key}`);
     grid.append(btn);
   }
@@ -133,11 +183,11 @@ function renderType(key) {
     const mon = byId[id];
     const numStr = String(id).padStart(3, "0");
     const typeBadges = mon.types.map(t => typeBadgeHtml(t, 20)).join("");
-    const card = el("button", "mon-card bounce",
+    const card = el("button", "mon-card bounce shine",
       `<div class="mon-meta"><span class="pill">#${numStr} · G${mon.gen}</span>` +
       `<span class="mon-typepower">${typeBadges}<span class="pill">${mon.power}</span></span></div>` +
       `<img loading="lazy" src="${sprite(id, "thumb")}" alt=""><span class="name">${mon.name}</span>`);
-    card.style.background = typeGradient(window.TYPES[mon.types[0]].color);
+    card.style.background = vividColor(window.TYPES[mon.types[0]].color, mon.types[0]);
     card.querySelector("img").onerror = e => { e.target.src = ""; e.target.style.background = "#ddd"; };
     card.onclick = () => go(`#dex/${id}`);
     grid.append(card);
