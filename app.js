@@ -63,7 +63,19 @@ function hslToHex(h, s, l) {
   return "#" + toHex(r) + toHex(g) + toHex(b);
 }
 
-function vividColor(hex) {
+const VIVID_OVERRIDES = {
+  grass: "#4bc45e", bug: "#bac464", steel: "#9aa5c9", fairy: "#e87d95",
+};
+// The global formula overshoots on a few hues: yellow-green (grass, bug) reads
+// as neon at the same saturation boost that looks right on orange/blue, and
+// fairy's naturally light/pastel base gets crushed into a hot pink by the
+// lightness clamp. Found during the full-18-type live comparison pass;
+// steel and grass match the exact colors approved in the brainstorming
+// mockups, bug/fairy are hand-picked in the same spirit (softer than the
+// formula's output, still vivid).
+
+function vividColor(hex, typeKey) {
+  if (typeKey && VIVID_OVERRIDES[typeKey]) return VIVID_OVERRIDES[typeKey];
   const [h, s, l] = hexToHsl(hex);
   const vs = Math.min(1, s * 1.2 + 0.1);
   const vl = Math.min(0.60, Math.max(0.44, 0.5 + (l - 0.5) * 0.5));
@@ -85,7 +97,7 @@ function typeBadgeHtml(typeKey, sizePx) {
   const glyph = icon || info.emoji;
   const cls = icon ? "type-badge icon" : "type-badge";
   return `<span class="${cls}" style="width:${sizePx}px;height:${sizePx}px;` +
-    `font-size:${Math.round(sizePx * (icon ? 0.62 : 0.55))}px;background:${vividColor(info.color)}">${glyph}</span>`;
+    `font-size:${Math.round(sizePx * (icon ? 0.62 : 0.55))}px;background:${vividColor(info.color, typeKey)}">${glyph}</span>`;
 }
 
 function pill(text) { return el("span", "pill", text); }
@@ -118,7 +130,7 @@ function renderHome() {
     const icon = TYPE_ICONS[key];
     const iconHtml = icon ? `<span class="emoji icon">${icon}</span>` : `<span class="emoji">${info.emoji}</span>`;
     const btn = el("button", "type-btn bounce shine", `${iconHtml}<span class="label">${info.name}</span>`);
-    btn.style.background = vividColor(info.color);
+    btn.style.background = vividColor(info.color, key);
     btn.onclick = () => go(`#type/${key}`);
     grid.append(btn);
   }
@@ -175,7 +187,7 @@ function renderType(key) {
       `<div class="mon-meta"><span class="pill">#${numStr} · G${mon.gen}</span>` +
       `<span class="mon-typepower">${typeBadges}<span class="pill">${mon.power}</span></span></div>` +
       `<img loading="lazy" src="${sprite(id, "thumb")}" alt=""><span class="name">${mon.name}</span>`);
-    card.style.background = vividColor(window.TYPES[mon.types[0]].color);
+    card.style.background = vividColor(window.TYPES[mon.types[0]].color, mon.types[0]);
     card.querySelector("img").onerror = e => { e.target.src = ""; e.target.style.background = "#ddd"; };
     card.onclick = () => go(`#dex/${id}`);
     grid.append(card);
