@@ -88,6 +88,8 @@ button { font: inherit; border: none; cursor: pointer; }
   white-space: nowrap; }
 .type-badge { border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
   box-shadow: 0 2px 0 rgba(0,0,0,.15); flex-shrink: 0; }
+.type-badge.icon { font-family: "Material Symbols Rounded", sans-serif; color: #fff;
+  font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 40; line-height: 1; }
 .topbar.split { justify-content: space-between; }
 .heart { font-size: 34px; background: none; margin-top: 4px; }
 .evo-strip { display: flex; align-items: center; gap: 6px; margin: 10px 0;
