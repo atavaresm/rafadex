@@ -104,7 +104,7 @@ function pill(text) { return el("span", "pill", text); }
 
 function currentList() { return contextIds; }
 
-function topbar(title, backHash, tint, rightContent) {
+function topbar(title, backHash, tint, rightContent, tintKey) {
   const bar = el("div", "topbar");
   const back = el("button", "back-btn bounce", "⬅️");
   back.onclick = () => go(backHash);
@@ -115,7 +115,7 @@ function topbar(title, backHash, tint, rightContent) {
   } else {
     bar.append(el("span", "title", title));
   }
-  if (tint) document.body.style.background = vividColor(tint);
+  if (tint) document.body.style.background = vividColor(tint, tintKey);
   return bar;
 }
 
@@ -177,7 +177,7 @@ function renderType(key) {
   const info = window.TYPES[key];
   contextIds = window.DEX.filter(m => m.types.includes(key)).map(m => m.id);
   elApp.innerHTML = "";
-  elApp.append(topbar(`${info.emoji} ${info.name}`, "#home", info.color));
+  elApp.append(topbar(`${info.emoji} ${info.name}`, "#home", info.color, undefined, key));
   const grid = el("div", "mon-grid");
   for (const id of contextIds) {
     const mon = byId[id];
@@ -202,7 +202,7 @@ function renderDetail(id) {
   const tint = window.TYPES[mon.types[0]].color;
   elApp.innerHTML = "";
   const numStr = String(id).padStart(3, "0");
-  elApp.append(topbar("", `#type/${mon.types[0]}`, tint, pill(`#${numStr} · G${mon.gen}`)));
+  elApp.append(topbar("", `#type/${mon.types[0]}`, tint, pill(`#${numStr} · G${mon.gen}`), mon.types[0]));
   const typeBadges = mon.types.map(t => typeBadgeHtml(t, 26)).join("");
   elApp.append(el("div", "type-power-row", `${typeBadges}<span class="pill">${mon.power}</span>`));
   const box = el("div", "detail");

@@ -15,7 +15,7 @@
 @font-face {
   font-family: "Material Symbols Rounded";
   src: url("assets/fonts/materialsymbolsrounded.woff2") format("woff2");
-  font-weight: 400; font-display: swap;
+  font-weight: 400; font-display: block;
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; background: var(--bg); color: var(--ink);
