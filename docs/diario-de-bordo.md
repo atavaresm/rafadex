@@ -9,6 +9,113 @@
 
 ---
 
+## 03/08/2026 23:23 — Identidade visual v2 no ar
+
+Terminei a execução das 7 tasks e já está em produção: https://atavaresm.github.io/rafadex/.
+Rodou quase tudo por subagente (implementador barato + revisor em cada task), com um
+tropeço real no meio: a Task 2 (helpers de cor + ícone) saiu com os 16 caracteres
+Unicode dos ícones como string vazia — o agente "digitou" caracteres invisíveis e eles
+se perderam na transcrição. O revisor pegou por inspeção de byte, a correção rodou um
+script que copia os bytes direto do arquivo em vez de reescrever, e a re-revisão
+confirmou certo.
+
+A Task 6 (ajuste fino das 18 cores vívidas) fiz eu mesmo em vez de mandar pra
+subagente — era a primeira vez que as 18 cores apareciam juntas, e eu tinha o contexto
+visual dos mockups aprovados que um agente novo não teria. Como esperado, Planta e
+Inseto saíram neon com a fórmula geral, Aço saiu meio roxo escuro, e Fada virou um
+rosa-choque em vez do pastel aprovado — resolvido com uma tabela de exceção pros 4
+tipos, usando as cores exatas do mockup pra Planta/Aço e escolhidas à mão (mesmo
+espírito) pra Inseto/Fada.
+
+A revisão final da branch inteira (rodei no Opus, o modelo mais capaz) pegou algo que
+nenhuma revisão por task veria: o fundo de tela cheia (o topbar compartilhado por
+type-world/detalhe/jogo) nunca recebia a chave de tipo, então as 4 cores que acabei de
+rejeitar na Task 6 continuavam aparecendo como fundo em ~300 telas de detalhe — atrás
+dos cards já corrigidos. Também achou que o carimbo de versão do service worker tinha
+ficado velho (Task 1 rodou o build, mas as tasks 2-6 seguiram editando app.js/style.css
+sem rodar de novo) — inofensivo pra esse deploy mas uma armadilha pro próximo. Corrigi
+os dois numa rodada só, re-revisão limpa.
+
+Só depois disso segui pro fluxo de publicação de verdade: push do develop (via
+workaround de sempre, já que push direto é bloqueado), PR develop→master, e mesclei com
+sua aprovação explícita em cada etapa. Deploy automático confirmado, e chequei o cache
+offline direto (as fontes novas já estão no precache de produção, `rafadex-shell-
+20260803202805`) — não só o toggle do DevTools, olhei o conteúdo real do cache.
+
+Fica pendente, como sempre: teste no iPhone real.
+
+---
+
+## 03/08/2026 14:18 — Execução por subagentes começou (Task 1 disparada)
+
+Perguntei onde acessar o app com as mudanças e a resposta foi: nada ainda, só spec e
+plano tinham sido escritos até aqui, nenhuma linha de `app.js`/`style.css` mudou. Optei
+por rodar a implementação por subagente (um implementador novo por task + revisão entre
+elas, em vez de eu mesmo executar tudo).
+
+O agente montou o workspace isolado: precisou cair pro fallback manual de `git worktree`
+porque a ferramenta nativa, no modo padrão, criaria a branch a partir do `origin/develop`
+remoto — o que teria deixado de fora a spec e o plano, que só existem localmente ainda
+(não commitei/dei push pra eles). Criou `.worktrees/feat-visual-identity-v2` a partir do
+HEAD local certo, rodou a suíte (13/13 passando) como base limpa, e disparou a Task 1
+(as duas fontes auto-hospedadas) pro Haiku, que é o modelo mais barato — a task já tem
+todo o código exato no plano, então é só transcrição + verificação. Ainda aguardando o
+relatório de volta.
+
+---
+
+## 02/08/2026 17:41 — Direção "Brinquedo Vibrante" fechada, spec e plano prontos
+
+Continuação da rodada de identidade visual. Escolhi a direção C (Brinquedo Vibrante:
+cor chapada saturada + brilho plástico) depois de ver ela aplicada também na Home e no
+grid com várias cores juntas — bati o olho em B (Adesivo Cartoon) mas voltei pra C duas
+vezes, e confirmei "tá ótimo assim, gostei do brilho". Fechei também escopo (troca nos
+3 lugares de sempre: Home, grid, detalhe) e fonte (Fredoka só onde a cor vibrante
+aparece — nomes de Pokémon e rótulos da Home; resto continua Baloo 2).
+
+No meio do brainstorm pedi pra ver ícones novos pros tipos em vez do emoji padrão —
+o agente comparou emoji vs. pictograma sólido vs. contorno (Material Symbols) em 5
+tipos de exemplo; escolhi o contorno. Perguntei também se dava pra ver o resultado
+antes de publicar na página oficial — resposta: já é garantido, o deploy só dispara em
+push pra master, então qualquer branch de teste fica invisível até eu aprovar; por
+enquanto só quero ver no navegador do Mac mesmo, sem precisar do iPhone ainda.
+
+Fechada a spec (`docs/superpowers/specs/2026-08-01-visual-identity-v2-design.md`), o
+agente foi direto pro plano de implementação e fez um trabalho de bastidor que valeu a
+pena: descobriu que a Baloo 2 já é auto-hospedada (não via link do Google Fonts) porque
+o app precisa funcionar 100% offline, e replicou isso pras 2 fontes novas — baixou,
+testou ao vivo no Chrome, e ao tentar reduzir a fonte de ícones descobriu que o jeito
+"óbvio" (subset por texto de ligadura) puxava quase a fonte inteira (700KB+); resolveu
+usando os codepoints diretos de cada ícone, chegando em 6.3KB pros 16 ícones que
+precisamos. Também achou que a fórmula de cor vívida não pode ser uma conta só —
+verde/amarelo-esverdeado (Planta e vizinhos) fica neon demais se seguir a mesma regra
+de laranja/azul — então o plano já vem com uma rodada de ajuste fino dedicada pros
+tipos problemáticos. Plano com 7 tasks, pronto pra rodar por subagente ou inline —
+ainda não decidi qual.
+
+---
+
+## 01/08/2026 13:31 — Segunda rodada de identidade visual (em andamento)
+
+Voltei pro rafadex depois de um tempo focado em outros projetos. O app tá funcionando
+bem, só ajustes pequenos de layout pendentes, mas bateu aquele sentimento de que a
+identidade visual (o sistema de gradiente por tipo do round anterior) ainda não chegou
+onde eu queria — sinto falta de mais graça na tipografia e nas cores, que hoje parecem
+meio sem brilho.
+
+Abri o brainstorm de novo em vez de já sair mexendo. Antes de perguntar qualquer coisa,
+o agente foi checar o app ao vivo (Home, grid do tipo Fogo, detalhe do Charizard) pra se
+situar no que já existe. Perguntei o que mais pesava e apontei tipografia (mood infantil
+fraco) e gradientes/cores (sem graça) como os dois pontos. Como é uma decisão de "olho",
+topei usar a ferramenta de companion visual pela primeira vez nesse projeto — o agente
+montou 3 mockups lado a lado usando o sprite real do Charizard: A) Cartão Holográfico
+(brilho de foil, contorno dourado), B) Adesivo Cartoon (contorno grosso, estrelinhas,
+fonte tipo desenho animado), C) Brinquedo Vibrante (cor chapada bem saturada, formas
+fofas, brilho plástico). Ainda vou reagir e escolher direção — fica pra próxima entrada
+o resultado e o plano de implementação.
+
+---
+
 ## 22/07/2026 20:40 — Cabeçalho e rodapé fixos, e mais um bug offline pego a tempo
 
 Pedido novo: cabeçalho ("RafaDex") e um rodapé (empresa amaix.com + versão + data)
