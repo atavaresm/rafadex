@@ -83,13 +83,16 @@ function vividColor(hex, typeKey) {
 }
 
 const TYPE_ICONS = {
-  normal: "", fire: "", water: "", electric: "",
-  grass: "", ice: "", fighting: "", poison: "",
-  ground: "", flying: "", psychic: "", bug: "",
-  rock: "", dark: "", steel: "", fairy: "",
+  normal: "", fire: "", water: "", electric: "",
+  grass: "", ice: "", fighting: "", poison: "",
+  ground: "", flying: "", psychic: "", bug: "",
+  rock: "", dark: "", steel: "", fairy: "",
+  ghost: "", dragon: "",
 };
-// Ghost and Dragon are deliberately absent — no good Material Symbols match
-// was found for either; typeBadgeHtml() falls back to their emoji below.
+// Rock keeps an imperfect "diamond" icon (no literal rock/boulder glyph exists
+// in the font) — every other type, including Ghost and Dragon as of this round,
+// has a real icon. The icon || info.emoji fallback in typeBadgeHtml() below stays
+// in place as general-purpose defensive code, even though nothing currently uses it.
 
 function typeBadgeHtml(typeKey, sizePx) {
   const info = window.TYPES[typeKey];
