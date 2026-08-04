@@ -8,8 +8,8 @@
   font-weight: 400 800; font-display: swap;
 }
 @font-face {
-  font-family: "Fredoka";
-  src: url("assets/fonts/fredoka.woff2") format("woff2");
+  font-family: "Quicksand";
+  src: url("assets/fonts/quicksand.woff2") format("woff2");
   font-weight: 700; font-display: swap;
 }
 @font-face {
@@ -52,7 +52,7 @@ button { font: inherit; border: none; cursor: pointer; }
 .type-btn .emoji { font-size: 56px; }
 .type-btn .emoji.icon { font-family: "Material Symbols Rounded", sans-serif;
   font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 40; }
-.type-btn .label { font-size: 15px; font-weight: 700; font-family: "Fredoka", sans-serif; }
+.type-btn .label { font-size: 15px; font-weight: 700; font-family: "Quicksand", sans-serif; }
 .shine::before { content: ""; position: absolute; top: -20%; left: -10%; right: -10%; height: 55%;
   background: radial-gradient(closest-side, rgba(255,255,255,.5), transparent 70%); pointer-events: none; }
 .shelf { display: flex; gap: 10px; overflow-x: auto; padding: 4px 0 14px; }
@@ -73,13 +73,13 @@ button { font: inherit; border: none; cursor: pointer; }
 .mon-typepower { display: flex; align-items: center; gap: 3px; }
 .mon-card img { width: 100%; aspect-ratio: 1; filter: drop-shadow(0 6px 5px rgba(0,0,0,.25)); }
 .mon-card .name { font-weight: 700; font-size: 15px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.3);
-  font-family: "Fredoka", sans-serif; }
+  font-family: "Quicksand", sans-serif; }
 .detail { display: flex; flex-direction: column; align-items: center; }
 .detail .hero { width: min(78vw, 340px); aspect-ratio: 1; filter: drop-shadow(0 10px 8px rgba(0,0,0,.28)); }
 .detail .hero.hero-missing { background: #ddd; border-radius: var(--radius); }
 .type-power-row { display: flex; justify-content: flex-end; align-items: center; gap: 6px; margin: -6px 0 10px; }
 .detail .mon-name { font-size: 32px; font-weight: 800; margin: 4px 0 0; color: #fff;
-  text-shadow: 0 2px 4px rgba(0,0,0,.35); font-family: "Fredoka", sans-serif; }
+  text-shadow: 0 2px 4px rgba(0,0,0,.35); font-family: "Quicksand", sans-serif; }
 .nav-arrows { position: fixed; top: 42%; left: 0; right: 0; display: flex;
   justify-content: space-between; padding: 0 6px; pointer-events: none; }
 .nav-arrows button { pointer-events: auto; font-size: 30px; padding: 12px 16px;
