@@ -9,6 +9,36 @@
 
 ---
 
+## 04/08/2026 02:35 — Fonte mais limpa, ícones de Fantasma/Dragão, e um susto real em produção
+
+Com a Home em cards brancos, dois problemas ficaram bem mais visíveis do que eram nos
+tiles coloridos: a Fredoka pareceu grossa/arredondada demais ("quero algo mais clean"),
+e Fantasma/Dragão continuavam como emoji colorido, destoando dos outros 16 ícones de
+traço fino. Comparei 3 fontes mais limpas lado a lado — escolhi a Quicksand. Achei
+ícones reais pros dois que faltavam: caveira pro Fantasma, castelo pro Dragão (não
+existe glifo de dragão/réptil na biblioteca; castelo ganhou de coroa e espadas por
+evocar o mundo de fantasia onde dragões vivem). Pedra (diamante) fica pra depois, como
+pedido.
+
+**O susto:** ao verificar em produção, os 16 ícones originais (não só os 2 novos)
+voltaram a ser emoji — regressão real, ao vivo. Investigando, a causa raiz foi eu
+mesmo: ao escrever o plano de implementação, os mesmos caracteres Unicode invisíveis
+que já tinham corrompido uma vez nessa rodada anterior (aquela vez num subagente)
+corromperam de novo — dessa vez comigo, e eu só conferi os 2 caracteres novos que
+tinha acabado de adicionar, sem checar se os 16 que só estava *copiando* também
+sobreviveram à minha própria chamada de escrita. Não sobreviveram. Corrigi puxando
+os bytes certos direto do histórico do git (não retypando) e verificando byte a byte
+os 18 de uma vez — e daqui pra frente essa checagem "byte a byte, todos de uma vez,
+nunca só os que acabei de mexer" vira hábito.
+
+Segundo perrengue, esse só meu: depois de corrigir e publicar de novo, a aba do
+Chrome que eu já tinha aberto continuava mostrando a versão quebrada mesmo depois de
+várias recargas — o bfcache do próprio Chrome estava preservando o estado JS já
+executado da aba antiga em vez de reexecutar o app.js de verdade. Só uma aba nova
+resolveu. Confirmei em aba limpa: os 18 ícones certos, Quicksand aplicada.
+
+---
+
 ## 04/08/2026 01:22 — Fase 2: Home com fundo azul e cards brancos
 
 Sequência rápida da fase 1: notei a Eevee aparecendo sozinha na Home (prateleira de
