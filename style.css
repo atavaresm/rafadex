@@ -1,5 +1,5 @@
 :root {
-  --red: #e3350d; --bg: #fdf6ee; --card: #ffffff; --ink: #333;
+  --brand: #4b63d3; --bg: #fdf6ee; --card: #ffffff; --ink: #333;
   --radius: 28px; --shadow: 0 6px 0 rgba(0,0,0,.12);
 }
 @font-face {
@@ -35,16 +35,16 @@ button { font: inherit; border: none; cursor: pointer; }
   display: flex; align-items: center; gap: 8px; padding: 0 16px;
   background: var(--bg); border-bottom: 1px solid rgba(0,0,0,.06); }
 .app-header .ball { width: 26px; height: 26px; border-radius: 50%; border: 3px solid #222;
-  background: linear-gradient(180deg, var(--red) 46%, #222 46% 54%, #fff 54%); flex-shrink: 0; }
-.app-header .name { font-size: 18px; font-weight: 800; color: var(--red); }
+  background: linear-gradient(180deg, var(--brand) 46%, #222 46% 54%, #fff 54%); flex-shrink: 0; }
+.app-header .name { font-size: 18px; font-weight: 800; color: var(--brand); }
 .app-footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
   padding: 6px 16px calc(6px + env(safe-area-inset-bottom));
   background: var(--bg); border-top: 1px solid rgba(0,0,0,.06);
-  text-align: center; font-size: 11px; color: #999; }
+  text-align: center; font-size: 11px; color: var(--brand); }
 
 /* Home */
 .game-btn { width: 100%; padding: 18px; margin-bottom: 14px; border-radius: var(--radius);
-  background: #ffcb05; box-shadow: var(--shadow); font-size: 24px; font-weight: 800; }
+  background: var(--brand); box-shadow: var(--shadow); font-size: 24px; font-weight: 800; }
 .type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 .type-btn { position: relative; overflow: hidden; aspect-ratio: 1; border-radius: var(--radius);
   box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center;
@@ -87,9 +87,9 @@ button { font: inherit; border: none; cursor: pointer; }
 .sound-row { display: flex; gap: 16px; margin: 14px 0; }
 .sound-row button { width: 74px; height: 74px; border-radius: 50%; font-size: 32px;
   background: var(--card); box-shadow: var(--shadow); }
-.sound-row button.speaking { background: var(--red); color: #fff; }
+.sound-row button.speaking { background: var(--brand); color: #fff; }
 .pill { background: rgba(255,255,255,.92); border-radius: 12px; padding: 3px 9px;
-  font-weight: 800; font-size: 12px; color: var(--red); box-shadow: 0 2px 0 rgba(0,0,0,.1);
+  font-weight: 800; font-size: 12px; color: var(--brand); box-shadow: 0 2px 0 rgba(0,0,0,.1);
   white-space: nowrap; }
 .type-badge { border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
   box-shadow: 0 2px 0 rgba(0,0,0,.15); flex-shrink: 0; }
@@ -101,7 +101,7 @@ button { font: inherit; border: none; cursor: pointer; }
   overflow-x: auto; max-width: 100%; min-width: 0; }
 .evo-strip img { width: 84px; height: 84px; background: var(--card);
   border-radius: 20px; box-shadow: var(--shadow); flex-shrink: 0; }
-.evo-strip img.current { outline: 4px solid var(--red); }
+.evo-strip img.current { outline: 4px solid var(--brand); }
 .evo-arrow { font-size: 20px; }
 
 .tool-row { display: flex; justify-content: center; gap: 18px; margin-top: 22px; }
