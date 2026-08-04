@@ -9,6 +9,41 @@
 
 ---
 
+## 04/08/2026 00:57 — "Não gostei muito": nasce a rodada de identidade de marca
+
+Poucas horas depois do deploy da v2, acessei no navegador e não gostei — parece
+Pokédex genérica, sem cara própria do Rafa. Vim com uma proposta grande e pronta
+("Aventura do Rafa": mascote, paleta nova, reorganizar Home, cards, tudo). O agente
+não saiu implementando: primeiro apontou um choque real com um princípio do projeto
+desde o v1 (zero dependência de leitura — os rótulos de texto propostos nos botões
+de som iam contra isso), aí perguntou o diagnóstico real antes de tocar em qualquer
+código. Resposta: não é cor cansada nem layout, é a marca (cabeçalho/Pokébola/cor
+institucional) que ainda grita "Pokédex oficial".
+
+Isso separou a proposta gigante em fases (marca primeiro, layout depois, se ainda
+incomodar). Tentei uma saga e tanto pra achar um símbolo novo pro cabeçalho: ícone
+abstrato (bússola/mochila/selo) — rejeitado, traço fraco e conceito errado.
+Mascote-personagem (estrelinha/bolha/semente) — nunca cheguei a reagir, pedi o boné
+do Ash no meio do caminho. O agente recusou copiar o boné oficial (nem tirando só o
+emblema verde — o padrão vermelho/branco sozinho já é reconhecível, contraria o
+próprio objetivo de ter uma marca minha) mas topou o formato boné-trucker em cores
+próprias. Rodada de refino real: minha primeira versão saiu feia, corrigi a aba
+(sem espaço vazio, ponta arredondada), depois mandei referência de ícones prontos
+(Flaticon) e o agente incorporou costuras nos painéis + sombra na aba + laço no
+topo. Chegou perto, mas depois de tantas rodadas eu desisti — mantém a Pokébola
+de sempre, sem símbolo novo.
+
+**Fase 1 (cor institucional) fechada e no ar**: troquei vermelho/amarelo (cor oficial
+da marca Pokémon) por um azul-índigo (`#4b63d3`) — o mesmo tom que eu já tinha
+aprovado nos testes do boné, então nem precisei escolher de novo, só confirmar.
+Aplica em cabeçalho, bolinha, botão do jogo, rodapé, pills, botão de som ativo, anel
+de evolução — 8 lugares reais, mapeados no código antes de escrever a spec. Rodou
+rápido por subagente (task mecânica, achado zero na revisão). As cores dos 18 tipos
+não mudam — são um sistema separado. Fases seguintes (Home reorganizada, grid de
+tipos em 2 colunas, cards com nome em fundo branco, tela de detalhe) ficam pra depois.
+
+---
+
 ## 03/08/2026 23:23 — Identidade visual v2 no ar
 
 Terminei a execução das 7 tasks e já está em produção: https://atavaresm.github.io/rafadex/.
