@@ -83,10 +83,10 @@ function vividColor(hex, typeKey) {
 }
 
 const TYPE_ICONS = {
-  normal: "", fire: "", water: "", electric: "",
-  grass: "", ice: "", fighting: "", poison: "",
-  ground: "", flying: "", psychic: "", bug: "",
-  rock: "", dark: "", steel: "", fairy: "",
+  normal: "", fire: "", water: "", electric: "",
+  grass: "", ice: "", fighting: "", poison: "",
+  ground: "", flying: "", psychic: "", bug: "",
+  rock: "", dark: "", steel: "", fairy: "",
   ghost: "", dragon: "",
 };
 // Rock keeps an imperfect "diamond" icon (no literal rock/boulder glyph exists
