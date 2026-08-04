@@ -21,7 +21,8 @@
 html, body { margin: 0; background: var(--bg); color: var(--ink);
   font-family: "Baloo 2", system-ui, sans-serif; overscroll-behavior: none; }
 body { min-height: 100dvh; }
-#app { max-width: 520px; margin: 0 auto; padding: 60px 12px calc(46px + env(safe-area-inset-bottom)); }
+#app { max-width: 520px; margin: 0 auto;
+  padding: calc(60px + env(safe-area-inset-top)) 12px calc(46px + env(safe-area-inset-bottom)); }
 
 button { font: inherit; border: none; cursor: pointer; }
 .bounce { transition: transform .15s cubic-bezier(.34,1.56,.64,1); }
@@ -31,8 +32,9 @@ button { font: inherit; border: none; cursor: pointer; }
 }
 
 /* App chrome (persistent header/footer) */
-.app-header { position: fixed; top: 0; left: 0; right: 0; z-index: 20; height: 48px;
-  display: flex; align-items: center; gap: 8px; padding: 0 16px;
+.app-header { position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+  height: calc(48px + env(safe-area-inset-top));
+  display: flex; align-items: center; gap: 8px; padding: env(safe-area-inset-top) 16px 0;
   background: var(--bg); border-bottom: 1px solid rgba(0,0,0,.06); }
 .app-header .ball { width: 26px; height: 26px; border-radius: 50%; border: 3px solid #222;
   background: linear-gradient(180deg, var(--brand) 46%, #222 46% 54%, #fff 54%); flex-shrink: 0; }
@@ -60,7 +62,7 @@ button { font: inherit; border: none; cursor: pointer; }
   border-radius: 20px; box-shadow: var(--shadow); }
 
 /* Type world + detail */
-.topbar { position: sticky; top: 48px; z-index: 10; display: flex; align-items: center; gap: 10px;
+.topbar { position: sticky; top: calc(48px + env(safe-area-inset-top)); z-index: 10; display: flex; align-items: center; gap: 10px;
   padding: 14px 12px; margin: 0 -12px 14px; background: var(--bg); }
 .back-btn { font-size: 26px; padding: 10px 18px; border-radius: 22px;
   background: var(--card); box-shadow: var(--shadow); }
