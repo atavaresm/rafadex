@@ -85,7 +85,7 @@ function vividColor(hex, typeKey) {
 const TYPE_ICONS = {
   normal: "", fire: "", water: "", electric: "",
   grass: "", ice: "", fighting: "", poison: "",
-  ground: "", flying: "", psychic: "", bug: "",
+  ground: "", flying: "", psychic: "", bug: "",
   rock: "", dark: "", steel: "", fairy: "",
   ghost: "", dragon: "",
 };
