@@ -9,6 +9,31 @@
 
 ---
 
+## 04/08/2026 02:58 — Mais 2 ícones ajustados, e a versão final da lição de cache
+
+Apontei que Voador (redemoinho de vento), Psíquico (cabeça+engrenagem), Inseto e Pedra
+não representavam bem o tipo. Achei alternativa boa pra 2: corvo pro Voador, olho pro
+Psíquico. Pra Inseto e Pedra, dessa vez o agente foi honesto que a biblioteca de ícones
+não tem nada melhor disponível — mostrou "camadas" como opção pra Pedra mas nem
+recomendou, e eu topei deixar como está.
+
+Dessa vez o agente aprendeu a lição da rodada anterior de verdade: escreveu o plano sem
+nunca embutir os caracteres Unicode invisíveis como texto — usou um script que insere
+por código (`chr(0xf555)`), então não teve como corromper de novo. Funcionou limpo.
+
+**Mas apareceu uma variante nova do mesmo problema de cache**: na verificação em
+produção, Voador e Psíquico apareciam com o card branco vazio — nem emoji, nem ícone
+velho, vazio mesmo — mesmo com o `app.js` já certo (confirmado direto no console). Dessa
+vez não era o `app.js` que estava com cache velho, era o **arquivo da fonte de ícones**
+— o navegador ainda tinha a versão anterior guardada (o mesmo limite de 10 minutos do
+GitHub Pages de sempre), e a verificação só tinha conferido o `app.js`, não a fonte.
+Resolvido forçando a atualização de todos os arquivos do "shell" (não só o script) antes
+de deixar o service worker reinstalar. Fica registrado: quando um deploy muda qualquer
+arquivo do shell (fonte, CSS, o que for), a verificação precisa atualizar esse arquivo
+especificamente, não só o `app.js`.
+
+---
+
 ## 04/08/2026 02:35 — Fonte mais limpa, ícones de Fantasma/Dragão, e um susto real em produção
 
 Com a Home em cards brancos, dois problemas ficaram bem mais visíveis do que eram nos
