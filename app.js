@@ -182,7 +182,11 @@ function renderType(key) {
   const info = window.TYPES[key];
   contextIds = window.DEX.filter(m => m.types.includes(key)).map(m => m.id);
   elApp.innerHTML = "";
-  elApp.append(topbar(`${info.emoji} ${info.name}`, "#home", info.color, undefined, key));
+  const titleIconKey = TYPE_ICONS[key];
+  const titleIcon = titleIconKey
+    ? `<span class="type-icon-inline" style="color:${vividColor(info.color, key)}">${titleIconKey}</span>`
+    : info.emoji;
+  elApp.append(topbar(`${titleIcon} ${info.name}`, "#home", info.color, undefined, key));
   const grid = el("div", "mon-grid");
   for (const id of contextIds) {
     const mon = byId[id];
