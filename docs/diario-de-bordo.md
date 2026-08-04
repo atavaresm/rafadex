@@ -9,6 +9,33 @@
 
 ---
 
+## 04/08/2026 01:22 — Fase 2: Home com fundo azul e cards brancos
+
+Sequência rápida da fase 1: notei a Eevee aparecendo sozinha na Home (prateleira de
+favoritos) e não entendi por quê — era só um favorito que sobrou de teste ao vivo
+durante a sessão (guardado no localStorage do navegador, nada no código), tirei na
+hora. Aproveitei e trouxe uma ideia nova: fundo azul, cards brancos, contorno dos
+ícones na cor de cada tipo — inverter o sistema de cor que tínhamos acabado de fechar.
+
+Montei um mockup comparando lado a lado com o atual, aprovei de primeira. No meio do
+processo o próprio agente achou um problema no mockup dele mesmo: o botão do jogo
+era preenchido com o azul institucional — em cima do novo fundo (também azul) ele
+ia sumir. Resolveu deixando o botão branco também, mesmo padrão dos tipos. Perguntei
+se o azul valia pra tudo (grid de cada tipo, detalhe) e não sabia responder — o
+agente recomendou manter só na Home (as telas de "mundo de tipo" continuam com a
+imersão da cor própria, testada e aprovada há pouco) e topei.
+
+Implementação reaproveitou tudo que já existia — mesma função `vividColor()`, só
+mudou de aplicar no fundo do card pra aplicar no ícone. Rodou por subagente, revisão
+limpa de primeira. Na verificação em produção precisei de um reload extra depois de
+limpar o service worker pra ver a mudança de verdade — confirmei via fetch direto que
+o servidor já estava servindo o `app.js` novo o tempo todo, só o navegador estava
+demorando a soltar a versão antiga. Fecha a fase 2. Ainda faltam: grid de tipos em 2
+colunas, cards com nome em fundo branco, tela de detalhe com card de informações —
+sempre que eu quiser retomar.
+
+---
+
 ## 04/08/2026 00:57 — "Não gostei muito": nasce a rodada de identidade de marca
 
 Poucas horas depois do deploy da v2, acessei no navegador e não gostei — parece
