@@ -9,6 +9,48 @@
 
 ---
 
+## 05/08/2026 10:40 — Cabeçalho fundido: uma barra só, esconde ao rolar, ícone de voltar de verdade
+
+Print novo do Rafa mostrando a tela de tipo: o cabeçalho fixo ("RafaDex") mais a
+barra de contexto ("⬅ Elétrico") juntos comiam uma fatia grande da tela pequena do
+iPhone, sempre grudados no topo. Pedido junto: o ícone de voltar (⬅️) ainda era
+emoji, o último que sobrava na navegação do app. Joguei um leque de 4 ideias
+concretas (fundir as duas barras, esconder ao rolar, só encolher, parar de grudar)
+— o Rafa escolheu combinar duas: fundir num bloco só **e** esconder ao rolar pra
+baixo/reaparecer ao rolar pra cima.
+
+Montei o mockup ao vivo direto no app (não um protótipo à parte) reescrevendo a
+função `topbar()` pra escrever dentro do cabeçalho fixo em vez de criar uma barra
+grudenta separada. Primeira versão ficou com o título espremido no canto oposto ao
+botão de voltar (usei `justify-content: space-between` em tudo por engano) — corrigi
+pra só usar isso quando tem conteúdo à direita (a pílula da tela de detalhe), mantendo
+botão+título juntos à esquerda nos outros casos. Aprovado de primeira depois do ajuste.
+
+Pro ícone de voltar, achei o glifo `arrow_back` (U+E5C4) na mesma fonte Material
+Symbols já usada em tudo, regenerei o subset (18→19 glifos, +148 bytes) e testei
+sozinho numa página isolada antes de mexer no app de verdade — separando a parte
+arriscada (o caractere Unicode invisível) do resto da mudança. Isso permitiu escrever
+o spec e o plano tratando a inserção do ícone como um passo de script isolado
+(`chr(0xe5c4)`, nunca digitado à mão), a mesma blindagem que já tinha funcionado
+limpo na rodada anterior.
+
+Execução por subagente pegou um bug real na revisão: como nada limpava a classe
+`hidden` do cabeçalho, e `scrollTo()` não dispara evento `scroll` quando o destino
+já é igual à posição atual, dava pra ficar preso com o cabeçalho escondido depois
+de navegar entre telas — inclusive escondendo o logo da Home. Corrigido numa rodada
+de correção (o implementador colocou o reset do rastreador de scroll dentro do
+`renderRoute()`, depois do `scrollTo`, e explicou por quê — fazer isso dentro das
+funções do cabeçalho leria a posição de scroll antiga). Revisão de correção aprovou
+limpo. Na verificação em produção, tropecei de novo na mesma armadilha de sempre:
+screenshot tirado logo depois de um scroll captura o meio da transição CSS, não o
+estado final — só que dessa vez eu já sabia reconhecer o padrão e confirmei o estado
+de verdade via DOM/classe computada antes de me alarmar à toa. Deploy limpo, sem
+susto de cache dessa vez (fiz o hard reload logo de cara, antes de checar qualquer
+coisa, em vez de descobrir o problema tarde como nas duas últimas rodadas). Falta o
+teste no iPhone real.
+
+---
+
 ## 04/08/2026 23:08 — Fase 4 no ar: vidro com borda, e o susto de cache mais enganoso até agora
 
 Fechado o spec e o plano do vidro-com-borda, rodei a execução por subagente pela
