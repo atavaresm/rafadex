@@ -9,6 +9,31 @@
 
 ---
 
+## 04/08/2026 21:23 — Cabeçalho colado na status bar do iPhone, e o último emoji morre
+
+Duas correções pequenas, direto do teste no iPhone de verdade. Primeiro, o Rafa (ou
+melhor, eu testando por ele) mandou print mostrando o nome "RafaDex" do cabeçalho
+meio cortado pela status bar/notch — o `env(safe-area-inset-top)` só tinha sido
+aplicado no rodapé na rodada anterior, nunca no cabeçalho fixo. Copiei o mesmo padrão
+simétrico pro topo: `#app` ganhou o respiro extra no padding, `.app-header` cresceu a
+altura e ganhou o inset no padding, e o `.topbar` sticky ajustou o `top` de acordo.
+Sem spec formal — zero ambiguidade de design, só replicar um padrão já provado.
+
+Depois, mandei print de novo dizendo que "os ícones das outras páginas ainda são
+emoji" — mas o app inteiro já tinha sido migrado pra ícones do Material Symbols
+havia duas rodadas. Fui investigar às cegas e a resposta certa veio dele: "olhe nas
+páginas após clicar em um tipo de pokémon". Era isso — o título grande da tela de
+mundo de tipo (tipo "🪽 Voador") nunca tinha sido migrado, ficou como emoji desde a
+spec original que deliberadamente adiou esse caso. Estendi o `TYPE_ICONS` pro título
+também, colorido igual aos badges pequenos. Última inconsistência emoji-vs-ícone do
+app, resolvida.
+
+Os dois PRs (#35 cabeçalho, #36 ícone do título) foram merge, deploy e verificação em
+aba nova em produção — sem susto de cache dessa vez, as duas mudanças eram só
+`app.js`/CSS, sem trocar arquivo de fonte.
+
+---
+
 ## 04/08/2026 02:58 — Mais 2 ícones ajustados, e a versão final da lição de cache
 
 Apontei que Voador (redemoinho de vento), Psíquico (cabeça+engrenagem), Inseto e Pedra
