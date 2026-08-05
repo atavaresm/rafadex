@@ -254,8 +254,6 @@ function renderDetail(id) {
     setSpeaking("name");
     Sound.speak(mon.speak || mon.name, () => setSpeaking(null));
   };
-  const cryBtn = el("button", "bounce", "⚡");
-  cryBtn.onclick = () => Sound.cry(id);
   const readBtn = el("button", "bounce", "📖");
   readBtn.onclick = () => {
     if (speaking === "read") { Sound.stopSpeech(); setSpeaking(null); return; }
@@ -263,7 +261,7 @@ function renderDetail(id) {
     Sound.speak(`${mon.speak || mon.name}. ${mon.cat}. ${mon.flavor}`, () => setSpeaking(null));
   };
   if (!window.speechSynthesis) { nameBtn.hidden = true; readBtn.hidden = true; }
-  sounds.append(nameBtn, cryBtn, readBtn);
+  sounds.append(nameBtn, readBtn);
   const favMount = box.querySelector("#favBtn") || box.children[3];
   const heart = el("button", "heart bounce", Favs.has(id) ? "❤️" : "🤍");
   heart.onclick = () => { Favs.toggle(id); heart.textContent = Favs.has(id) ? "❤️" : "🤍"; };
@@ -338,7 +336,6 @@ function renderGame() {
     const img = el("img", "silhouette");
     img.src = sprite(current, "full");
     stage.append(img, el("div", "game-hint", "Quem é esse Pokémon?"));
-    Sound.cry(current);
     img.onclick = reveal;
     stage.onclick = reveal;
   }
