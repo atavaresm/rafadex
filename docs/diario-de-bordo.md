@@ -9,6 +9,90 @@
 
 ---
 
+## 04/08/2026 23:08 — Fase 4 no ar: vidro com borda, e o susto de cache mais enganoso até agora
+
+Fechado o spec e o plano do vidro-com-borda, rodei a execução por subagente pela
+primeira vez nesta sessão de verdade (as rodadas anteriores tinham sido diretas).
+Um implementador (modelo econômico, já que o plano trazia o código exato) aplicou
+as duas mudanças de CSS/JS certinho de primeira, e o revisor aprovou sem nenhum
+achado Crítico ou Importante — só um "não dá pra confirmar" sobre o rodapé do
+commit, que checei eu mesmo com `git log` e estava lá. Merge pra `develop`, PR de
+release, aprovação, deploy — tudo correu liso.
+
+**Aí veio o susto mais enganoso desta sessão inteira.** Na verificação em produção,
+o Zekrom apareceu de novo preenchido de roxo sólido, sem vidro — o mesmo defeito que
+o design deveria ter eliminado. Só que dessa vez o problema não era só visual: os
+OUTROS cards da tela Elétrico (Pikachu, Raichu etc.) pareciam corretos à primeira
+vista, mas inspecionando o DOM direto descobri que também estavam com o `background`
+sólido antigo — só que a cor vívida do tipo Elétrico é quase igual ao amarelo de
+fundo da própria tela, então o preenchimento sólido antigo ficava visualmente quase
+idêntico ao vidro novo por pura coincidência de cor. Só o Zekrom (roxo, destoando do
+amarelo) e os dois Pokémon de água (azul) denunciaram o problema. Sem essa
+coincidência de cor eu teria validado a rodada errado.
+
+Causa raiz: nem `fetch(cache:'no-store')`, nem limpar service worker/caches, nem
+navegar pra uma nova URL foram suficientes pra forçar o navegador a reexecutar o
+`app.js` de verdade — só um hard reload (Cmd+Shift+R) resolveu. As duas rodadas
+anteriores desta sessão já tinham batido em variantes desse mesmo problema (uma vez
+no `app.js`, uma vez no arquivo de fonte); essa terceira variante é a pior porque
+o sintoma visual mentiu. Fica registrado como hábito daqui pra frente: depois de
+qualquer deploy, checagem de produção sempre com hard reload explícito antes de
+confirmar pelo olhômetro — e quando a cor de destaque da própria tela pode mascarar
+a diferença entre versão antiga e nova, inspecionar o DOM/estilo computado direto,
+não só a captura de tela. Depois do hard reload, Fogo e Elétrico (Zekrom incluso)
+confirmaram certinho: vidro neutro, borda colorida, sem mistura suja em lugar
+nenhum. Limpei a worktree e as branches da rodada; falta o teste no iPhone real.
+
+---
+
+## 04/08/2026 22:51 — Faxina pós-merge e a Fase 4 fecha em vidro (com borda)
+
+Sessão começou arrumando a casa: fechei o PR #37 (diário) e descobri no processo que
+ele tinha ido direto pro `master`, pulando o `develop` — quebra do git flow que a
+própria sessão anterior cometeu sem perceber. Corrigi com um PR extra (#38) só pra
+sincronizar as duas branches de novo. Aproveitei e limpei o resto do estoque: matei
+seis processos `http.server` zumbis de rodadas anteriores (alguns apontando pra
+worktrees que nem existem mais), removi a worktree já concluída do
+`icon-fixes-round2` e apaguei todas as branches temporárias/feature já mescladas.
+
+Depois entrei na Fase 4 (cards do grid de tipo com fundo branco, em vez do
+preenchimento sólido da cor do tipo). Foram **quatro** mockups ao vivo até fechar:
+borda colorida sobre card branco, nome numa faixa colorida no rodapé, vidro colorido
+(cor do próprio tipo do Pokémon em ~40% de opacidade + `backdrop-filter`) e por fim
+vidro neutro com a cor só na borda. O terceiro mockup pareceu ótimo em tipos puros,
+mas o Rafa — quer dizer, eu mesmo revisando — pegou um defeito real: em Pokémon de
+tipo duplo cuja cor primária destoa muito da cor da tela (ex.: Zekrom, Dragão/Elétrico,
+visto na tela amarela do Elétrico), a mistura translúcida virava um marrom sujo. Não
+era bug, é física de transparência: duas cores bem diferentes misturadas em opacidade
+parcial dão uma terceira cor feia. A solução final combinou o melhor dos dois: vidro
+de verdade (fundo neutro branco-translúcido com blur) pra textura, e a cor do tipo
+migrou inteira pra borda — testado nos dois extremes de contraste (Fogo forte,
+Elétrico claro) e no próprio Zekrom, sem mistura suja em lugar nenhum. Aprovado.
+
+No meio do caminho tropecei de novo num fantasma de rodada antiga: um service worker
+registrado numa porta nova estava interceptando o `fetch` do `app.js` e servindo a
+versão errada mesmo com `cache:'no-store'` e hard reload — só resolvi limpando
+`registrations`/`caches` via JS direto no console. Lição: reciclar portas de dev
+server entre rodadas carrega lixo de SW junto. Escrevi e commitei o spec e o plano de
+implementação (branch `docs/mon-card-glass-spec`), aprovados pelo dono, prontos pra
+execução por subagente.
+
+**Erro meu, registrado pra não repetir:** ao mover por engano um commit do spec que
+tinha ido parar direto no `master` (mesma armadilha do PR #37) pra uma branch própria,
+rodei `git reset --hard HEAD~1` sem checar `git status` antes — e isso apagou sem
+aviso uma edição não commitada do próprio diário que eu tinha acabado de escrever
+(um post anterior desta mesma sessão). `--hard` descarta mudança de arquivo rastreado
+mesmo não commitada; o jeito certo ali era `--soft` ou `--mixed`, ou simplesmente
+checar o `status` primeiro — a própria regra que já está escrita nas minhas
+instruções e que eu pulei na pressa. Reconstruí o post na hora porque o texto ainda
+estava na conversa, mas o hábito que fica é: **sempre `git status` antes de qualquer
+reset/checkout/clean**, sem exceção, mesmo em branch aparentemente limpa.
+
+Nenhum dos quatro mockups da Fase 4 ficou no repo até a aprovação final — todos
+testados ao vivo e revertidos (`git checkout`) entre uma rodada e outra.
+
+---
+
 ## 04/08/2026 21:23 — Cabeçalho colado na status bar do iPhone, e o último emoji morre
 
 Duas correções pequenas, direto do teste no iPhone de verdade. Primeiro, o Rafa (ou
