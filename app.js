@@ -196,7 +196,7 @@ function renderType(key) {
       `<div class="mon-meta"><span class="pill">#${numStr} · G${mon.gen}</span>` +
       `<span class="mon-typepower">${typeBadges}<span class="pill">${mon.power}</span></span></div>` +
       `<img loading="lazy" src="${sprite(id, "thumb")}" alt=""><span class="name">${mon.name}</span>`);
-    card.style.background = vividColor(window.TYPES[mon.types[0]].color, mon.types[0]);
+    card.style.borderColor = vividColor(window.TYPES[mon.types[0]].color, mon.types[0]);
     card.querySelector("img").onerror = e => { e.target.src = ""; e.target.style.background = "#ddd"; };
     card.onclick = () => go(`#dex/${id}`);
     grid.append(card);
