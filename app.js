@@ -108,22 +108,38 @@ function pill(text) { return el("span", "pill", text); }
 function currentList() { return contextIds; }
 
 function topbar(title, backHash, tint, rightContent, tintKey) {
-  const bar = el("div", "topbar");
-  const back = el("button", "back-btn bounce", "⬅️");
+  const header = document.querySelector(".app-header");
+  header.innerHTML = "";
+  header.classList.toggle("split", !!rightContent);
+  header.classList.remove("hidden");
+  const back = el("button", "back-btn bounce", "");
   back.onclick = () => go(backHash);
-  bar.append(back);
+  header.append(back);
   if (rightContent) {
-    bar.classList.add("split");
-    bar.append(rightContent);
+    header.append(rightContent);
   } else {
-    bar.append(el("span", "title", title));
+    header.append(el("span", "title", title));
   }
   if (tint) document.body.style.background = vividColor(tint, tintKey);
-  return bar;
 }
+function resetHeaderToBrand() {
+  const header = document.querySelector(".app-header");
+  header.classList.remove("split");
+  header.classList.remove("hidden");
+  header.innerHTML = '<span class="ball"></span><span class="name">RafaDex</span>';
+}
+let lastHeaderScrollY = 0;
+window.addEventListener("scroll", () => {
+  const header = document.querySelector(".app-header");
+  const y = window.scrollY;
+  if (y > lastHeaderScrollY && y > 80) header.classList.add("hidden");
+  else header.classList.remove("hidden");
+  lastHeaderScrollY = y;
+});
 
 function renderHome() {
   elApp.innerHTML = "";
+  resetHeaderToBrand();
   document.body.style.background = "var(--brand)";
   const gameBtn = el("button", "game-btn bounce", "❓ Quem é esse Pokémon?");
   gameBtn.onclick = () => go("#game");
@@ -186,7 +202,7 @@ function renderType(key) {
   const titleIcon = titleIconKey
     ? `<span class="type-icon-inline" style="color:${vividColor(info.color, key)}">${titleIconKey}</span>`
     : info.emoji;
-  elApp.append(topbar(`${titleIcon} ${info.name}`, "#home", info.color, undefined, key));
+  topbar(`${titleIcon} ${info.name}`, "#home", info.color, undefined, key);
   const grid = el("div", "mon-grid");
   for (const id of contextIds) {
     const mon = byId[id];
@@ -211,7 +227,7 @@ function renderDetail(id) {
   const tint = window.TYPES[mon.types[0]].color;
   elApp.innerHTML = "";
   const numStr = String(id).padStart(3, "0");
-  elApp.append(topbar("", `#type/${mon.types[0]}`, tint, pill(`#${numStr} · G${mon.gen}`), mon.types[0]));
+  topbar("", `#type/${mon.types[0]}`, tint, pill(`#${numStr} · G${mon.gen}`), mon.types[0]);
   const typeBadges = mon.types.map(t => typeBadgeHtml(t, 26)).join("");
   elApp.append(el("div", "type-power-row", `${typeBadges}<span class="pill">${mon.power}</span>`));
   const box = el("div", "detail");
@@ -308,7 +324,7 @@ async function gameCandidates() {
 
 function renderGame() {
   elApp.innerHTML = "";
-  elApp.append(topbar("❓", "#home", "#ffcb05"));
+  topbar("❓", "#home", "#ffcb05");
   const stage = el("div", "game-stage");
   elApp.append(stage);
   let revealed = false;
@@ -367,6 +383,7 @@ function renderRoute() {
   else if (route === "game") renderGame();
   else renderHome();
   window.scrollTo(0, scrollPositions[location.hash] || 0);
+  lastHeaderScrollY = window.scrollY;
   previousHash = location.hash;
 }
 document.getElementById("footerText").textContent =
