@@ -32,15 +32,6 @@ const Sound = (() => {
     [[523, 0], [659, .12], [784, .24], [1047, .36]].forEach(([f, t]) => tone(f, t, .28, .2));
   }
 
-  let cryEl = null;
-  function cry(id) {
-    stopSpeech();
-    if (cryEl) cryEl.pause();
-    cryEl = new Audio(`assets/cries/${id}.m4a`);
-    cryEl.play().catch(() => pop());
-    return new Promise(resolve => { cryEl.onended = resolve; cryEl.onerror = resolve; });
-  }
-
   function speak(text, onEnd) {
     if (!window.speechSynthesis) return;
     stopSpeech();
@@ -54,6 +45,6 @@ const Sound = (() => {
 
   function stopSpeech() { window.speechSynthesis?.cancel(); }
 
-  return { unlock, cry, speak, stopSpeech, pop, fanfare };
+  return { unlock, speak, stopSpeech, pop, fanfare };
 })();
 window.addEventListener("pointerdown", () => Sound.unlock(), { once: true });
