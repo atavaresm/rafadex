@@ -111,6 +111,7 @@ function topbar(title, backHash, tint, rightContent, tintKey) {
   const header = document.querySelector(".app-header");
   header.innerHTML = "";
   header.classList.toggle("split", !!rightContent);
+  header.classList.remove("hidden");
   const back = el("button", "back-btn bounce", "");
   back.onclick = () => go(backHash);
   header.append(back);
@@ -124,6 +125,7 @@ function topbar(title, backHash, tint, rightContent, tintKey) {
 function resetHeaderToBrand() {
   const header = document.querySelector(".app-header");
   header.classList.remove("split");
+  header.classList.remove("hidden");
   header.innerHTML = '<span class="ball"></span><span class="name">RafaDex</span>';
 }
 let lastHeaderScrollY = 0;
@@ -381,6 +383,7 @@ function renderRoute() {
   else if (route === "game") renderGame();
   else renderHome();
   window.scrollTo(0, scrollPositions[location.hash] || 0);
+  lastHeaderScrollY = window.scrollY;
   previousHash = location.hash;
 }
 document.getElementById("footerText").textContent =
