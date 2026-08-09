@@ -9,6 +9,41 @@
 
 ---
 
+## 09/08/2026 09:10 — Descobri que a versão tava presa em v1.3 e fechei o hiato
+
+Pedi pro Claude checar se o número da versão do app tava correto e a resposta foi
+não: o `VERSION` ficou travado em `v1.3` desde 22/07, mesmo com três rodadas
+inteiras já publicadas depois (identidade visual v2, cor institucional + Home
+invertida + glass dos cards, e o cabeçalho fundido do outro dia). A data de build
+no rodapé sobe sozinha a cada deploy, então parecia atual — só o número mesmo
+tava parado. Pedi pra pular direto pra `v1.6` (uma versão por rodada perdida) e
+criar um `CHANGELOG.md` com o resumo de cada versão desde a v1.0. Saiu tudo numa
+branch (`chore/v1.6-release-notes`), rodei o `build.py` de novo pra `version.js` e
+o carimbo do service worker saírem atualizados, testes e ruff passaram no
+pre-push, e abri o PR #46 pro `develop`. Falta mergear e depois promover pro
+`master` — aí sim confirmar "v1.6" no rodapé em produção.
+
+---
+
+## 05/08/2026 14:34 — Tchau, grito do Pokémon
+
+Pedido direto e simples: "não gostei" do som de grito do Pokémon (o botão ⚡ na tela
+de detalhe, e o som que tocava ao começar cada rodada do jogo "Quem é esse
+Pokémon?"). Sem ambiguidade nenhuma de design — implementei direto, sem
+spec/plano formal, mesmo padrão já usado pra correções óbvias como o safe-area do
+cabeçalho. Removi o botão ⚡ da tela de detalhe (ficam só 🔊 pronúncia do nome e 📖
+narração da descrição — os dois são texto-pra-voz, nada a ver com o grito) e a
+linha que tocava o grito no início de cada rodada do jogo. Removi também a função
+`Sound.cry()` do `audio.js`, já que nada mais chamava ela. Deixei de propósito o
+pipeline de geração dos arquivos `.m4a` de grito e o download por geração
+intocados — são um footprint bem maior de mudança (pipeline Python, testes,
+lista de precache), fora do escopo do pedido; se um dia quiser encolher o app
+removendo esses ~1025 arquivos de áudio não usados, é uma rodada separada.
+Verifiquei ao vivo que nenhuma requisição de `.m4a` de grito dispara mais em
+nenhuma das duas telas, sem erro no console. Deploy limpo, sem susto de cache.
+
+---
+
 ## 05/08/2026 10:40 — Cabeçalho fundido: uma barra só, esconde ao rolar, ícone de voltar de verdade
 
 Print novo do Rafa mostrando a tela de tipo: o cabeçalho fixo ("RafaDex") mais a
