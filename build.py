@@ -120,40 +120,29 @@ def convertSprite(src, dst, width):
     runFfmpeg(["-i", str(src), "-vf", f"scale={width}:-1", str(dst)])
 
 
-def convertCry(src, dst):
-    runFfmpeg(["-i", str(src), "-c:a", "aac", "-b:a", "64k", str(dst)])
-
-
 def isUpToDate(src, dst):
     return dst.exists() and dst.stat().st_mtime >= src.stat().st_mtime
 
 
 def buildAssets(ids, root=POKEDEX_ROOT, force=False):
-    jobs = {"thumb": 0, "full": 0, "cry": 0}
+    jobs = {"thumb": 0, "full": 0}
     for kind in ("thumb", "full"):
         Path(f"assets/sprites/{kind}").mkdir(parents=True, exist_ok=True)
-    Path("assets/cries").mkdir(parents=True, exist_ok=True)
     for monId in ids:
         srcPng = root / "data" / "sprites" / "official" / f"{monId}.png"
-        srcOgg = root / "data" / "cries" / f"{monId}.ogg"
         targets = [(srcPng, Path(f"assets/sprites/thumb/{monId}.webp"), "thumb", 128),
                    (srcPng, Path(f"assets/sprites/full/{monId}.webp"), "full", 512)]
         for src, dst, kind, width in targets:
             if src.exists() and (force or not isUpToDate(src, dst)):
                 convertSprite(src, dst, width)
                 jobs[kind] += 1
-        dstM4a = Path(f"assets/cries/{monId}.m4a")
-        if srcOgg.exists() and (force or not isUpToDate(srcOgg, dstM4a)):
-            convertCry(srcOgg, dstM4a)
-            jobs["cry"] += 1
     print(f"assets: converted {jobs}")
 
 
 def renderPrecacheJs(ids):
     urls = []
     for monId in ids:
-        urls += [f"assets/sprites/thumb/{monId}.webp", f"assets/sprites/full/{monId}.webp",
-                 f"assets/cries/{monId}.m4a"]
+        urls += [f"assets/sprites/thumb/{monId}.webp", f"assets/sprites/full/{monId}.webp"]
     return f"const RAFADEX_PRECACHE={json.dumps(urls)};\n"
 
 
@@ -182,8 +171,7 @@ def main():
     Path("version.js").write_text(renderVersionJs(version, buildDate))
     missing = [i for i in allIds
                if not (Path(f"assets/sprites/thumb/{i}.webp").exists()
-                       and Path(f"assets/sprites/full/{i}.webp").exists()
-                       and Path(f"assets/cries/{i}.m4a").exists())]
+                       and Path(f"assets/sprites/full/{i}.webp").exists())]
     if missing:
         raise SystemExit(f"missing outputs for ids: {missing[:20]}...")
 

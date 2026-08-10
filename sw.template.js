@@ -25,6 +25,9 @@ self.addEventListener("activate", event => {
   event.waitUntil((async () => {
     for (const key of await caches.keys())
       if (key.startsWith("rafadex-shell-") && key !== SHELL) await caches.delete(key);
+    const runtime = await caches.open(RUNTIME);
+    for (const request of await runtime.keys())
+      if (request.url.includes("/assets/cries/")) await runtime.delete(request);
     await self.clients.claim();
   })());
 });
