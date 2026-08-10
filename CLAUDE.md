@@ -5,7 +5,7 @@ All 1025 Pokémon; UI is image/color/sound only, copy in pt-BR; repo artifacts i
 
 ## Commands
 - `python3 build.py` — full pipeline: reads `/Users/amais/project/pokedex` (read-only),
-  writes `data/dex.js`, `precache.js`, `assets/sprites/*`, `assets/cries/*` (all committed).
+  writes `data/dex.js`, `precache.js`, `assets/sprites/*` (all committed).
   `--force` re-converts media. Requires an ffmpeg with a WebP encoder (Homebrew's
   default `ffmpeg` formula lacks libwebp; `ffmpeg-full` has it; override binary via
   `RAFADEX_FFMPEG`).
@@ -16,7 +16,6 @@ All 1025 Pokémon; UI is image/color/sound only, copy in pt-BR; repo artifacts i
 - Vanilla JS, hash routing (`#home`, `#type/fire`, `#dex/25`, `#game`), data via
   `<script>` tags (`window.DEX`, `window.TYPES`) — never fetch() for data.
 - `sw.js`: precache shell + Gen 1; runtime cache-on-demand; parent "download gen" control.
-- Cries are `.m4a` because iOS Safari does not play `.ogg`.
 - All URLs relative (GitHub Pages serves under `/rafadex/`).
 - Python style: house STANDARDS (PascalCase/lowerCamelCase, no snake_case), ruff 100.
 
