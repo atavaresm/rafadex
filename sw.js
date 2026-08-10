@@ -1,5 +1,5 @@
 importScripts("precache.js");
-const VERSION = "20260810002927";
+const VERSION = "20260810145340";
 const SHELL = `rafadex-shell-${VERSION}`;
 const RUNTIME = "rafadex-runtime";
 const SHELL_CORE = ["./", "index.html", "style.css", "app.js", "version.js", "audio.js",
@@ -25,6 +25,8 @@ self.addEventListener("activate", event => {
   event.waitUntil((async () => {
     for (const key of await caches.keys())
       if (key.startsWith("rafadex-shell-") && key !== SHELL) await caches.delete(key);
+    // Migration: reclaims cry audio cached before v1.7. Safe to delete once
+    // every install has updated past v1.7.
     const runtime = await caches.open(RUNTIME);
     for (const request of await runtime.keys())
       if (request.url.includes("/assets/cries/")) await runtime.delete(request);
