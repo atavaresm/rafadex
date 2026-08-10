@@ -9,6 +9,30 @@
 
 ---
 
+## 10/08/2026 11:46 — Fui até o fim: gritos fora, brainstorm→spec→plano→subagentes
+
+Fechei o "encolher o app" que tinha deixado em aberto em 05/08 (quando tirei o som de
+grito da UI mas deixei o pipeline e os 1025 arquivos `.m4a` intocados de propósito).
+Dessa vez segui o fluxo completo — brainstorm rápido, spec, plano de 4 tasks — e
+executei via **subagentes**, um implementador por task + revisor dedicado depois de
+cada um, tudo aprovado de primeira sem loop de correção. Task 1: pipeline (`build.py`)
+parou de gerar `.m4a`, testes atualizados. Task 2: `app.js` parou de baixar cry no
+controle "baixar geração", e o `activate` do service worker ganhou um passo de purga
+do cache `rafadex-runtime` — a pergunta que me fiz antes de começar foi "e quem já
+instalou o app com os gritos baixados?", e resolvi com essa purga ativa em vez de
+deixar ~13MB mortos no telefone do Rafa pra sempre. Task 3: rodei o pipeline de
+verdade, apaguei os 1025 arquivos do repo, e o revisor exigiu prova de verdade da
+purga — não bastou eu dizer que funcionava: semeei uma entrada falsa de grito no
+cache, forcei o `activate` de novo, confirmei que sumiu (e que baixar uma geração
+nova não traz cry nenhum de volta). Task 4: PR pra `develop`, release PR pra
+`master`, esperei minha confirmação antes do merge (deploy real pro app que o Rafa
+usa), deploy verde. Repeti a mesma prova da purga em produção depois do deploy —
+semeei, forcei reativação, sumiu de novo — e passei pelo app inteiro (tipo → detalhe
+→ 🔊 → 📖 → jogo) sem erro no console. Fica pendente, como sempre: confirmar no
+iPhone real que o espaço realmente caiu depois do app atualizar sozinho.
+
+---
+
 ## 09/08/2026 09:10 — Descobri que a versão tava presa em v1.3 e fechei o hiato
 
 Pedi pro Claude checar se o número da versão do app tava correto e a resposta foi
