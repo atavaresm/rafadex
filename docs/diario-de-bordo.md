@@ -9,6 +9,19 @@
 
 ---
 
+## 10/08/2026 11:49 — Fechando o processo: disparei a revisão final do branch inteiro
+
+Só um adendo rápido ao post de baixo: mesmo já com o deploy no ar e verificado em
+produção, o fluxo de subagentes que segui pede uma revisão final olhando o branch
+inteiro (as três tasks juntas), não só task por task — coisa que uma revisão isolada
+não pega, tipo referência perdida a grito em arquivo que nenhuma task tocou
+individualmente, ou inconsistência entre o que uma task gerou e o que a seguinte
+consumiu. Como já foi ao ar, essa revisão agora é rede de segurança de fechamento,
+não mais um portão de merge — se achar algo, vira uma correção pontual depois, não
+trava nada. Disparei e ainda tá rodando; sem resultado ainda pra registrar.
+
+---
+
 ## 10/08/2026 11:46 — Fui até o fim: gritos fora, brainstorm→spec→plano→subagentes
 
 Fechei o "encolher o app" que tinha deixado em aberto em 05/08 (quando tirei o som de
