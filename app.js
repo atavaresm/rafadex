@@ -412,7 +412,7 @@ async function cachedFullIds() {
 
 function genAssets(gen) {
   return window.DEX.filter(m => m.gen === gen).flatMap(m =>
-    [sprite(m.id, "thumb"), sprite(m.id, "full"), `assets/cries/${m.id}.m4a`]);
+    [sprite(m.id, "thumb"), sprite(m.id, "full")]);
 }
 
 async function cacheGen(gen, onProgress) {
