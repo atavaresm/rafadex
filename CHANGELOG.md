@@ -4,6 +4,16 @@ All notable changes to RafaDex by version. Dates are when each version shipped t
 production (GitHub Pages). See `docs/diario-de-bordo.md` for the full story behind
 each round.
 
+## v1.7 — 2026-08-10
+
+### Removed
+- Removed the cry-audio generation pipeline and the 1,025 committed `.m4a`
+  cry files (~13MB) from the repo.
+- Removed all remaining client-side references to cry audio; the
+  per-generation download no longer includes cry audio.
+- Added an active service-worker cache purge so devices that already
+  downloaded cries before this round reclaim that space on the next update.
+
 ## v1.6 — 2026-08-05
 
 ### Changed

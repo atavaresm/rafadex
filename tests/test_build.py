@@ -118,6 +118,7 @@ def testBuildAssetsSkipsUpToDateOutputs(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     build.buildAssets([1], root)
     assert len(calls) == 2  # thumb + full
+    assert not (tmp_path / "assets/cries").exists()
     calls.clear()
     build.buildAssets([1], root)
     assert calls == []  # second run skips everything
