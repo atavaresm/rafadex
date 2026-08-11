@@ -4,7 +4,7 @@ import argparse
 import sys
 from pathlib import Path
 
-VERSION_FILE = Path("VERSION")
+VERSION_FILE = Path(__file__).parent / "VERSION"
 
 
 def parseVersion(text):
@@ -70,6 +70,6 @@ def main():
 if __name__ == "__main__":
     try:
         main()
-    except ValueError as e:
+    except (ValueError, OSError) as e:
         print(f"error: {e}", file=sys.stderr)
         sys.exit(1)
