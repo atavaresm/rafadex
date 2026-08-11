@@ -9,7 +9,38 @@
 
 ---
 
-## 11/08/2026 08:45 — Sessão maratona: repo travado, versão sob controle, página "i", e a saga dos ícones
+## 11/08/2026 14:04 — Ícones de tipo no ar de verdade, e um bug de cache do domínio público resolvido
+
+Fechando o post de hoje cedo: autorizei o Claude a seguir sozinho até o fim (implementar,
+revisar, mergear, fazer release, verificar produção) enquanto eu dormia, sempre pela opção
+recomendada. Foi longe — e vale registrar o que aconteceu nesse trecho autônomo, porque
+teve descoberta de verdade, não só execução mecânica.
+
+A implementação dos 18 ícones (v1.9.0) saiu limpa e foi ao ar. Mas a **revisão final do
+branch inteiro** — que eu insisto em rodar mesmo depois do deploy, como rede de segurança —
+achou dois problemas reais que a verificação visual ao vivo (minha e do Claude) tinha
+deixado passar: o ícone de Pedra estava cortado (um bug de normalização pegou a largura de
+só 1 dos 3 pedaços do desenho, não a união dos três) e 5 ícones (Lutador, Veneno, Voador,
+Terra, Psíquico) carregavam um disco de fundo extra que "disfarçava" no tile grande da Home
+mas virava uma mancha ilegível nos badges pequenos e no cabeçalho. Bom lembrete de que
+"parece bom numa olhada rápida" e "está correto" são coisas diferentes — só a análise
+geométrica pegou os dois. Corrigido, re-extraído, testado ao vivo em três contextos
+diferentes (grid, badge, cabeçalho) e publicado como v1.9.1.
+
+No meio da verificação de produção, apareceu outra descoberta: o domínio público
+(`amaix-dev.com/pokedex`) estava servindo conteúdo **desatualizado** por até 4h depois de
+cada deploy — o Cloudflare Browser Cache TTL (padrão de 4h no plano free) sobrescrevia o
+cache mais curto do GitHub Pages. Como isso é infraestrutura de outro projeto
+(`amaix-dev-proxy`), o Claude parou e me perguntou antes de mexer — acordei, autorizei, e
+esbarramos num obstáculo engraçado: o "token" que eu tinha no Bitwarden pra isso era na
+verdade a senha da conta, não o token de API (e o Claude corretamente recusou usar senha
+pra logar em qualquer lugar). Resolveu com `wrangler login` via OAuth — eu autorizei pelo
+navegador, ele nunca viu senha nem token. Um `Cache-Control` explícito no Worker depois, e
+o domínio público passou a refletir deploy novo em segundos, não horas.
+
+Fim de sessão: repo protegido, versão sob controle automático, página "i" no ar, 18 ícones
+custom no ar (e corrigidos), cache do domínio público consertado. Uma das sessões mais
+longas e com mais descobertas até agora.
 
 Sessão gigante, quatro frentes pedidas de uma vez. Fechei três e a quarta ficou rodando
 sozinha durante a madrugada (autorizei o Claude a seguir até o deploy sem me esperar,
