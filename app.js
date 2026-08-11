@@ -176,8 +176,11 @@ function renderHome() {
     closePanels();
     if (!wasOpen) { elApp.append(renderSearchPanel()); panelOpen = "search"; }
   };
+  const info = el("button", "gear", "ℹ️");
+  info.setAttribute("aria-label", "Sobre o Pokédex");
+  info.onclick = () => go("#info");
   const toolRow = el("div", "tool-row");
-  toolRow.append(gear, search);
+  toolRow.append(gear, search, info);
   elApp.append(toolRow);
 }
 
@@ -356,6 +359,25 @@ function renderGame() {
   nextRound();
 }
 
+function renderInfo() {
+  elApp.innerHTML = "";
+  topbar("ℹ️", "#home");
+  const page = el("div", "info-page", `
+    <h2>Por que esse app existe</h2>
+    <p>Esse Pokédex nasceu de uma vontade simples: um pai encontrar mais um jeito de
+    passar tempo de qualidade com o filho. O Rafael é uma criança muito esperta e
+    curiosa, e vive apaixonado por Pokémon — folhear cada um deles, ouvir os sons,
+    brincar de adivinhar quem é por trás da silhueta virou um dos nossos momentos
+    favoritos juntos.</p>
+    <p>Esse projeto é gratuito para qualquer pai, mãe ou responsável que queira fazer
+    o mesmo com seus filhos. O código é todo aberto no GitHub: dá pra ver como foi
+    construído, reportar um problema ou sugerir uma ideia nova.</p>
+    <a class="github-link" href="https://github.com/atavaresm/rafadex"
+       target="_blank" rel="noopener">Ver no GitHub →</a>
+  `);
+  elApp.append(page);
+}
+
 function confettiBurst(parent) {
   for (let i = 0; i < 24; i++) {
     const bit = el("span", "confetti");
@@ -378,6 +400,7 @@ function renderRoute() {
   if (route === "type") renderType(arg);
   else if (route === "dex") renderDetail(Number(arg));
   else if (route === "game") renderGame();
+  else if (route === "info") renderInfo();
   else renderHome();
   window.scrollTo(0, scrollPositions[location.hash] || 0);
   lastHeaderScrollY = window.scrollY;
