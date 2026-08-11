@@ -4,6 +4,16 @@ All notable changes to RafaDex by version. Dates are when each version shipped t
 production (GitHub Pages). See `docs/diario-de-bordo.md` for the full story behind
 each round.
 
+## v1.7.1 — 2026-08-11
+
+### Changed
+- Retroactively documents the RafaDex → Pokédex rebrand (name change, institutional
+  color from blue-indigo to Pokémon red) that shipped under v1.7 without a version
+  bump on 2026-08-10.
+- Introduces `bump_version.py` and a CI check (`version-check.yml`) that blocks any
+  release PR into `master` where `VERSION` hasn't increased — so this can't happen
+  again.
+
 ## v1.7 — 2026-08-10
 
 ### Removed
