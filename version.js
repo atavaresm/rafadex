@@ -1,2 +1,2 @@
 window.APP_VERSION = "v1.7";
-window.APP_BUILD_DATE = "10/08/2026";
+window.APP_BUILD_DATE = "11/08/2026";

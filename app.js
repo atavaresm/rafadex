@@ -126,7 +126,7 @@ function resetHeaderToBrand() {
   const header = document.querySelector(".app-header");
   header.classList.remove("split");
   header.classList.remove("hidden");
-  header.innerHTML = '<span class="ball"></span><span class="name">RafaDex</span>';
+  header.innerHTML = '<span class="ball"></span><span class="name">Pokédex</span>';
 }
 let lastHeaderScrollY = 0;
 window.addEventListener("scroll", () => {
