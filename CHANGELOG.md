@@ -4,6 +4,14 @@ All notable changes to RafaDex by version. Dates are when each version shipped t
 production (GitHub Pages). See `docs/diario-de-bordo.md` for the full story behind
 each round.
 
+## v1.9.1 — 2026-08-11
+
+### Fixed
+- Rock's type icon was rendering clipped/off-canvas (a normalization bug fitted the
+  scale to only one of its 3 subpaths). Fighting, Poison, Flying, Ground, and Psychic
+  carried an extra background-disc shape that degraded badly at small badge/header
+  sizes. Re-extracted all 6 from source and verified live.
+
 ## v1.9.0 — 2026-08-11
 
 ### Changed
