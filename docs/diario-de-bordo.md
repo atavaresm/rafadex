@@ -9,7 +9,42 @@
 
 ---
 
-## 11/08/2026 00:03 — RafaDex vira Pokédex, e o azul vira vermelho
+## 11/08/2026 08:45 — Sessão maratona: repo travado, versão sob controle, página "i", e a saga dos ícones
+
+Sessão gigante, quatro frentes pedidas de uma vez. Fechei três e a quarta ficou rodando
+sozinha durante a madrugada (autorizei o Claude a seguir até o deploy sem me esperar,
+sempre pela opção recomendada).
+
+**Repo protegido de verdade**: `develop` e `master` agora exigem PR + aprovação, sem
+push direto, sem force-push, sem deletar branch. Descoberta interessante no meio do
+caminho: como só existe minha conta, o GitHub não deixa aprovar o próprio PR — então
+"só eu aprovo" na prática virou "todo merge passa pelo bypass de admin, mas só depois
+de eu confirmar no chat". Testei ao vivo empurrando direto pra `develop` sem querer e
+vi o log registrar "Bypassed rule violation" — a proteção funciona, só não é
+tecnicamente à prova do meu próprio token.
+
+**Versionamento parou de travar**: descobri que a rodada de rebrand (RafaDex→Pokédex)
+tinha saído sem bump nenhum. Criei `bump_version.py` + checagem obrigatória no CI pra
+todo PR de release — e a própria revisão final achou que o gate não pegaria o exato bug
+que motivou ele (version.js dessincronizado de VERSION), então fechei essa lacuna numa
+correção rápida também. v1.7 → v1.7.1 → v1.8.0 (página i) → v1.8.1 (fix do gate) hoje.
+
+**Página "Sobre o Pokédex"**: ícone ℹ️ do lado da busca, conta a história do app (feito
+pelo pai do Rafael, de graça pra qualquer família, link pro GitHub). Foi no ar sem
+susto.
+
+**Ícones de tipo — a parte divertida**: pedido pra trocar os 18 ícones de tipo pelo
+estilo de uma imagem que mandei. Primeira tentativa (desenho à mão) não colou. Só
+resolveu de verdade quando comecei a mandar os SVGs que eu ia baixando — cada arquivo
+novo destravava mais alguns ícones limpos (extração por posição/cor dentro do SVG, sem
+inventar desenho). No fim, os 18 saíram extraídos de verdade, nenhum à mão: 12 do
+primeiro arquivo, 5 de um segundo (`pokemon-go-type-charts`, que por acaso eu tinha
+usado o nome errado — pensei que fosse uma URL do v0.dev e caiu num 404 antes de eu
+achar o arquivo de verdade), e Pedra saiu de um terceiro depois que os dois primeiros
+erraram a forma dela. Implementação já rodou (troquei a fonte de ícone por SVG nos 3
+lugares que usam tipo — grade da Home, badge coloridinho, cabeçalho da tela de tipo),
+testei ao vivo no Chrome e bateu tudo. Deixei rodando a revisão final e o release
+sozinho durante a madrugada — se tudo foi bem, quando eu acordar já tá em produção.
 
 Agora que o app tem domínio público, topei fechar o brainstorm de hoje mais cedo:
 trocar a marca "RafaDex" por um "Pokédex" genérico e o azul institucional pelo

@@ -82,25 +82,18 @@ function vividColor(hex, typeKey) {
   return hslToHex(h, vs, vl);
 }
 
-const TYPE_ICONS = {
-  normal: "", fire: "", water: "", electric: "",
-  grass: "", ice: "", fighting: "", poison: "",
-  ground: "", flying: "", psychic: "", bug: "",
-  rock: "", dark: "", steel: "", fairy: "",
-  ghost: "", dragon: "",
-};
-// Rock keeps an imperfect "diamond" icon (no literal rock/boulder glyph exists
-// in the font) — every other type, including Ghost and Dragon as of this round,
-// has a real icon. The icon || info.emoji fallback in typeBadgeHtml() below stays
-// in place as general-purpose defensive code, even though nothing currently uses it.
+function typeIconSvg(typeKey, sizePx, color) {
+  const icon = window.TYPE_ICON_SVGS[typeKey];
+  return `<svg class="type-icon" width="${sizePx}" height="${sizePx}" viewBox="0 0 100 100">` +
+    `<g transform="scale(${icon.scale}) translate(${icon.tx},${icon.ty})">` +
+    `<path d="${icon.d}" fill="${color}"/></g></svg>`;
+}
 
 function typeBadgeHtml(typeKey, sizePx) {
   const info = window.TYPES[typeKey];
-  const icon = TYPE_ICONS[typeKey];
-  const glyph = icon || info.emoji;
-  const cls = icon ? "type-badge icon" : "type-badge";
-  return `<span class="${cls}" style="width:${sizePx}px;height:${sizePx}px;` +
-    `font-size:${Math.round(sizePx * (icon ? 0.62 : 0.55))}px;background:${vividColor(info.color, typeKey)}">${glyph}</span>`;
+  const iconSize = Math.round(sizePx * 0.62);
+  return `<span class="type-badge" style="width:${sizePx}px;height:${sizePx}px;` +
+    `background:${vividColor(info.color, typeKey)}">${typeIconSvg(typeKey, iconSize, "#fff")}</span>`;
 }
 
 function pill(text) { return el("span", "pill", text); }
@@ -147,10 +140,7 @@ function renderHome() {
   renderShelf();                       // no-op until Task 8
   const grid = el("div", "type-grid");
   for (const [key, info] of Object.entries(window.TYPES)) {
-    const icon = TYPE_ICONS[key];
-    const iconHtml = icon
-      ? `<span class="emoji icon" style="color:${vividColor(info.color, key)}">${icon}</span>`
-      : `<span class="emoji">${info.emoji}</span>`;
+    const iconHtml = typeIconSvg(key, 56, vividColor(info.color, key));
     const btn = el("button", "type-btn bounce", `${iconHtml}<span class="label">${info.name}</span>`);
     btn.onclick = () => go(`#type/${key}`);
     grid.append(btn);
@@ -201,10 +191,7 @@ function renderType(key) {
   const info = window.TYPES[key];
   contextIds = window.DEX.filter(m => m.types.includes(key)).map(m => m.id);
   elApp.innerHTML = "";
-  const titleIconKey = TYPE_ICONS[key];
-  const titleIcon = titleIconKey
-    ? `<span class="type-icon-inline" style="color:${vividColor(info.color, key)}">${titleIconKey}</span>`
-    : info.emoji;
+  const titleIcon = typeIconSvg(key, 22, vividColor(info.color, key));
   topbar(`${titleIcon} ${info.name}`, "#home", info.color, undefined, key);
   const grid = el("div", "mon-grid");
   for (const id of contextIds) {
