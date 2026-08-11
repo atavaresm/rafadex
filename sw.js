@@ -1,5 +1,5 @@
 importScripts("precache.js");
-const VERSION = "20260811051845";
+const VERSION = "20260811114751";
 const SHELL = `rafadex-shell-${VERSION}`;
 const RUNTIME = "rafadex-runtime";
 const SHELL_CORE = ["./", "index.html", "style.css", "app.js", "version.js", "audio.js",

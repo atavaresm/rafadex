@@ -4,6 +4,14 @@ All notable changes to RafaDex by version. Dates are when each version shipped t
 production (GitHub Pages). See `docs/diario-de-bordo.md` for the full story behind
 each round.
 
+## v1.9.0 — 2026-08-11
+
+### Changed
+- Replaced all 18 Pokémon-type icons (Home screen grid, per-Pokémon type badges,
+  type-world header) with custom-extracted SVG pictograms, dropping the "Material
+  Symbols Rounded" icon font for this purpose (the font itself stays, still used for
+  the back-button glyph).
+
 ## v1.8.1 — 2026-08-11
 
 ### Fixed
