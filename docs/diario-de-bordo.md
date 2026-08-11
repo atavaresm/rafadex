@@ -9,6 +9,45 @@
 
 ---
 
+## 11/08/2026 00:03 — RafaDex vira Pokédex, e o azul vira vermelho
+
+Agora que o app tem domínio público, topei fechar o brainstorm de hoje mais cedo:
+trocar a marca "RafaDex" por um "Pokédex" genérico e o azul institucional pelo
+vermelho clássico de Pokémon (`#e3350d`, que já vivia escondido no código como cor
+dos efeitos do jogo). Segui o fluxo completo — brainstorm com perguntas uma a uma,
+spec, plano, execução por subagente (Haiku, já que o plano trazia os blocos de
+código prontos), revisão de task e revisão final de branch. Achei no caminho que o
+nome estava hardcoded em **5 lugares**, não 4 como a spec listou de primeira — o
+`app.js` recria o cabeçalho a cada navegação e repetia o mesmo texto; corrigido no
+plano antes de despachar.
+
+Testei ao vivo no Chrome duas vezes: local antes do deploy, e de novo em produção
+(`amaix-dev.com/pokedex`, limpando service worker e caches antes de recarregar) —
+título, fundo da Home, pills, anel de evolução, botão de som "falando" e a isenção
+das telas de tipo, tudo bateu. A revisão final (Opus, olhando o branch inteiro) veio
+sem nenhum Critical e aprovou pra produção, mas achou uma coisa boa: o ícone do app
+continua com um "R" grande no meio da pokébola — sobrou do RafaDex, e nem a spec nem
+o plano pensaram nisso porque o não-escopo dos ícones só falava de cor, não da letra
+gravada neles. Deixei pra depois por enquanto — é só um fast-follow (regenerar os
+PNGs via `tools/icon-generator.html`), não bloqueia nada.
+
+Falta o de sempre: instalar de verdade no iPhone do Rafa e conferir ao vivo (nome sob
+o ícone, cor da barra de status) — só aparece de fato numa reinstalação.
+
+---
+
+## 10/08/2026 13:12 — Domínio público: adeus URL do GitHub Pages
+
+Com o deploy já rodando liso e a revisão final do branch em andamento, resolvi dar
+uma cara própria ao link antes de instalar no iPhone do Rafa de verdade. Registrei
+**amaix-dev.com** e subi um projeto novo, o `amaix-dev-proxy` — um Cloudflare Worker
+que faz proxy reverso pro GitHub Pages do rafadex sem expor a origem. Resultado: o
+app agora vive em `amaix-dev.com/pokedex`, um domínio de verdade em vez do
+`atavaresm.github.io`. Detalhe técnico e diário completo do lado do proxy ficam no
+projeto novo.
+
+---
+
 ## 10/08/2026 11:49 — Fechando o processo: disparei a revisão final do branch inteiro
 
 Só um adendo rápido ao post de baixo: mesmo já com o deploy no ar e verificado em
