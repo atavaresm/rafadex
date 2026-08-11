@@ -4,6 +4,13 @@ All notable changes to RafaDex by version. Dates are when each version shipped t
 production (GitHub Pages). See `docs/diario-de-bordo.md` for the full story behind
 each round.
 
+## v1.8.0 — 2026-08-11
+
+### Added
+- Info page ("Sobre o Pokédex"): a new ℹ️ button on Home opens a page telling the
+  app's origin story and linking to the public GitHub repo for browsing the code,
+  filing bugs, or suggesting improvements.
+
 ## v1.7.1 — 2026-08-11
 
 ### Changed
