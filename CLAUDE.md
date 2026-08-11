@@ -5,10 +5,14 @@ All 1025 Pokémon; UI is image/color/sound only, copy in pt-BR; repo artifacts i
 
 ## Commands
 - `python3 build.py` — full pipeline: reads `/Users/amais/project/pokedex` (read-only),
-  writes `data/dex.js`, `precache.js`, `assets/sprites/*` (all committed).
-  `--force` re-converts media. Requires an ffmpeg with a WebP encoder (Homebrew's
-  default `ffmpeg` formula lacks libwebp; `ffmpeg-full` has it; override binary via
-  `RAFADEX_FFMPEG`).
+  writes `data/dex.js`, `precache.js`, `assets/sprites/*`, `version.js`, `sw.js`
+  (all committed). `--force` re-converts media. Requires an ffmpeg with a WebP
+  encoder (Homebrew's default `ffmpeg` formula lacks libwebp; `ffmpeg-full` has it;
+  override binary via `RAFADEX_FFMPEG`).
+- `python3 bump_version.py patch|minor|major` — bumps the `VERSION` file (semver).
+  **Always follow with `python3 build.py`** so `version.js`/`sw.js` pick up the new
+  version — `version-check.yml` (required on `master`) fails a release PR if
+  `version.js` doesn't match `VERSION`.
 - `pytest -q` — pipeline tests.
 - `python3 -m http.server 8000` — local dev (PWA features need http, not file://).
 

@@ -4,6 +4,14 @@ All notable changes to RafaDex by version. Dates are when each version shipped t
 production (GitHub Pages). See `docs/diario-de-bordo.md` for the full story behind
 each round.
 
+## v1.8.1 — 2026-08-11
+
+### Fixed
+- `version-check` CI gate now also verifies `version.js` matches `VERSION`, closing
+  the blind spot that let a stale `version.js` ship silently in the v1.7.1 round.
+- `CLAUDE.md` corrected: `build.py`'s real output list (`version.js`, `sw.js`) and
+  `bump_version.py` are now documented.
+
 ## v1.8.0 — 2026-08-11
 
 ### Added
