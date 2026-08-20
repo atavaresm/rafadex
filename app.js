@@ -253,9 +253,14 @@ function renderDetail(id) {
   if (!window.speechSynthesis) { nameBtn.hidden = true; readBtn.hidden = true; }
   sounds.append(nameBtn, readBtn);
   const favMount = box.querySelector("#favBtn") || box.children[3];
-  const heart = el("button", "heart bounce", Favs.has(id) ? "❤️" : "🤍");
-  heart.onclick = () => { Favs.toggle(id); heart.textContent = Favs.has(id) ? "❤️" : "🤍"; };
-  favMount.append(heart);
+  const ball = el("button", "pokeball bounce" + (Favs.has(id) ? " caught" : ""));
+  ball.onclick = () => {
+    Favs.toggle(id);
+    const caught = Favs.has(id);
+    ball.classList.toggle("caught", caught);
+    if (caught) Sound.speak(`Você capturou ${mon.speak || mon.name}!`);
+  };
+  favMount.append(ball);
 
   const evoMount = box.querySelector("#evoStrip") || box.lastChild;
   const chain = mon.evo.flat().filter(evoId => byId[evoId]);
