@@ -4,6 +4,16 @@ All notable changes to RafaDex by version. Dates are when each version shipped t
 production (GitHub Pages). See `docs/diario-de-bordo.md` for the full story behind
 each round.
 
+## v1.10.0 — 2026-08-20
+
+### Changed
+- Detail card's favorite button: heart emoji replaced with a CSS-drawn pokeball
+  (grey when free, red/white/black when caught).
+
+### Added
+- Marking a Pokemon as favorite now speaks "Voce capturou <name>!" through the
+  existing text-to-speech pipeline. Unfavoriting stays silent.
+
 ## v1.9.1 — 2026-08-11
 
 ### Fixed
