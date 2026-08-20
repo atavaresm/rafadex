@@ -9,6 +9,28 @@
 
 ---
 
+## 20/08/2026 18:51 — Coração virou pokébola, e capturar Pokémon agora fala
+
+Pedido simples, mas ficou bonitinho: o botão de favorito do card de detalhe (que era
+um coraçãozinho ❤️/🤍) virou uma **pokébola desenhada em CSS** — cinza quando o
+Pokémon tá solto, vermelha/branca/preta quando "capturado". Sem imagem nova, mesmo
+truque que já existia no projeto irmão (`pokedex`), só que agora funcional em vez de
+decorativo. E ao clicar pra favoritar, o app fala "Você capturou o [nome]!" usando o
+mesmo `Sound.speak()` (e o mesmo dicionário de pronúncia) dos outros botões de som —
+desfavoritar fica quieto, só troca o ícone de volta.
+
+Passou pelo brainstorm bounded de sempre (achei o coração no código, confirmei que só
+existe nesse um lugar, propus o design, aprovado antes de mexer). Testei ao vivo no
+Chrome: toggle visual funcionando nos dois sentidos, favorito persistindo certinho no
+localStorage, sem erro no console. Esbarrei de novo no cache do service worker
+escondendo minha própria mudança durante o teste (precisei desregistrar o SW e dar um
+hard reload pra ver o CSS novo) — clássico desse projeto, já mapeado no diário. Uma
+coisa que não dá pra verificar por automação: se a fala realmente sai (clique
+sintético não dispara `speechSynthesis` de forma confiável) — fica pendente eu ouvir
+no uso real antes de considerar 100% fechado.
+
+---
+
 ## 11/08/2026 14:04 — Ícones de tipo no ar de verdade, e um bug de cache do domínio público resolvido
 
 Fechando o post de hoje cedo: autorizei o Claude a seguir sozinho até o fim (implementar,

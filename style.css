@@ -99,7 +99,16 @@ button { font: inherit; border: none; cursor: pointer; }
   white-space: nowrap; }
 .type-badge { border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
   box-shadow: 0 2px 0 rgba(0,0,0,.15); flex-shrink: 0; }
-.heart { font-size: 34px; background: none; margin-top: 4px; }
+.pokeball { width: 34px; height: 34px; border-radius: 50%; background: none; margin-top: 4px;
+  border: 3px solid #bbb; position: relative; flex: none;
+  background: linear-gradient(#eee 0 calc(50% - 2.5px), #bbb calc(50% - 2.5px) calc(50% + 2.5px),
+    #fff calc(50% + 2.5px) 100%); }
+.pokeball::after { content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 10px; height: 10px; background: #fff; border: 3px solid #bbb; border-radius: 50%; }
+.pokeball.caught { border-color: #1a1a1a;
+  background: linear-gradient(var(--brand) 0 calc(50% - 2.5px), #1a1a1a calc(50% - 2.5px) calc(50% + 2.5px),
+    #fff calc(50% + 2.5px) 100%); }
+.pokeball.caught::after { border-color: #1a1a1a; }
 .evo-strip { display: flex; align-items: center; gap: 6px; margin: 10px 0;
   overflow-x: auto; max-width: 100%; min-width: 0; }
 .evo-strip img { width: 84px; height: 84px; background: var(--card);
