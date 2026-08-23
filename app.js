@@ -140,6 +140,11 @@ function renderHome() {
   const captureBtn = el("button", "game-btn bounce", "🎯 Capturar Pokémon");
   captureBtn.onclick = () => go("#capture");
   elApp.append(captureBtn);
+  if (GameCaught.list().length) {
+    const battleBtn = el("button", "game-btn bounce", "⚔️ Batalhar");
+    battleBtn.onclick = () => go("#battle");
+    elApp.append(battleBtn);
+  }
   renderShelf();                       // no-op until Task 8
   const grid = el("div", "type-grid");
   for (const [key, info] of Object.entries(window.TYPES)) {
@@ -397,6 +402,7 @@ function renderRoute() {
   else if (route === "game") renderGame();
   else if (route === "capture") renderCapture();
   else if (route === "collection") renderCollection();
+  else if (route === "battle") renderBattleSelect();
   else if (route === "info") renderInfo();
   else renderHome();
   window.scrollTo(0, scrollPositions[location.hash] || 0);
