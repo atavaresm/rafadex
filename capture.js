@@ -55,8 +55,9 @@ function renderCapture() {
   }
 
   function wireThrow(ball, scene, id) {
-    let startX = 0, startY = 0, dragging = false;
+    let startX = 0, startY = 0, dragging = false, resolving = false;
     ball.addEventListener("pointerdown", e => {
+      if (resolving) return;
       dragging = true;
       startX = e.clientX; startY = e.clientY;
       ball.setPointerCapture(e.pointerId);
@@ -70,11 +71,12 @@ function renderCapture() {
       dragging = false;
       const dist = Math.hypot(e.clientX - startX, e.clientY - startY);
       if (dist < MIN_THROW_DISTANCE) { ball.style.transform = ""; return; }
-      resolveThrow(ball, scene, id);
+      resolving = true;
+      resolveThrow(ball, scene, id, () => { resolving = false; });
     });
   }
 
-  function resolveThrow(ball, scene, id) {
+  function resolveThrow(ball, scene, id, onMissSettled) {
     const mon = byId[id];
     ball.style.transition = "transform .25s ease-out";
     ball.style.transform = "translateY(-120px)";
@@ -86,12 +88,16 @@ function renderCapture() {
         setTimeout(() => Sound.speak(`Você capturou ${mon.speak || mon.name}!`), 300);
         confettiBurst(scene);
         setTimeout(showMap, 1600);
+        // `resolving` intentionally stays true: this ball is caught and about to
+        // be replaced by showMap() in 1.6s, so it must not accept another drag
+        // (and re-resolve a second time) while it waits.
       } else {
         ball.classList.add("miss");
         setTimeout(() => {
           ball.classList.remove("miss");
           ball.style.transition = "";
           ball.style.transform = "";
+          onMissSettled();
         }, 350);
       }
     }, 260);
