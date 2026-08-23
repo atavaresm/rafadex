@@ -3,8 +3,9 @@ const VERSION = "__SW_BUILD__";
 const SHELL = `rafadex-shell-${VERSION}`;
 const RUNTIME = "rafadex-runtime";
 const SHELL_CORE = ["./", "index.html", "style.css", "app.js", "version.js", "audio.js",
-  "data/dex.js", "data/type-icons.js", "manifest.json", "assets/fonts/baloo2.woff2",
-  "assets/fonts/quicksand.woff2", "assets/fonts/materialsymbolsrounded.woff2"];
+  "capture.js", "battle.js", "data/dex.js", "data/type-icons.js", "manifest.json",
+  "assets/fonts/baloo2.woff2", "assets/fonts/quicksand.woff2",
+  "assets/fonts/materialsymbolsrounded.woff2"];
 const SHELL_OPTIONAL = ["assets/icons/icon-180.png", "assets/icons/icon-192.png",
   "assets/icons/icon-512.png"];
 
