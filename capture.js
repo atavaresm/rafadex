@@ -19,6 +19,9 @@ const MIN_THROW_DISTANCE = 40;
 function renderCapture() {
   elApp.innerHTML = "";
   topbar("🎯", "#home", window.TYPES.grass.color, undefined, "grass");
+  const collectionBtn = el("button", "game-btn bounce", "📦 Minha Coleção");
+  collectionBtn.onclick = () => go("#collection");
+  elApp.append(collectionBtn);
   const stage = el("div", "capture-stage");
   elApp.append(stage);
 
@@ -104,4 +107,23 @@ function renderCapture() {
   }
 
   showMap();
+}
+
+function renderCollection() {
+  elApp.innerHTML = "";
+  topbar("📦", "#capture");
+  const ids = GameCaught.list();
+  if (!ids.length) {
+    elApp.append(el("div", "empty-hint", "Ainda não capturou nenhum Pokémon. Volta pro mapinha! 🌿"));
+    return;
+  }
+  const grid = el("div", "mon-grid");
+  for (const id of ids) {
+    const mon = byId[id];
+    const card = el("button", "mon-card bounce shine",
+      `<img loading="lazy" src="${sprite(id, "thumb")}" alt=""><span class="name">${mon.name}</span>`);
+    card.onclick = () => { contextIds = ids; go(`#dex/${id}`); };
+    grid.append(card);
+  }
+  elApp.append(grid);
 }

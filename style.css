@@ -166,3 +166,5 @@ button { font: inherit; border: none; cursor: pointer; }
 .throw-ball.miss { animation: ballBounce .35s; }
 @keyframes ballBounce { 50% { transform: translateY(10px); } }
 @media (prefers-reduced-motion: reduce) { .throw-ball.miss { animation: none; } }
+.empty-hint { text-align: center; font-size: 17px; font-weight: 700; margin-top: 40px;
+  color: var(--ink); opacity: .7; }

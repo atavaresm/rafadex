@@ -396,6 +396,7 @@ function renderRoute() {
   else if (route === "dex") renderDetail(Number(arg));
   else if (route === "game") renderGame();
   else if (route === "capture") renderCapture();
+  else if (route === "collection") renderCollection();
   else if (route === "info") renderInfo();
   else renderHome();
   window.scrollTo(0, scrollPositions[location.hash] || 0);
