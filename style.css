@@ -149,3 +149,20 @@ button { font: inherit; border: none; cursor: pointer; }
   animation: fall 1.5s ease-in forwards; }
 @keyframes fall { to { transform: translateY(70vh) rotate(540deg); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .confetti { display: none; } }
+
+/* Capture game */
+.capture-stage { position: relative; min-height: 340px; display: flex;
+  flex-direction: column; align-items: center; justify-content: flex-end; }
+.grass-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; }
+.grass-patch { aspect-ratio: 1; border-radius: var(--radius); background: #78c850;
+  box-shadow: var(--shadow); font-size: 40px; }
+.grass-patch.shake { animation: patchShake .4s; }
+@keyframes patchShake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+@media (prefers-reduced-motion: reduce) { .grass-patch.shake { animation: none; } }
+.encounter-scene { position: relative; width: 100%; min-height: 340px; display: flex;
+  flex-direction: column; align-items: center; justify-content: flex-end; gap: 34px; padding-bottom: 10px; }
+.encounter-mon { width: min(66vw, 260px); aspect-ratio: 1; filter: drop-shadow(0 10px 8px rgba(0,0,0,.25)); }
+.throw-ball { width: 56px; height: 56px; touch-action: none; position: relative; }
+.throw-ball.miss { animation: ballBounce .35s; }
+@keyframes ballBounce { 50% { transform: translateY(10px); } }
+@media (prefers-reduced-motion: reduce) { .throw-ball.miss { animation: none; } }

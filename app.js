@@ -137,6 +137,9 @@ function renderHome() {
   const gameBtn = el("button", "game-btn bounce", "❓ Quem é esse Pokémon?");
   gameBtn.onclick = () => go("#game");
   elApp.append(gameBtn);
+  const captureBtn = el("button", "game-btn bounce", "🎯 Capturar Pokémon");
+  captureBtn.onclick = () => go("#capture");
+  elApp.append(captureBtn);
   renderShelf();                       // no-op until Task 8
   const grid = el("div", "type-grid");
   for (const [key, info] of Object.entries(window.TYPES)) {
@@ -392,6 +395,7 @@ function renderRoute() {
   if (route === "type") renderType(arg);
   else if (route === "dex") renderDetail(Number(arg));
   else if (route === "game") renderGame();
+  else if (route === "capture") renderCapture();
   else if (route === "info") renderInfo();
   else renderHome();
   window.scrollTo(0, scrollPositions[location.hash] || 0);
