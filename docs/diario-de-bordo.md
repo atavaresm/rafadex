@@ -9,6 +9,49 @@
 
 ---
 
+## 05/09/2026 17:58 — Jogo de labirinto: o dedo do Rafa é que define a dificuldade
+
+Voltei pra fazer jogo novo e a primeira coisa que apareceu foi um esqueleto no armário:
+os dois jogos de 23/08 (Capturar e Batalhar) estão na `develop` desde então, versão
+v1.11.0 comitada, PR mergeada — e **nunca foram pro ar**. O deploy sai da `master`, e a
+`master` ainda está na v1.10.0. Ou seja: eu construí, revisei, versionei e o Rafa nunca
+pôde jogar. Fica registrado porque é o tipo de coisa que só aparece quando alguém vai
+olhar; o release estava a um PR de distância e ninguém puxou.
+
+Feito o diagnóstico, o pedido do dia: labirinto de dificuldade média, o Rafa passa o
+dedo pintando o caminho, botão de borracha, botão de próximo, tema Pokémon. Brainstorm
+arquitetural, pergunta por pergunta. Decidimos que a parede **bloqueia a tinta sem
+punir** (o dedo vai onde quiser, a tinta só anda no corredor) — mesma regra de zero
+frustração dos outros modos. E ele cortou a minha recomendação de pendurar o labirinto
+na coleção do jogo de captura: os Pokémon do caminho valem só a rodada. Ele tinha razão,
+era exatamente o risco que eu mesmo tinha levantado — a B teria transformado o labirinto
+no atalho mais rápido pra encher a coleção.
+
+A descoberta boa da sessão veio de medir em vez de chutar. Escrevi um probe descartável
+que gera labirintos de verdade e calcula o tamanho da célula na tela do iPhone: 5×5 dá
+73px, 8×8 dá 46px, 10×10 dá 37px. A ponta do dedo de uma criança de 5 anos encosta em
+40–45px. Então num 10×10 a mão dele tapa o corredor inteiro — **o teto do jogo não é a
+dificuldade do labirinto, é o dedo**. Ofereci uma rota vertical rolante como saída (mais
+caminho sem apertar o corredor); ele preferiu o 8×8 assumindo o aperto, e eu pago essa
+conta no visual (traço grosso, Pokémon pulando acima do dedo, não embaixo).
+
+Duas sacadas de design que eu gostei: a pintura é por célula, então o "grudar no
+corredor" sai de graça — não existe traço torto pra corrigir. E a borracha não vira modo:
+arrastar de volta por cima do traço já apaga, como cobrinha, então o botão pode significar
+uma coisa só, "limpar tudo". Modo invisível com 5 anos é o caminho curto pra ele achar que
+quebrou o app.
+
+Spec escrita e commitada em `feat/pokemon-maze-game`. A auto-revisão pegou quatro furos
+que virariam bug (contador de pokébolas fixo em três mesmo colocando menos; levantar o
+dedo travava o traço porque só a entrada aceitava `pointerdown`; cor do traço e som da
+coleta no vago; e o destino do sprite depois de coletado). Já anotei na spec as três
+armadilhas que eu sei que vêm aí: `touch-action: none` senão o iOS rola a página junto
+com o dedo, `maze.js` no `SHELL_CORE` senão some no modo avião (essa já me mordeu antes),
+e cortar a fala anterior ao coletar dois Pokémon seguidos. Próximo passo é o plano de
+implementação — ainda não tem uma linha do jogo.
+
+---
+
 ## 23/08/2026 15:13 — Spec do jogo de captura: v2 vira jogo de verdade, não só Pokédex
 
 Sessão começou com uma checagem de higiene: confirmei que `develop` e `master` estavam
