@@ -40,8 +40,9 @@ precondition.
 
 An 8×8 grid filling the screen width, generated fresh on entry. Entrance at the top-left
 cell, exit at the bottom-right cell marked with a **Pokémon Center** (red-roofed
-building). Above the grid, a row of three small Pokéball pips — the round's collectible
-counter, empty at the start.
+building). Above the grid, a row of small Pokéball pips — one per collectible actually placed in
+this maze (normally three; see placement below) — the round's counter, empty at the
+start.
 
 Below the grid, two always-visible controls:
 
@@ -55,7 +56,8 @@ Below the grid, two always-visible controls:
 Rafael presses anywhere on the entrance cell and drags. Painting is **cell-granular**:
 the moment his finger enters a cell, that whole cell lights up in the trail color. There
 is no pixel-level stroke to smudge — snapping to the corridor is a consequence of the
-model, not a correction applied afterwards.
+model, not a correction applied afterwards. The trail is one fixed vivid color for the
+whole app: the theme is visual-only, so it is not tinted per Pokémon type.
 
 Three rules govern every pointer move, evaluated against the **head** of the current path
 (the last cell painted):
@@ -78,9 +80,10 @@ wasted, it is where the reward is. Painting over a collectible cell:
 
 - pops its sprite **above** the finger (never below — at 46px cells the hand covers what
   is under it),
-- plays a short sound,
+- plays `Sound.pop()`,
 - speaks the Pokémon's name through the existing pronunciation pipeline,
-- fills the next Pokéball pip in the counter.
+- fills the next Pokéball pip in the counter,
+- and removes the sprite from the grid; the cell stays painted like any other trail cell.
 
 Collecting all three is optional. Reaching the exit always wins, at any count. A collected
 Pokémon stays collected for the round even if the path is erased — erasing is about the
@@ -153,8 +156,10 @@ guard, not an expected case.)
 The grid is a `<div>` of 64 cell `<div>`s; walls are CSS borders on each cell, painted
 cells carry a trail class. Pointer handling lives on the grid container:
 
-- `pointerdown` on the entrance cell starts a path; `setPointerCapture` keeps the drag
-  alive if the finger leaves the grid.
+- `pointerdown` starts a drag only on the **entrance cell** (when the path is empty) or
+  on the **head of the existing path** (to resume after lifting). A press on any other
+  cell is ignored — it does not start, move, or clear anything. `setPointerCapture` keeps
+  the drag alive if the finger leaves the grid.
 - `pointermove` resolves the cell under the finger with `document.elementFromPoint` and
   applies the three rules above.
 - `pointerup` ends the drag. The path is kept; he can lift, rest, and resume from the head.
