@@ -605,7 +605,9 @@ merely looking right:
 document.querySelectorAll(".maze-cell.trail").length
 ```
 
-Paint a path, read the count, then drag all the way back and confirm it returns to 0.
+Paint a path, read the count, then drag all the way back and confirm it returns to **1**,
+not 0: rule 2 needs a previous cell to fall back to, so the entrance stays painted. Fully
+clearing the trail is the eraser button's job, added in Task 4.
 
 **Known limitation to check, not fix:** a very fast flick can move the pointer more than
 one cell between `pointermove` events; the skipped move is ignored by rule 3 and the trail
