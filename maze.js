@@ -124,6 +124,81 @@ function renderMaze() {
   cells[0].classList.add("maze-start");
   cells[MAZE_SIZE * MAZE_SIZE - 1].classList.add("maze-goal");
 
+  let path = [];
+  let dragging = false;
+  let won = false;
+
+  function cellAt(x, y) { return cells[y * MAZE_SIZE + x]; }
+  function head() { return path[path.length - 1]; }
+
+  // Extension point: Task 5 collects a Pokémon here, Task 6 checks the win.
+  function onPaint(x, y) {}
+
+  function paintTo(x, y) {
+    if (won) return;
+    if (!path.length) {
+      if (x === 0 && y === 0) {
+        path.push([0, 0]);
+        cellAt(0, 0).classList.add("trail");
+        onPaint(0, 0);
+      }
+      return;
+    }
+    const [hx, hy] = head();
+    if (x === hx && y === hy) return;
+
+    // Rule 2: dragging back onto the previous cell erases the head.
+    if (path.length >= 2) {
+      const [px, py] = path[path.length - 2];
+      if (x === px && y === py) {
+        cellAt(hx, hy).classList.remove("trail");
+        path.pop();
+        return;
+      }
+    }
+
+    // Rule 1: adjacent with no wall between -> paint.
+    const dir = Object.keys(MAZE_DIRS).find(d =>
+      MAZE_DIRS[d][0] === x - hx && MAZE_DIRS[d][1] === y - hy);
+    // Rule 3: anything else (a wall, a skipped cell, off the grid) does nothing.
+    if (!dir || !open[hy][hx].has(dir)) return;
+
+    path.push([x, y]);
+    cellAt(x, y).classList.add("trail");
+    onPaint(x, y);
+  }
+
+  function cellUnder(event) {
+    return document.elementFromPoint(event.clientX, event.clientY)?.closest(".maze-cell");
+  }
+
+  grid.addEventListener("pointerdown", event => {
+    const cell = cellUnder(event);
+    if (!cell) return;
+    const x = Number(cell.dataset.x), y = Number(cell.dataset.y);
+    // A drag may only begin at the entrance (nothing painted yet) or at the head
+    // of the existing path (resuming after lifting the finger). Anywhere else is
+    // ignored: it must not start, move, or clear anything.
+    const startable = path.length
+      ? (x === head()[0] && y === head()[1])
+      : (x === 0 && y === 0);
+    if (!startable) return;
+    dragging = true;
+    grid.setPointerCapture(event.pointerId);
+    paintTo(x, y);
+  });
+
+  grid.addEventListener("pointermove", event => {
+    if (!dragging) return;
+    const cell = cellUnder(event);
+    if (!cell) return;
+    paintTo(Number(cell.dataset.x), Number(cell.dataset.y));
+  });
+
+  const endDrag = () => { dragging = false; };
+  grid.addEventListener("pointerup", endDrag);
+  grid.addEventListener("pointercancel", endDrag);
+
   stage.append(grid);
   elApp.append(stage);
 }
