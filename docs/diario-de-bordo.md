@@ -9,6 +9,40 @@
 
 ---
 
+## 06/09/2026 10:24 — O plano do labirinto achou um bug antes de existir código
+
+Escrevi o plano de implementação do labirinto: 7 tasks, do gerador até o release. Mas o
+que valeu a sessão não foi escrever, foi **rodar o que eu escrevi**. Em vez de reler o
+plano na auto-revisão, extraí o código do Task 1 de dentro do próprio documento e executei
+no scratchpad. Falhou na rodada 41.
+
+O motivo é bonito: eu tinha decidido esconder três Pokémon em becos sem saída **fora do
+caminho certo** — é o que faz o beco valer a pena em vez de ser castigo. Só que nem todo
+labirinto 8×8 tem três becos assim. Medi em 20.000: acontece em 18 deles, uns 0,09%, e
+quando acontece sobram exatamente 2, nunca menos. É raro o bastante pra passar por
+qualquer revisão de olho e frequente o bastante pra cair no colo do Rafa numa tarde de
+jogo — ele ia ver duas pokébolas no contador em vez de três e ninguém ia entender por quê.
+
+Podia ter afrouxado a asserção pra "pelo menos 2" e seguido em frente. Não afrouxei:
+o plano ganhou um `mazeNewRound()` que sorteia outro labirinto quando o sorteado não
+comporta o trio, com teto de 20 tentativas e o melhor como rede. Revalidei: 50.000 rodadas
+sem nenhuma curta, e seis execuções seguidas do script de verificação, 1.000 labirintos
+cada, todas verdes. Fica a lição registrada, que é a mesma que esse projeto já me ensinou
+com o service worker: **plano não revisado por execução é plano não revisado**.
+
+Duas outras coisas apareceram lendo o código de perto. O `Sound.speak()` já chama
+`stopSpeech()` sozinho, então o risco que eu tinha listado na spec (atropelar o nome de um
+Pokémon com o do seguinte) já estava resolvido de graça — o plano manda explicitamente
+**não** adicionar a chamada redundante. E a spec tinha um silêncio: não dizia se dá pra
+vencer o mesmo labirinto de novo depois de apagar. Decidi que dá, que é a leitura
+não-punitiva coerente com os outros dois modos.
+
+Falta escolher como executar (subagentes ou inline) e aí sai código. Segue valendo que o
+`master` está na v1.10.0 — quando o labirinto for ao ar, vai levar junto a captura e a
+batalha, paradas na `develop` desde 23/08.
+
+---
+
 ## 05/09/2026 17:58 — Jogo de labirinto: o dedo do Rafa é que define a dificuldade
 
 Voltei pra fazer jogo novo e a primeira coisa que apareceu foi um esqueleto no armário:
