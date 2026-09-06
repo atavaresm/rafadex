@@ -36,6 +36,21 @@ for (let round = 0; round < ROUNDS; round++) {
     fail(round, "maze is not fully connected");
   }
 
+  // A perfect maze is a spanning tree: N cells, exactly N-1 passages (edges).
+  // Each passage is stored bidirectionally (open on both cells), so the sum of
+  // all open[y][x].size is exactly 2*(N-1). This count, combined with connectivity,
+  // proves the maze is acyclic: a connected graph with N-1 edges is a tree.
+  let edgeCount = 0;
+  for (let y = 0; y < MAZE_SIZE; y++) {
+    for (let x = 0; x < MAZE_SIZE; x++) {
+      edgeCount += open[y][x].size;
+    }
+  }
+  const expectedEdges = 2 * (MAZE_SIZE * MAZE_SIZE - 1);
+  if (edgeCount !== expectedEdges) {
+    fail(round, `maze has ${edgeCount / 2} passages, expected ${MAZE_SIZE * MAZE_SIZE - 1}`);
+  }
+
   for (let y = 0; y < MAZE_SIZE; y++) {
     for (let x = 0; x < MAZE_SIZE; x++) {
       for (const d of open[y][x]) {
@@ -76,5 +91,5 @@ for (let round = 0; round < ROUNDS; round++) {
   }
 }
 
-console.log(`OK — ${ROUNDS} mazes: connected, solvable, symmetric walls, ` +
+console.log(`OK — ${ROUNDS} mazes: connected acyclic trees, solvable, symmetric walls, ` +
   `${MAZE_COLLECTIBLES} off-path dead-end collectibles per round.`);
