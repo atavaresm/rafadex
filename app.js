@@ -145,6 +145,9 @@ function renderHome() {
     battleBtn.onclick = () => go("#battle");
     elApp.append(battleBtn);
   }
+  const mazeBtn = el("button", "game-btn bounce", "🌀 Labirinto");
+  mazeBtn.onclick = () => go("#maze");
+  elApp.append(mazeBtn);
   renderShelf();                       // no-op until Task 8
   const grid = el("div", "type-grid");
   for (const [key, info] of Object.entries(window.TYPES)) {
@@ -403,6 +406,7 @@ function renderRoute() {
   else if (route === "capture") renderCapture();
   else if (route === "collection") renderCollection();
   else if (route === "battle") renderBattleSelect();
+  else if (route === "maze") renderMaze();
   else if (route === "info") renderInfo();
   else renderHome();
   window.scrollTo(0, scrollPositions[location.hash] || 0);

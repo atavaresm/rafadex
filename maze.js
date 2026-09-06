@@ -96,6 +96,38 @@ function mazeNewRound(size = MAZE_SIZE, rand = Math.random, pool = null) {
   return best;
 }
 
+function renderMaze() {
+  elApp.innerHTML = "";
+  topbar("🌀", "#home", window.TYPES.grass.color, undefined, "grass");
+
+  const { open } = mazeNewRound();
+
+  const stage = el("div", "maze-stage");
+  const grid = el("div", "maze-grid");
+  grid.style.setProperty("--maze-size", MAZE_SIZE);
+
+  const cells = [];
+  for (let y = 0; y < MAZE_SIZE; y++) {
+    for (let x = 0; x < MAZE_SIZE; x++) {
+      const cell = el("div", "maze-cell");
+      cell.dataset.x = x;
+      cell.dataset.y = y;
+      // Each cell draws only its north and west walls; the grid container draws
+      // the outer east and south edges. Drawing both sides of a shared wall
+      // would double its thickness.
+      if (!open[y][x].has("N")) cell.classList.add("wall-n");
+      if (!open[y][x].has("W")) cell.classList.add("wall-w");
+      cells.push(cell);
+      grid.append(cell);
+    }
+  }
+  cells[0].classList.add("maze-start");
+  cells[MAZE_SIZE * MAZE_SIZE - 1].classList.add("maze-goal");
+
+  stage.append(grid);
+  elApp.append(stage);
+}
+
 if (typeof module !== "undefined" && module.exports) {
   module.exports = { MAZE_SIZE, MAZE_COLLECTIBLES, MAZE_MAX_ATTEMPTS, MAZE_DIRS, MAZE_OPP,
     mazeGenerate, mazeSolve, mazePlaceCollectibles, mazeNewRound };
