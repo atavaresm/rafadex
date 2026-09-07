@@ -205,3 +205,9 @@ button { font: inherit; border: none; cursor: pointer; }
   background-position: center;
   background-repeat: no-repeat; }
 .maze-cell.trail { background: var(--maze-trail); box-shadow: inset 0 0 0 1px var(--maze-trail); }
+.maze-controls { display: flex; gap: 14px; }
+.maze-btn { flex: 1; padding: 16px; border-radius: var(--radius); background: #fff;
+  box-shadow: var(--shadow); font-size: 30px; line-height: 1; }
+.maze-btn.pulse { animation: mazePulse 1s ease-in-out infinite; }
+@keyframes mazePulse { 50% { transform: scale(1.06); background: #fff4b8; } }
+@media (prefers-reduced-motion: reduce) { .maze-btn.pulse { animation: none; } }

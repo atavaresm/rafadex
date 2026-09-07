@@ -201,6 +201,23 @@ function renderMaze() {
 
   stage.append(grid);
   elApp.append(stage);
+
+  const controls = el("div", "maze-controls");
+  const eraseBtn = el("button", "maze-btn bounce", "🧽");
+  eraseBtn.setAttribute("aria-label", "Apagar o caminho");
+  eraseBtn.onclick = () => {
+    for (const [x, y] of path) cellAt(x, y).classList.remove("trail");
+    path = [];
+    // Erasing after a win unlocks the same maze to be played again; collected
+    // Pokemon and their pips are deliberately left alone.
+    won = false;
+    nextBtn.classList.remove("pulse");
+  };
+  const nextBtn = el("button", "maze-btn bounce", "➡️");
+  nextBtn.setAttribute("aria-label", "Próximo labirinto");
+  nextBtn.onclick = () => renderMaze();
+  controls.append(eraseBtn, nextBtn);
+  elApp.append(controls);
 }
 
 if (typeof module !== "undefined" && module.exports) {
