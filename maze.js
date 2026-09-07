@@ -149,17 +149,25 @@ function renderMaze() {
 
   function onPaint(x, y) {
     const item = items.find(it => it.x === x && it.y === y && !collected.has(it));
-    if (!item) return;
-    collected.add(item);
-    const img = cellAt(x, y).querySelector(".maze-item");
-    if (img) {
-      img.classList.add("popped");
-      setTimeout(() => img.remove(), 450);
+    if (item) {
+      collected.add(item);
+      const img = cellAt(x, y).querySelector(".maze-item");
+      if (img) {
+        img.classList.add("popped");
+        setTimeout(() => img.remove(), 450);
+      }
+      pips[collected.size - 1].classList.add("caught");
+      Sound.pop();
+      const mon = byId[item.id];
+      Sound.speak(mon.speak || mon.name);
     }
-    pips[collected.size - 1].classList.add("caught");
-    Sound.pop();
-    const mon = byId[item.id];
-    Sound.speak(mon.speak || mon.name);
+    if (x !== MAZE_SIZE - 1 || y !== MAZE_SIZE - 1) return;
+    won = true;
+    dragging = false;
+    Sound.fanfare();
+    confettiBurst(stage);
+    setTimeout(() => Sound.speak("Você conseguiu!"), 300);
+    nextBtn.classList.add("pulse");
   }
 
   function paintTo(x, y) {
