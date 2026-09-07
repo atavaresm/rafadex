@@ -9,6 +9,49 @@
 
 ---
 
+## 07/09/2026 18:24 — Labirinto jogável: três tasks no ar e duas revisões que valeram o preço
+
+Executei o plano do labirinto por subagentes — um implementador por task, revisor
+independente depois. Fechei as Tasks 1 a 3: o gerador, a tela e a pintura pelo dedo. Já dá
+pra abrir no `#maze`, arrastar da pokébola e ver o traço azul acompanhar o corredor.
+
+As duas revisões pagaram o próprio custo, e por motivos diferentes. Na Task 1, o revisor
+apontou que meu `verify-maze.js` conferia que o labirinto era **conexo**, mas nunca que era
+**acíclico** — e é a aciclicidade que garante "um caminho único entre dois pontos", que é
+justamente o que o `maze.js` promete no próprio comentário. Como esse script é o único
+teste automatizado que o jogo vai ter, uma mudança futura abrindo uma passagem redundante
+passaria batido. Mandei contar arestas e exigir N−1 (conexo + N−1 arestas = árvore), e
+exigi prova de que a checagem consegue falhar. O re-revisor não acreditou no implementador:
+construiu o próprio labirinto com um ciclo injetado e confirmou o disparo, 126 → 128
+arestas, com conectividade e simetria de parede intactas — provando que o teste velho teria
+deixado passar. Na Task 2, o revisor rodou 2.000 simulações contra a saída real do gerador
+pra provar que o esquema "cada célula desenha só a parede norte e oeste" não deixa nem
+parede faltando nem parede dobrada.
+
+O susto foi na Task 3: o subagente travou por stall. Fui ver o estrago e não tinha estrago
+nenhum — o commit estava lá, a árvore limpa e o relatório de 10 KB escrito. Ele morreu
+emitindo a mensagem final, com o trabalho todo feito. Decidi tratar como concluída em vez
+de redespachar do zero, que é a mesma decisão que tomei nos dois stalls de julho. Também
+matei um `http.server` órfão que ele deixou na porta 8931.
+
+O achado de produto veio da verificação da Task 3, e é do tipo que só a mão do Rafa julga:
+num arrasto rápido demais, o traço avança uma ou duas células e **para em silêncio** até o
+dedo voltar pra uma vizinha de onde ele realmente parou. Não trava, não pinta errado, não
+perde nada — só deixa de acompanhar. Deixei fora do escopo de propósito e registrei como
+medição, não como bug. O Luiz já está testando ao vivo pelo servidor local e a primeira
+reação dele foi exatamente a fronteira do que existe: "não tem mensagem, parabéns, next,
+recomeçar". Está tudo planejado — Tasks 4, 5 e 6 — e é a fila agora.
+
+Uma decisão de processo que anotei: ele pediu pra emendar na próxima task enquanto a
+revisão da anterior ainda rodava. Não emendei. O revisor estava com o navegador aberto no
+mesmo arquivo, e ia encontrar botões que aquela task não devia ter e reportar como escopo
+excedido — uma constatação falsa custa uma rodada de correção inteira, mais caro que
+esperar. Também mudou o alvo da publicação no meio do caminho: sai pelo GitHub Pages, sem
+tocar na Cloudflare. Avisei do detalhe que isso esconde — o `amaix-dev.com/pokedex` é um
+Worker de proxy puro, então o conteúdo novo aparece lá sozinho sem eu deployar nada.
+
+---
+
 ## 06/09/2026 10:24 — O plano do labirinto achou um bug antes de existir código
 
 Escrevi o plano de implementação do labirinto: 7 tasks, do gerador até o release. Mas o
