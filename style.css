@@ -211,3 +211,14 @@ button { font: inherit; border: none; cursor: pointer; }
 .maze-btn.pulse { animation: mazePulse 1s ease-in-out infinite; }
 @keyframes mazePulse { 50% { transform: scale(1.06); background: #fff4b8; } }
 @media (prefers-reduced-motion: reduce) { .maze-btn.pulse { animation: none; } }
+.maze-item { position: absolute; top: 50%; left: 50%; width: 88%;
+  transform: translate(-50%, -50%); pointer-events: none; z-index: 2; }
+.maze-item.popped { animation: mazePop .45s ease-out forwards; z-index: 5; }
+@keyframes mazePop {
+  to { transform: translate(-50%, -160%) scale(1.9); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .maze-item.popped { animation: none; opacity: 0; }
+}
+.maze-pips { display: flex; justify-content: center; gap: 10px; margin-bottom: 8px; }
+.maze-pip { width: 22px; height: 22px; margin-top: 0; }

@@ -100,7 +100,8 @@ function renderMaze() {
   elApp.innerHTML = "";
   topbar("🌀", "#home", window.TYPES.grass.color, undefined, "grass");
 
-  const { open } = mazeNewRound();
+  const { open, items } = mazeNewRound();
+  const collected = new Set();
 
   const stage = el("div", "maze-stage");
   const grid = el("div", "maze-grid");
@@ -124,6 +125,21 @@ function renderMaze() {
   cells[0].classList.add("maze-start");
   cells[MAZE_SIZE * MAZE_SIZE - 1].classList.add("maze-goal");
 
+  for (const item of items) {
+    const img = el("img", "maze-item");
+    img.src = sprite(item.id, "thumb");
+    img.alt = "";
+    cellAt(item.x, item.y).append(img);
+  }
+
+  const pipRow = el("div", "maze-pips");
+  const pips = items.map(() => {
+    const pip = el("span", "pokeball maze-pip");
+    pipRow.append(pip);
+    return pip;
+  });
+  elApp.append(pipRow);
+
   let path = [];
   let dragging = false;
   let won = false;
@@ -131,8 +147,20 @@ function renderMaze() {
   function cellAt(x, y) { return cells[y * MAZE_SIZE + x]; }
   function head() { return path[path.length - 1]; }
 
-  // Extension point: Task 5 collects a Pokémon here, Task 6 checks the win.
-  function onPaint(x, y) {}
+  function onPaint(x, y) {
+    const item = items.find(it => it.x === x && it.y === y && !collected.has(it));
+    if (!item) return;
+    collected.add(item);
+    const img = cellAt(x, y).querySelector(".maze-item");
+    if (img) {
+      img.classList.add("popped");
+      setTimeout(() => img.remove(), 450);
+    }
+    pips[collected.size - 1].classList.add("caught");
+    Sound.pop();
+    const mon = byId[item.id];
+    Sound.speak(mon.speak || mon.name);
+  }
 
   function paintTo(x, y) {
     if (won) return;
