@@ -96,6 +96,19 @@ function mazeNewRound(size = MAZE_SIZE, rand = Math.random, pool = null) {
   return best;
 }
 
+// Tracks the win-praise timeout outside any single round's closure, so it can
+// be cancelled no matter how the round ends: the next-maze button and the
+// eraser call mazeClearPraiseTimer() directly (neither goes through a hash
+// change), and this one listener — registered once, not per round, so replaying
+// many rounds never piles up listeners — catches leaving the screen entirely.
+let mazePraiseTimer = null;
+function mazeClearPraiseTimer() {
+  if (mazePraiseTimer !== null) { clearTimeout(mazePraiseTimer); mazePraiseTimer = null; }
+}
+if (typeof window !== "undefined") {
+  window.addEventListener("hashchange", mazeClearPraiseTimer);
+}
+
 function renderMaze() {
   elApp.innerHTML = "";
   topbar("🌀", "#home", window.TYPES.grass.color, undefined, "grass");
@@ -142,6 +155,7 @@ function renderMaze() {
 
   let path = [];
   let dragging = false;
+  let dragPointerId = null;
   let won = false;
 
   function cellAt(x, y) { return cells[y * MAZE_SIZE + x]; }
@@ -166,7 +180,10 @@ function renderMaze() {
     dragging = false;
     Sound.fanfare();
     confettiBurst(stage);
-    setTimeout(() => Sound.speak("Você conseguiu!"), 300);
+    mazePraiseTimer = setTimeout(() => {
+      mazePraiseTimer = null;
+      Sound.speak("Você conseguiu!");
+    }, 300);
     nextBtn.classList.add("pulse");
   }
 
@@ -220,18 +237,25 @@ function renderMaze() {
       : (x === 0 && y === 0);
     if (!startable) return;
     dragging = true;
+    dragPointerId = event.pointerId;
     grid.setPointerCapture(event.pointerId);
     paintTo(x, y);
   });
 
   grid.addEventListener("pointermove", event => {
-    if (!dragging) return;
+    // A second finger resting on the grid never started a drag (rejected by
+    // startable above), so it must not be allowed to move one that did.
+    if (!dragging || event.pointerId !== dragPointerId) return;
     const cell = cellUnder(event);
     if (!cell) return;
     paintTo(Number(cell.dataset.x), Number(cell.dataset.y));
   });
 
-  const endDrag = () => { dragging = false; };
+  const endDrag = event => {
+    if (event.pointerId !== dragPointerId) return;
+    dragging = false;
+    dragPointerId = null;
+  };
   grid.addEventListener("pointerup", endDrag);
   grid.addEventListener("pointercancel", endDrag);
 
@@ -245,13 +269,17 @@ function renderMaze() {
     for (const [x, y] of path) cellAt(x, y).classList.remove("trail");
     path = [];
     // Erasing after a win unlocks the same maze to be played again; collected
-    // Pokemon and their pips are deliberately left alone.
+    // Pokemon and their pips are deliberately left alone. Also cancels any
+    // pending win praise so it can't land after the round has been reset.
     won = false;
+    mazeClearPraiseTimer();
     nextBtn.classList.remove("pulse");
   };
   const nextBtn = el("button", "maze-btn bounce", "➡️");
   nextBtn.setAttribute("aria-label", "Próximo labirinto");
-  nextBtn.onclick = () => renderMaze();
+  // Cancel any praise still pending from this round before the button tears
+  // down this closure and builds the next one, so it can't speak over it.
+  nextBtn.onclick = () => { mazeClearPraiseTimer(); renderMaze(); };
   controls.append(eraseBtn, nextBtn);
   elApp.append(controls);
 }
