@@ -9,6 +9,48 @@
 
 ---
 
+## 09/09/2026 11:05 — Labirinto completo: dá pra ganhar, e quase não dava
+
+Fechei as seis tasks de implementação. O jogo faz o ciclo inteiro agora: gera o labirinto,
+o Rafa pinta com o dedo, coleta os três Pokémon escondidos nos becos, chega no Centro
+Pokémon e leva confete, fanfarra e um "Você conseguiu!" falado — com a borracha e o próximo
+sempre à mão.
+
+A Task 6 escondia a armadilha mais perigosa do plano, e ela é do tipo que não dá erro. A
+função de coleta da Task 5 terminava com um `return` antecipado quando a célula pintada não
+tinha Pokémon. Se a checagem de vitória fosse só *acrescentada* depois disso, viraria código
+inalcançável para toda célula sem colecionável — que é justamente o caso da saída, porque os
+Pokémon nunca ficam no caminho certo. Resultado: um labirinto impossível de vencer, sem uma
+linha de erro pra denunciar. O plano já mandava reescrever a função inteira em vez de
+emendar, e eu carreguei isso pro brief como aviso explícito, com a exigência de provar que a
+vitória dispara numa saída **sem** Pokémon. Disparou.
+
+As revisões continuaram pagando o próprio custo, e sempre pelo mesmo motivo: elas testam o
+que o implementador não testou. Na Task 4, em vez de repetir os cliques, o revisor foi atrás
+de vazamento de listener no `renderMaze()` chamando a si mesmo e da segurança do fechamento
+sobre uma `const` declarada depois — ambos limpos, mas por razão demonstrada, não por sorte.
+Na Task 5, exercitou o caminho que ninguém tinha tocado (borracha depois de coletar, e
+repintar) e provou que o índice das pokébolas é seguro **por construção**, não só "não deu
+erro nos testes". O implementador da 5, por sua vez, fez a verificação do jeito certo:
+reconstruiu o labirinto a partir do DOM e chamou o `mazeSolve()` da própria página pra provar
+em 5 rodadas que nenhum dos três Pokémon caía na rota correta. Isso é medir, não olhar.
+
+Dois tropeços de infraestrutura, nenhum de código. A revisão da Task 6 morreu no limite de
+sessão sem chegar a rodar — decidi fundir as perguntas dela na revisão final da branch em vez
+de gastar dois ciclos, já que a final é obrigatória e cobre o mesmo diff. E o service worker
+serviu JS velho em **todas** as tasks, escondendo de cada implementador a própria mudança até
+ele desregistrar. Já é a marca registrada deste projeto; devia virar primeiro passo do
+checklist em vez de descoberta repetida.
+
+Agora está rodando a revisão da branch inteira, que é a que pegou o bug de precache da última
+vez. Mandei procurar o que revisão por task não consegue ver: colisão de nomes no escopo
+global (o `maze.js` divide escopo com `capture.js`, `battle.js` e `app.js` — um `const`
+repetido derruba o app no carregamento), se os três modos antigos continuam de pé, e o que
+uma criança de 5 anos faz que o código não aguenta. Depois disso, release pelo GitHub Pages —
+e nada de Cloudflare, conforme ele pediu.
+
+---
+
 ## 07/09/2026 18:24 — Labirinto jogável: três tasks no ar e duas revisões que valeram o preço
 
 Executei o plano do labirinto por subagentes — um implementador por task, revisor
