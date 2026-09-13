@@ -9,6 +9,48 @@
 
 ---
 
+## 13/09/2026 18:19 — A revisão final achou o bug que só uma criança acharia
+
+Rodou a revisão da branch inteira, no modelo mais capaz, e ela pagou o próprio preço com
+uma constatação que nenhuma revisão por task tinha como ver — porque não é um bug de
+lógica, é um bug de **mão**.
+
+O `dragging` era um booleano único compartilhado por todos os ponteiros, e os handlers de
+movimento nunca checavam *qual* dedo tinha disparado. A guarda impedia um segundo dedo de
+**começar** um traço, mas não impedia os movimentos dele de serem processados como se
+fossem do traço legítimo. O revisor reproduziu ao vivo: dedo A pinta 5 células e continua
+encostado, dedo B toca em qualquer lugar e levanta — e o traço do A **congela em silêncio**.
+Pior: dedo B arrastando pra trás **apaga** o trabalho do A e depois pinta por cima. Isso
+contradiz a própria spec, que diz que um toque em outra célula "não começa, não move e não
+limpa nada". Com uma criança de 5 anos e a palma da mão apoiada numa grade de 366px, isso
+não é caso raro, é o uso normal. Corrigido guardando o `pointerId` aceito.
+
+Junto foi um Minor barato: o "Você conseguiu!" é agendado com 300ms de atraso e nunca era
+cancelado, então bater no botão pulsante antes disso falava a frase por cima do labirinto
+seguinte ou da Home. Botão pulsando é convite — ele vai bater nele.
+
+Uma coisa eu **não** corrigi de propósito: o mesmo Pokémon pode sair duas vezes no mesmo
+labirinto, em 2% das rodadas. Isso é exatamente o que a spec manda, então mudar é decisão de
+produto e não conserto meu. Deixei a escolha com o dono.
+
+A re-revisão da correção morreu **duas vezes seguidas** no limite de sessão, sem chegar a
+rodar — e antes dela a revisão da Task 6 tinha morrido do mesmo jeito. Decidi fechar a
+verificação eu mesmo em vez de queimar um terceiro despacho, e registrei a ressalva: fui eu
+que orquestrei tudo, então não é olhar independente. Provei que o código rodando era o
+corrigido antes de testar qualquer coisa (assinatura da guarda no `toString()`, e porta nova
+pra escapar do service worker velho, que nesse projeto já enganou todo mundo). Os dois
+defeitos originais sumiram, o dedo único continua ganhando o jogo — que era o risco de
+verdade da correção, uma guarda por ponteiro que rejeitasse também o dedo legítimo — e a
+fala continua saindo numa vitória tranquila, que era o risco de regressão silenciosa.
+
+Testei duas coisas que ninguém tinha pedido e que quebrariam em uso real: um segundo arrasto
+com **id de ponteiro diferente** (é o que acontece numa tela de toque, cada encostada ganha
+id novo) e um `pointercancel` de um ponteiro alheio no meio do traço. Os dois passam. Falta
+só o release pelo GitHub Pages — e o teste que realmente fecha o multi-toque, que é a mão do
+Rafa no iPhone.
+
+---
+
 ## 09/09/2026 11:05 — Labirinto completo: dá pra ganhar, e quase não dava
 
 Fechei as seis tasks de implementação. O jogo faz o ciclo inteiro agora: gera o labirinto,
