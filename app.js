@@ -137,14 +137,11 @@ function renderHome() {
   const gameBtn = el("button", "game-btn bounce", "❓ Quem é esse Pokémon?");
   gameBtn.onclick = () => go("#game");
   elApp.append(gameBtn);
-  const captureBtn = el("button", "game-btn bounce", "🎯 Capturar Pokémon");
-  captureBtn.onclick = () => go("#capture");
-  elApp.append(captureBtn);
-  if (GameCaught.list().length) {
-    const battleBtn = el("button", "game-btn bounce", "⚔️ Batalhar");
-    battleBtn.onclick = () => go("#battle");
-    elApp.append(battleBtn);
-  }
+  // "Capturar Pokémon" and "Batalhar" are deliberately not offered on Home
+  // anymore (owner's call after hands-on testing). Both modes still exist,
+  // still have working routes (#capture, #battle) and script tags, and
+  // maze.js:gen1Ids() (defined in capture.js) is still relied upon by the
+  // maze — nothing about those files was removed, only their Home entry point.
   const mazeBtn = el("button", "game-btn bounce", "🌀 Labirinto");
   mazeBtn.onclick = () => go("#maze");
   elApp.append(mazeBtn);
