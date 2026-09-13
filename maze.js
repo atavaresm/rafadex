@@ -161,6 +161,17 @@ function renderMaze() {
   function cellAt(x, y) { return cells[y * MAZE_SIZE + x]; }
   function head() { return path[path.length - 1]; }
 
+  // Keeps the "head" class on exactly the current head of path (none when path
+  // is empty), so the child can always see where the live end of the trail is.
+  // Called after every mutation: painting, backwards-retrace, the pointerdown
+  // truncation, the eraser, and winning.
+  let headCell = null;
+  function updateHead() {
+    if (headCell) headCell.classList.remove("head");
+    headCell = path.length ? cellAt(...head()) : null;
+    if (headCell) headCell.classList.add("head");
+  }
+
   function onPaint(x, y) {
     const item = items.find(it => it.x === x && it.y === y && !collected.has(it));
     if (item) {
@@ -193,6 +204,7 @@ function renderMaze() {
       if (x === 0 && y === 0) {
         path.push([0, 0]);
         cellAt(0, 0).classList.add("trail");
+        updateHead();
         onPaint(0, 0);
       }
       return;
@@ -206,6 +218,7 @@ function renderMaze() {
       if (x === px && y === py) {
         cellAt(hx, hy).classList.remove("trail");
         path.pop();
+        updateHead();
         return;
       }
     }
@@ -218,6 +231,7 @@ function renderMaze() {
 
     path.push([x, y]);
     cellAt(x, y).classList.add("trail");
+    updateHead();
     onPaint(x, y);
   }
 
@@ -268,6 +282,7 @@ function renderMaze() {
   eraseBtn.onclick = () => {
     for (const [x, y] of path) cellAt(x, y).classList.remove("trail");
     path = [];
+    updateHead();
     // Erasing after a win unlocks the same maze to be played again; collected
     // Pokemon and their pips are deliberately left alone. Also cancels any
     // pending win praise so it can't land after the round has been reset.
