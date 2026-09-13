@@ -240,16 +240,25 @@ function renderMaze() {
   }
 
   grid.addEventListener("pointerdown", event => {
+    // Once won, the trail is frozen until the eraser (🧽) or next maze (➡️);
+    // without this guard a mid-trail press below would truncate the path
+    // while onPaint's win handling stays no-op'd, silently erasing part of it.
+    if (won) return;
     const cell = cellUnder(event);
     if (!cell) return;
     const x = Number(cell.dataset.x), y = Number(cell.dataset.y);
-    // A drag may only begin at the entrance (nothing painted yet) or at the head
-    // of the existing path (resuming after lifting the finger). Anywhere else is
-    // ignored: it must not start, move, or clear anything.
-    const startable = path.length
-      ? (x === head()[0] && y === head()[1])
-      : (x === 0 && y === 0);
+    // A drag may begin at the entrance (nothing painted yet) or at ANY cell
+    // already on the path — pressing mid-trail resumes the drag from there,
+    // un-painting everything after it. Anywhere else is ignored: it must not
+    // start, move, or clear anything.
+    const index = path.findIndex(([px, py]) => px === x && py === y);
+    const startable = path.length ? index !== -1 : (x === 0 && y === 0);
     if (!startable) return;
+    if (index !== -1 && index < path.length - 1) {
+      for (const [cx, cy] of path.slice(index + 1)) cellAt(cx, cy).classList.remove("trail");
+      path = path.slice(0, index + 1);
+      updateHead();
+    }
     dragging = true;
     dragPointerId = event.pointerId;
     grid.setPointerCapture(event.pointerId);
