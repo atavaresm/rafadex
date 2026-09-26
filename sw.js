@@ -1,5 +1,5 @@
 importScripts("precache.js");
-const VERSION = "20260823232812";
+const VERSION = "20260926002354";
 const SHELL = `rafadex-shell-${VERSION}`;
 const RUNTIME = "rafadex-runtime";
 const SHELL_CORE = ["./", "index.html", "style.css", "app.js", "version.js", "audio.js",
@@ -7,7 +7,7 @@ const SHELL_CORE = ["./", "index.html", "style.css", "app.js", "version.js", "au
   "assets/fonts/baloo2.woff2", "assets/fonts/quicksand.woff2",
   "assets/fonts/materialsymbolsrounded.woff2"];
 const SHELL_OPTIONAL = ["assets/icons/icon-180.png", "assets/icons/icon-192.png",
-  "assets/icons/icon-512.png"];
+  "assets/icons/icon-512.png", "assets/qr-share.svg"];
 
 self.addEventListener("install", event => {
   event.waitUntil((async () => {
