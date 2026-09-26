@@ -14,6 +14,10 @@ All 1025 Pokémon; UI is image/color/sound only, copy in pt-BR; repo artifacts i
   version — `version-check.yml` (required on `master`) fails a release PR if
   `version.js` doesn't match `VERSION`.
 - `pytest -q` — pipeline tests.
+- `uv run --no-project --with segno tools/gen_share_qr.py` — regenerates
+  `assets/qr-share.svg`, the QR on the info page. Only needed when the public URL
+  changes. `segno` is deliberately not a project dependency: the pipeline is
+  stdlib-only and the SVG is committed.
 - `python3 -m http.server 8000` — local dev (PWA features need http, not file://).
 
 ## Architecture
