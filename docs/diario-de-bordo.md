@@ -9,6 +9,34 @@
 
 ---
 
+## 23/08/2026 15:13 — Spec do jogo de captura: v2 vira jogo de verdade, não só Pokédex
+
+Sessão começou com uma checagem de higiene: confirmei que `develop` e `master` estavam
+100% em sincronia (mesmo conteúdo, sem commit perdido, sem stash esquecido) antes de
+começar qualquer coisa nova — base limpa pra v2.
+
+Daí veio o pedido de verdade: o Rafael (5 anos) adora capturar Pokémon, e eu quero um
+jogo simplificado tipo *Let's Go Pikachu* — captura no centro, batalha só de
+brinde, sem o mecanismo de andar pela cidade (GPS) do Pokémon GO. Como é subsistema
+novo (mapa, captura, coleção, batalha), classifiquei como arquitetural e fiz o
+brainstorm completo, pergunta por pergunta: fica dentro do rafadex (não um app
+separado); Pokémon aparece num mapinha fixo de grama que ele toca, não GPS real;
+captura é arrastar a pokébola até o bicho, sem mira fina; nunca foge de vez — pode
+tentar quantas vezes quiser, zero frustração; pool é só Geração 1 (151), não os 1025;
+batalha é toque-pra-atacar simples, sem tipos/vantagens, e vencer também pode
+capturar o adversário. Descoberta interessante no meio do caminho: o app já tem uma
+pokébola de favorito que fala "você capturou" — decidi (a pedido dele) que a coleção
+do jogo fica **separada** dessa, não a mesma coisa.
+
+Fechei com a decisão técnica: dois módulos JS novos (`capture.js`, `battle.js`) no
+mesmo padrão vanilla de `audio.js`/`pronounce-dex.js`, sem canvas, sem biblioteca
+nova — e escrevi a spec formal em
+`docs/superpowers/specs/2026-08-23-pokemon-capture-game-design.md`, comitada na nova
+branch `feat/pokemon-capture-game`. Próximo passo é o plano de implementação; ainda
+não tem uma linha de código do jogo em si.
+
+---
+
 ## 20/08/2026 18:51 — Coração virou pokébola, e capturar Pokémon agora fala
 
 Pedido simples, mas ficou bonitinho: o botão de favorito do card de detalhe (que era

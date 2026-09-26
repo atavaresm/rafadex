@@ -4,6 +4,17 @@ All notable changes to RafaDex by version. Dates are when each version shipped t
 production (GitHub Pages). See `docs/diario-de-bordo.md` for the full story behind
 each round.
 
+## v1.11.0 — 2026-08-23
+
+### Added
+- New "Capturar Pokémon" game mode: a grass map that triggers random Generation 1
+  encounters, a drag-the-Pokéball capture minigame with no permanent "flee" (always
+  retryable), and a personal in-game collection screen — kept separate from the
+  existing Pokédex favorites.
+- New "Batalhar" mode: pick a captured Pokémon and fight a random Generation 1
+  opponent with a simple tap-to-attack HP-bar battle. Winning can also add the
+  opponent to your collection.
+
 ## v1.10.0 — 2026-08-20
 
 ### Changed
