@@ -1,5 +1,8 @@
 "use strict";
 const elApp = document.getElementById("app");
+// Public address of the app. The QR in assets/qr-share.svg encodes this exact
+// string; regenerate it with tools/gen_share_qr.py if it ever changes.
+const SHARE_URL = "https://amaix-dev.com/pokedex/";
 const byId = Object.fromEntries(window.DEX.map(m => [m.id, m]));
 let contextIds = [];                  // ordered ids of the active browsing context
 
@@ -367,7 +370,41 @@ function renderInfo() {
     <a class="github-link" href="https://github.com/atavaresm/rafadex"
        target="_blank" rel="noopener">Ver no GitHub →</a>
   `);
-  elApp.append(page);
+  elApp.append(page, shareBlock());
+}
+
+function shareBlock() {
+  const block = el("div", "info-page share-block", `
+    <h2>Compartilhar</h2>
+    <p>Aponte a câmera de outro celular para o código e o Pokédex abre lá.</p>
+    <img class="share-qr" src="assets/qr-share.svg" width="220" height="220"
+         alt="Código QR que abre ${SHARE_URL}">
+    <p class="share-url">amaix-dev.com/pokedex</p>
+  `);
+  const button = el("button", "share-btn bounce", "Compartilhar link");
+  button.onclick = () => shareLink(button);
+  block.append(button);
+  return block;
+}
+
+async function shareLink(button) {
+  const label = button.textContent;
+  const flash = text => {
+    button.textContent = text;
+    setTimeout(() => { button.textContent = label; }, 2000);
+  };
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: "Pokédex", url: SHARE_URL });
+      return;
+    }
+    await navigator.clipboard.writeText(SHARE_URL);
+    flash("Link copiado!");
+  } catch (err) {
+    // Dismissing the iOS share sheet rejects with AbortError — not a failure.
+    if (err && err.name === "AbortError") return;
+    flash("Use o código acima");
+  }
 }
 
 function confettiBurst(parent) {
