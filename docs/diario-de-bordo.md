@@ -9,6 +9,18 @@
 
 ---
 
+## 27/09/2026 12:18 — Rafadex ganha licença: GPL-3.0
+
+Percebi que o repo era público mas não tinha licença nenhuma, ou seja, "todos os direitos
+reservados" por padrão. Olhei as opções (MIT é a mais comum) e fui de **GPL-3.0**: quem
+distribuir versão modificada tem que abrir o código também. Junto veio um `NOTICE.md`
+deixando claro que sprites, gritos e nomes Pokémon são da Nintendo/Game Freak/TPC e ficam
+fora da licença, e os textos OFL 1.1 (Baloo 2, Quicksand) e Apache 2.0 (Material Symbols)
+em `assets/fonts/`, que a redistribuição das fontes exige. PR #78 aberto pro `develop`;
+sem bump de versão, porque nada do build mudou.
+
+---
+
 ## 20/08/2026 18:51 — Coração virou pokébola, e capturar Pokémon agora fala
 
 Pedido simples, mas ficou bonitinho: o botão de favorito do card de detalhe (que era
