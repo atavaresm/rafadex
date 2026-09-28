@@ -9,6 +9,19 @@
 
 ---
 
+## 27/09/2026 22:31 — Licença no ar: release v1.11.1 só com a GPL
+
+Subi a licença pros dois lados: PR #78 no `develop` e uma release separada (#79) no
+`master`, feita a partir do próprio `master` com cherry-pick, no mesmo esquema da #77,
+pra não arrastar o jogo de captura, que ainda está só no `develop`. Precisei resolver um
+conflito no diário (o `master` não tem as entradas do jogo) e fazer o bump pra v1.11.1,
+porque o `version-check` exige. Merge com bypass de admin, como nos PRs anteriores. O
+deploy do Pages passou e o `amaix-dev.com/pokedex` já serve a v1.11.1: o Worker da
+Cloudflare é só proxy, então não precisa de deploy próprio. Ficou pendente: o `develop`
+segue em v1.11.0 enquanto o `master` está em v1.11.1.
+
+---
+
 ## 27/09/2026 12:18 — Rafadex ganha licença: GPL-3.0
 
 Percebi que o repo era público mas não tinha licença nenhuma, ou seja, "todos os direitos
