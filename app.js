@@ -133,6 +133,10 @@ window.addEventListener("scroll", () => {
   lastHeaderScrollY = y;
 });
 
+// Capture + battle are hidden from the home for now; their routes (#capture,
+// #collection, #battle) and saved captures stay intact. Flip to bring them back.
+const CAPTURE_ENABLED = false;
+
 function renderHome() {
   elApp.innerHTML = "";
   resetHeaderToBrand();
@@ -140,7 +144,16 @@ function renderHome() {
   const gameBtn = el("button", "game-btn bounce", "❓ Quem é esse Pokémon?");
   gameBtn.onclick = () => go("#game");
   elApp.append(gameBtn);
-  renderShelf();                       // no-op until Task 8
+  if (CAPTURE_ENABLED) {
+    const captureBtn = el("button", "game-btn bounce", "🎯 Capturar Pokémon");
+    captureBtn.onclick = () => go("#capture");
+    elApp.append(captureBtn);
+  }
+  if (CAPTURE_ENABLED && GameCaught.list().length) {
+    const battleBtn = el("button", "game-btn bounce", "⚔️ Batalhar");
+    battleBtn.onclick = () => go("#battle");
+    elApp.append(battleBtn);
+  }
   const grid = el("div", "type-grid");
   for (const [key, info] of Object.entries(window.TYPES)) {
     const iconHtml = typeIconSvg(key, 56, vividColor(info.color, key));
@@ -149,45 +162,101 @@ function renderHome() {
     grid.append(btn);
   }
   elApp.append(grid);
-  const gear = el("button", "gear", "⚙️");
-  gear.setAttribute("aria-label", "Downloads para uso offline");
-  const search = el("button", "gear", "🔍");
-  search.setAttribute("aria-label", "Buscar Pokémon por nome");
-  let panelOpen = null;
-  function closePanels() {
-    elApp.querySelector(".parent-panel")?.remove();
-    elApp.querySelector(".search-panel")?.remove();
-    panelOpen = null;
-  }
-  gear.onclick = () => {
-    const wasOpen = panelOpen === "gear";
-    closePanels();
-    if (!wasOpen) { elApp.append(renderParentPanel()); panelOpen = "gear"; }
-  };
-  search.onclick = () => {
-    const wasOpen = panelOpen === "search";
-    closePanels();
-    if (!wasOpen) { elApp.append(renderSearchPanel()); panelOpen = "search"; }
-  };
-  const info = el("button", "gear", "ℹ️");
-  info.setAttribute("aria-label", "Sobre o Pokédex");
-  info.onclick = () => go("#info");
-  const toolRow = el("div", "tool-row");
-  toolRow.append(gear, search, info);
-  elApp.append(toolRow);
+  addHomeMenu();
 }
 
-function renderShelf() {
-  const ids = Favs.list();
-  if (!ids.length) return;
-  const shelf = el("div", "shelf");
-  for (const id of ids) {
-    const img = el("img", "bounce");
-    img.src = sprite(id, "thumb");
-    img.onclick = () => { contextIds = Favs.list(); go(`#dex/${id}`); };
-    shelf.append(img);
+// The home header's ☰ opens the grown-up tools (favorites, search, offline
+// downloads, about) that used to sit as faded icons below the type grid.
+const HOME_MENU = [
+  { icon: "⭐", label: "Favoritos", hash: "#favorites" },
+  { icon: "🔍", label: "Buscar", hash: "#search" },
+  { icon: "⚙️", label: "Baixar para usar sem internet", hash: "#downloads" },
+  { icon: "📤", label: "Compartilhar", hash: "#share" },
+  { icon: "ℹ️", label: "Sobre", hash: "#info" },
+];
+
+function addHomeMenu() {
+  const header = document.querySelector(".app-header");
+  header.classList.add("split");
+  header.innerHTML = '<span class="brand"><span class="ball"></span><span class="name">Pokédex</span></span>';
+  const menuBtn = el("button", "menu-btn bounce", "<span></span><span></span><span></span>");
+  menuBtn.setAttribute("aria-label", "Menu");
+  menuBtn.setAttribute("aria-expanded", "false");
+  header.append(menuBtn);
+
+  // Lives inside #app (position: fixed), so the next route render clears it.
+  const menu = el("nav", "home-menu");
+  menu.hidden = true;
+  for (const item of HOME_MENU) {
+    const count = item.hash === "#favorites" ? Favs.list().length : 0;
+    const row = el("button", "home-menu-item bounce",
+      `<span class="icon">${item.icon}</span><span>${item.label}</span>` +
+      (count ? `<span class="count">${count}</span>` : ""));
+    row.onclick = () => go(item.hash);
+    menu.append(row);
   }
-  elApp.append(shelf);
+  elApp.append(menu);
+
+  const setOpen = open => {
+    menu.hidden = !open;
+    menuBtn.setAttribute("aria-expanded", String(open));
+  };
+  menuBtn.onclick = () => setOpen(menu.hidden);
+  // A tap outside only closes the menu: captured and swallowed so it doesn't
+  // also open the type button under the finger.
+  const closeOnOutside = event => {
+    if (!menu.isConnected) { document.removeEventListener("click", closeOnOutside, true); return; }
+    if (menu.hidden || menu.contains(event.target) || menuBtn.contains(event.target)) return;
+    event.preventDefault();
+    event.stopPropagation();
+    setOpen(false);
+  };
+  document.addEventListener("click", closeOnOutside, true);
+  window.addEventListener("scroll", () => setOpen(false), { once: true });
+}
+
+function monCard(id) {
+  const mon = byId[id];
+  const numStr = String(id).padStart(3, "0");
+  const typeBadges = mon.types.map(t => typeBadgeHtml(t, 20)).join("");
+  const card = el("button", "mon-card bounce shine",
+    `<div class="mon-meta"><span class="pill">#${numStr} · G${mon.gen}</span>` +
+    `<span class="mon-typepower">${typeBadges}<span class="pill">${mon.power}</span></span></div>` +
+    `<img loading="lazy" src="${sprite(id, "thumb")}" alt=""><span class="name">${mon.name}</span>`);
+  card.style.borderColor = vividColor(window.TYPES[mon.types[0]].color, mon.types[0]);
+  card.querySelector("img").onerror = e => { e.target.src = ""; e.target.style.background = "#ddd"; };
+  card.onclick = () => go(`#dex/${id}`);
+  return card;
+}
+
+// A page of its own: the old home shelf grew unwieldy with many favorites.
+function renderFavorites() {
+  contextIds = Favs.list();
+  elApp.innerHTML = "";
+  topbar("⭐ Favoritos", "#home");
+  if (!contextIds.length) {
+    elApp.append(el("div", "empty-favs",
+      '<span class="pokeball caught"></span>' +
+      "<p>Toque na Pokébola de um Pokémon para guardar ele aqui.</p>"));
+    return;
+  }
+  const grid = el("div", "mon-grid");
+  for (const id of contextIds) grid.append(monCard(id));
+  elApp.append(grid);
+}
+
+function renderSearch() {
+  elApp.innerHTML = "";
+  topbar("🔍 Buscar", "#home");
+  const panel = renderSearchPanel();
+  elApp.append(panel);
+  panel.querySelector("input").focus();
+}
+
+function renderDownloads() {
+  elApp.innerHTML = "";
+  topbar("⚙️ Baixar", "#home");
+  elApp.append(renderParentPanel());
 }
 
 function renderType(key) {
@@ -197,19 +266,7 @@ function renderType(key) {
   const titleIcon = typeIconSvg(key, 22, vividColor(info.color, key));
   topbar(`${titleIcon} ${info.name}`, "#home", info.color, undefined, key);
   const grid = el("div", "mon-grid");
-  for (const id of contextIds) {
-    const mon = byId[id];
-    const numStr = String(id).padStart(3, "0");
-    const typeBadges = mon.types.map(t => typeBadgeHtml(t, 20)).join("");
-    const card = el("button", "mon-card bounce shine",
-      `<div class="mon-meta"><span class="pill">#${numStr} · G${mon.gen}</span>` +
-      `<span class="mon-typepower">${typeBadges}<span class="pill">${mon.power}</span></span></div>` +
-      `<img loading="lazy" src="${sprite(id, "thumb")}" alt=""><span class="name">${mon.name}</span>`);
-    card.style.borderColor = vividColor(window.TYPES[mon.types[0]].color, mon.types[0]);
-    card.querySelector("img").onerror = e => { e.target.src = ""; e.target.style.background = "#ddd"; };
-    card.onclick = () => go(`#dex/${id}`);
-    grid.append(card);
-  }
+  for (const id of contextIds) grid.append(monCard(id));
   elApp.append(grid);
 }
 
@@ -220,7 +277,8 @@ function renderDetail(id) {
   const tint = window.TYPES[mon.types[0]].color;
   elApp.innerHTML = "";
   const numStr = String(id).padStart(3, "0");
-  topbar("", `#type/${mon.types[0]}`, tint, pill(`#${numStr} · G${mon.gen}`), mon.types[0]);
+  const backHash = ["#favorites", "#search"].includes(lastListHash) ? lastListHash : `#type/${mon.types[0]}`;
+  topbar("", backHash, tint, pill(`#${numStr} · G${mon.gen}`), mon.types[0]);
   const typeBadges = mon.types.map(t => typeBadgeHtml(t, 26)).join("");
   elApp.append(el("div", "type-power-row", `${typeBadges}<span class="pill">${mon.power}</span>`));
   const box = el("div", "detail");
@@ -356,7 +414,7 @@ function renderGame() {
 
 function renderInfo() {
   elApp.innerHTML = "";
-  topbar("ℹ️", "#home");
+  topbar("ℹ️ Sobre", "#home");
   const page = el("div", "info-page", `
     <h2>Por que esse app existe</h2>
     <p>Esse Pokédex nasceu de uma vontade simples: um pai encontrar mais um jeito de
@@ -370,7 +428,13 @@ function renderInfo() {
     <a class="github-link" href="https://github.com/atavaresm/rafadex"
        target="_blank" rel="noopener">Ver no GitHub →</a>
   `);
-  elApp.append(page, shareBlock());
+  elApp.append(page);
+}
+
+function renderShare() {
+  elApp.innerHTML = "";
+  topbar("📤 Compartilhar", "#home");
+  elApp.append(shareBlock());
 }
 
 function shareBlock() {
@@ -420,16 +484,25 @@ function confettiBurst(parent) {
 
 const scrollPositions = {};
 let previousHash = null;
+let lastListHash = "#home";            // last non-detail page, for the detail back button
 
 function renderRoute() {
   if (previousHash !== null) scrollPositions[previousHash] = window.scrollY;
   document.body.style.background = "";
   Sound.stopSpeech();
   const [route, arg] = location.hash.replace(/^#/, "").split("/");
+  if (route !== "dex") lastListHash = location.hash || "#home";
   if (route === "type") renderType(arg);
   else if (route === "dex") renderDetail(Number(arg));
   else if (route === "game") renderGame();
+  else if (route === "capture") renderCapture();
+  else if (route === "collection") renderCollection();
+  else if (route === "battle") renderBattleSelect();
   else if (route === "info") renderInfo();
+  else if (route === "share") renderShare();
+  else if (route === "favorites") renderFavorites();
+  else if (route === "search") renderSearch();
+  else if (route === "downloads") renderDownloads();
   else renderHome();
   window.scrollTo(0, scrollPositions[location.hash] || 0);
   lastHeaderScrollY = window.scrollY;
@@ -484,16 +557,20 @@ function normalizeSearch(text) {
   return text.normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase();
 }
 
+let lastSearchQuery = "";              // kept so "back" from a result restores the list
+
 function renderSearchPanel() {
   const panel = el("div", "search-panel");
   const input = el("input", "search-input");
   input.type = "text";
   input.placeholder = "Buscar por nome...";
+  input.value = lastSearchQuery;
   panel.append(input);
   const results = el("div", "search-results");
   panel.append(results);
 
   input.oninput = () => {
+    lastSearchQuery = input.value;
     const query = normalizeSearch(input.value.trim());
     results.innerHTML = "";
     if (!query) return;
@@ -505,6 +582,7 @@ function renderSearchPanel() {
       results.append(row);
     }
   };
+  input.oninput();
   return panel;
 }
 
