@@ -9,6 +9,59 @@
 
 ---
 
+## 27/10/2026, 13:20 — Compartilhar ganhou lugar próprio no menu
+
+O QR code e o botão "Compartilhar link" ficavam no fim da página Sobre, embaixo do texto
+de por que o app existe. São coisas diferentes: uma é história, a outra é ação. Separei
+em dois itens do menu. 📤 Compartilhar abre uma página só com o QR e o botão, e ℹ️ Sobre
+ficou só com o texto e o link do GitHub. O título da Sobre também deixou de ser só o
+emoji.
+
+---
+
+## 27/10/2026, 13:10 — Captura na gaveta, por enquanto
+
+Decidi tirar o "Capturar Pokémon" da home. Não quero esse modo agora. Não apaguei nada:
+virou uma flag (`CAPTURE_ENABLED = false`) que esconde a captura e, junto, o "Batalhar",
+que sem captura não faz sentido. As rotas e as capturas salvas continuam lá, então dá pra
+trazer de volta mudando uma linha. A home ficou só com o "Quem é esse Pokémon?" e a
+grade de tipos, mais limpa.
+
+---
+
+## 27/10/2026, 13:04 — Favoritos sem o vermelho por trás
+
+Abri a página de favoritos nova e o fundo vermelho da marca não funcionou ali. Os
+cartões de vidro ficavam rosados e tudo parecia barulhento. Tirei o vermelho das três
+páginas do menu (Favoritos, Buscar, Baixar), que agora usam o creme do cabeçalho. Os
+cartões ficaram quase brancos e a borda colorida do tipo de cada um aparece bem mais. A
+home e as páginas de tipo continuam coloridas, porque lá a cor é a brincadeira; as
+páginas do menu são mais de ferramenta.
+
+---
+
+## 27/10/2026, 12:15 — Menu ☰ no topo e uma página só pros favoritos
+
+Os três ícones apagados embaixo da grade de tipos (⚙️ 🔍 ℹ️) sempre foram meio
+escondidos, de propósito, pra ficarem longe do Rafa. Só que ficaram escondidos até pra
+mim. Agora tem um botão ☰ no canto do cabeçalho da tela inicial, com Favoritos, Buscar,
+Baixar e Sobre. Continua fora do caminho de quem só quer tocar nos tipos, mas fica
+fácil de achar.
+
+A outra dor era a fileira de favoritos na home: com muito Pokémon marcado ela virava
+uma tira enorme e empurrava tudo pra baixo. Os favoritos ganharam uma página própria
+(`#favorites`), com a mesma grade dos tipos e um contador no menu. Busca e downloads
+também viraram páginas. Um detalhe que eu gostei: voltar de um Pokémon aberto pela busca
+ou pelos favoritos devolve pra lá (e a busca guarda o que foi digitado), e não pro tipo
+dele como antes.
+
+Dois tropeços que o teste no navegador pegou: tocar fora do menu fechava ele *e* abria o
+tipo que estava embaixo do dedo, então agora esse toque só fecha. E a busca perdia o
+texto na volta. Saiu como v1.12.0. Falta abrir no iPhone de verdade antes de chamar de
+pronto.
+
+---
+
 ## 27/09/2026 12:18 — Rafadex ganha licença: GPL-3.0
 
 Percebi que o repo era público mas não tinha licença nenhuma, ou seja, "todos os direitos
