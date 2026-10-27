@@ -9,6 +9,28 @@
 
 ---
 
+## 27/10/2026, 12:15 — Menu ☰ no topo e uma página só pros favoritos
+
+Os três ícones apagados embaixo da grade de tipos (⚙️ 🔍 ℹ️) sempre foram meio
+escondidos, de propósito, pra ficarem longe do Rafa. Só que ficaram escondidos até pra
+mim. Agora tem um botão ☰ no canto do cabeçalho da tela inicial, com Favoritos, Buscar,
+Baixar e Sobre. Continua fora do caminho de quem só quer tocar nos tipos, mas fica
+fácil de achar.
+
+A outra dor era a fileira de favoritos na home: com muito Pokémon marcado ela virava
+uma tira enorme e empurrava tudo pra baixo. Os favoritos ganharam uma página própria
+(`#favorites`), com a mesma grade dos tipos e um contador no menu. Busca e downloads
+também viraram páginas. Um detalhe que eu gostei: voltar de um Pokémon aberto pela busca
+ou pelos favoritos devolve pra lá (e a busca guarda o que foi digitado), e não pro tipo
+dele como antes.
+
+Dois tropeços que o teste no navegador pegou: tocar fora do menu fechava ele *e* abria o
+tipo que estava embaixo do dedo, então agora esse toque só fecha. E a busca perdia o
+texto na volta. Saiu como v1.12.0. Falta abrir no iPhone de verdade antes de chamar de
+pronto.
+
+---
+
 ## 27/09/2026 12:18 — Rafadex ganha licença: GPL-3.0
 
 Percebi que o repo era público mas não tinha licença nenhuma, ou seja, "todos os direitos
