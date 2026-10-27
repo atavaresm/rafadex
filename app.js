@@ -133,6 +133,10 @@ window.addEventListener("scroll", () => {
   lastHeaderScrollY = y;
 });
 
+// Capture + battle are hidden from the home for now; their routes (#capture,
+// #collection, #battle) and saved captures stay intact. Flip to bring them back.
+const CAPTURE_ENABLED = false;
+
 function renderHome() {
   elApp.innerHTML = "";
   resetHeaderToBrand();
@@ -140,10 +144,12 @@ function renderHome() {
   const gameBtn = el("button", "game-btn bounce", "❓ Quem é esse Pokémon?");
   gameBtn.onclick = () => go("#game");
   elApp.append(gameBtn);
-  const captureBtn = el("button", "game-btn bounce", "🎯 Capturar Pokémon");
-  captureBtn.onclick = () => go("#capture");
-  elApp.append(captureBtn);
-  if (GameCaught.list().length) {
+  if (CAPTURE_ENABLED) {
+    const captureBtn = el("button", "game-btn bounce", "🎯 Capturar Pokémon");
+    captureBtn.onclick = () => go("#capture");
+    elApp.append(captureBtn);
+  }
+  if (CAPTURE_ENABLED && GameCaught.list().length) {
     const battleBtn = el("button", "game-btn bounce", "⚔️ Batalhar");
     battleBtn.onclick = () => go("#battle");
     elApp.append(battleBtn);

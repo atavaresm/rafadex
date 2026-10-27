@@ -15,6 +15,11 @@ each round.
 - Search and offline downloads are pages of their own; back from a Pokémon returns
   to Favoritos/Buscar (keeping the typed search) when that's where it was opened.
 
+### Changed
+- "Capturar Pokémon" and "Batalhar" are hidden from the home for now (flag
+  `CAPTURE_ENABLED` in `app.js`); saved captures are kept.
+- Favoritos, Buscar and Baixar use the neutral cream background instead of red.
+
 ## v1.11.0 — 2026-08-23
 
 ### Added

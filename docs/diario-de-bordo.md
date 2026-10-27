@@ -9,6 +9,16 @@
 
 ---
 
+## 27/10/2026, 13:10 — Captura na gaveta, por enquanto
+
+Decidi tirar o "Capturar Pokémon" da home. Não quero esse modo agora. Não apaguei nada:
+virou uma flag (`CAPTURE_ENABLED = false`) que esconde a captura e, junto, o "Batalhar",
+que sem captura não faz sentido. As rotas e as capturas salvas continuam lá, então dá pra
+trazer de volta mudando uma linha. A home ficou só com o "Quem é esse Pokémon?" e a
+grade de tipos, mais limpa.
+
+---
+
 ## 27/10/2026, 13:04 — Favoritos sem o vermelho por trás
 
 Abri a página de favoritos nova e o fundo vermelho da marca não funcionou ali. Os
