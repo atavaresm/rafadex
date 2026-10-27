@@ -227,7 +227,6 @@ function renderFavorites() {
   contextIds = Favs.list();
   elApp.innerHTML = "";
   topbar("⭐ Favoritos", "#home");
-  document.body.style.background = "var(--brand)";
   if (!contextIds.length) {
     elApp.append(el("div", "empty-favs",
       '<span class="pokeball caught"></span>' +
@@ -242,7 +241,6 @@ function renderFavorites() {
 function renderSearch() {
   elApp.innerHTML = "";
   topbar("🔍 Buscar", "#home");
-  document.body.style.background = "var(--brand)";
   const panel = renderSearchPanel();
   elApp.append(panel);
   panel.querySelector("input").focus();
@@ -251,7 +249,6 @@ function renderSearch() {
 function renderDownloads() {
   elApp.innerHTML = "";
   topbar("⚙️ Baixar", "#home");
-  document.body.style.background = "var(--brand)";
   elApp.append(renderParentPanel());
 }
 
