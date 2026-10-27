@@ -9,6 +9,17 @@
 
 ---
 
+## 27/10/2026, 13:04 — Favoritos sem o vermelho por trás
+
+Abri a página de favoritos nova e o fundo vermelho da marca não funcionou ali. Os
+cartões de vidro ficavam rosados e tudo parecia barulhento. Tirei o vermelho das três
+páginas do menu (Favoritos, Buscar, Baixar), que agora usam o creme do cabeçalho. Os
+cartões ficaram quase brancos e a borda colorida do tipo de cada um aparece bem mais. A
+home e as páginas de tipo continuam coloridas, porque lá a cor é a brincadeira; as
+páginas do menu são mais de ferramenta.
+
+---
+
 ## 27/10/2026, 12:15 — Menu ☰ no topo e uma página só pros favoritos
 
 Os três ícones apagados embaixo da grade de tipos (⚙️ 🔍 ℹ️) sempre foram meio
