@@ -7,8 +7,9 @@ each round.
 ## v1.12.0 — 2026-10-27
 
 ### Added
-- A ☰ menu in the home header with Favoritos, Buscar, Baixar (offline downloads) and
-  Sobre, replacing the faded icons below the type grid.
+- A ☰ menu in the home header with Favoritos, Buscar, Baixar (offline downloads),
+  Compartilhar (QR code + share link, now its own page) and Sobre, replacing the faded
+  icons below the type grid.
 - A Favoritos page: the favorites grid (with a count on the menu) instead of the
   home shelf, which grew unwieldy with many favorites. Empty state explains how to
   add one.

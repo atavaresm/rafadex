@@ -9,6 +9,16 @@
 
 ---
 
+## 27/10/2026, 13:20 — Compartilhar ganhou lugar próprio no menu
+
+O QR code e o botão "Compartilhar link" ficavam no fim da página Sobre, embaixo do texto
+de por que o app existe. São coisas diferentes: uma é história, a outra é ação. Separei
+em dois itens do menu. 📤 Compartilhar abre uma página só com o QR e o botão, e ℹ️ Sobre
+ficou só com o texto e o link do GitHub. O título da Sobre também deixou de ser só o
+emoji.
+
+---
+
 ## 27/10/2026, 13:10 — Captura na gaveta, por enquanto
 
 Decidi tirar o "Capturar Pokémon" da home. Não quero esse modo agora. Não apaguei nada:

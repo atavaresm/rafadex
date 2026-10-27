@@ -171,6 +171,7 @@ const HOME_MENU = [
   { icon: "⭐", label: "Favoritos", hash: "#favorites" },
   { icon: "🔍", label: "Buscar", hash: "#search" },
   { icon: "⚙️", label: "Baixar para usar sem internet", hash: "#downloads" },
+  { icon: "📤", label: "Compartilhar", hash: "#share" },
   { icon: "ℹ️", label: "Sobre", hash: "#info" },
 ];
 
@@ -413,7 +414,7 @@ function renderGame() {
 
 function renderInfo() {
   elApp.innerHTML = "";
-  topbar("ℹ️", "#home");
+  topbar("ℹ️ Sobre", "#home");
   const page = el("div", "info-page", `
     <h2>Por que esse app existe</h2>
     <p>Esse Pokédex nasceu de uma vontade simples: um pai encontrar mais um jeito de
@@ -427,7 +428,13 @@ function renderInfo() {
     <a class="github-link" href="https://github.com/atavaresm/rafadex"
        target="_blank" rel="noopener">Ver no GitHub →</a>
   `);
-  elApp.append(page, shareBlock());
+  elApp.append(page);
+}
+
+function renderShare() {
+  elApp.innerHTML = "";
+  topbar("📤 Compartilhar", "#home");
+  elApp.append(shareBlock());
 }
 
 function shareBlock() {
@@ -492,6 +499,7 @@ function renderRoute() {
   else if (route === "collection") renderCollection();
   else if (route === "battle") renderBattleSelect();
   else if (route === "info") renderInfo();
+  else if (route === "share") renderShare();
   else if (route === "favorites") renderFavorites();
   else if (route === "search") renderSearch();
   else if (route === "downloads") renderDownloads();
