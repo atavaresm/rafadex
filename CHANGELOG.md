@@ -4,6 +4,17 @@ All notable changes to RafaDex by version. Dates are when each version shipped t
 production (GitHub Pages). See `docs/diario-de-bordo.md` for the full story behind
 each round.
 
+## v1.12.0 — 2026-10-27
+
+### Added
+- A ☰ menu in the home header with Favoritos, Buscar, Baixar (offline downloads) and
+  Sobre, replacing the faded icons below the type grid.
+- A Favoritos page: the favorites grid (with a count on the menu) instead of the
+  home shelf, which grew unwieldy with many favorites. Empty state explains how to
+  add one.
+- Search and offline downloads are pages of their own; back from a Pokémon returns
+  to Favoritos/Buscar (keeping the typed search) when that's where it was opened.
+
 ## v1.11.0 — 2026-08-23
 
 ### Added

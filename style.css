@@ -43,6 +43,22 @@ button { font: inherit; border: none; cursor: pointer; }
 .app-header .ball { width: 26px; height: 26px; border-radius: 50%; border: 3px solid #222;
   background: linear-gradient(180deg, var(--brand) 46%, #222 46% 54%, #fff 54%); flex-shrink: 0; }
 .app-header .name { font-size: 18px; font-weight: 800; color: var(--brand); }
+.app-header .brand { display: flex; align-items: center; gap: 8px; }
+.menu-btn { display: flex; flex-direction: column; justify-content: center; gap: 4px;
+  width: 44px; height: 40px; padding: 0 11px; border-radius: 14px;
+  background: var(--card); box-shadow: 0 3px 0 rgba(0,0,0,.12); }
+.menu-btn span { display: block; height: 3px; border-radius: 2px; background: var(--ink); }
+.home-menu { position: fixed; z-index: 30; right: 12px; top: calc(52px + env(safe-area-inset-top));
+  width: min(300px, calc(100vw - 24px)); padding: 8px; border-radius: 24px;
+  background: var(--card); box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+.home-menu[hidden] { display: none; }
+.home-menu-item { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px;
+  border-radius: 16px; background: none; font-size: 17px; font-weight: 700; color: var(--ink);
+  text-align: left; }
+.home-menu-item:active { background: var(--bg); }
+.home-menu-item .icon { font-size: 24px; width: 30px; text-align: center; }
+.home-menu-item .count { margin-left: auto; min-width: 26px; padding: 0 8px; border-radius: 13px;
+  background: var(--brand); color: #fff; font-size: 14px; line-height: 26px; text-align: center; }
 .app-header .title { font-size: 18px; font-weight: 800; }
 .app-header .back-btn { font-family: "Material Symbols Rounded", sans-serif;
   font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 40;
@@ -63,9 +79,6 @@ button { font: inherit; border: none; cursor: pointer; }
 .type-btn .label { font-size: 15px; font-weight: 700; font-family: "Quicksand", sans-serif; }
 .shine::before { content: ""; position: absolute; top: -20%; left: -10%; right: -10%; height: 55%;
   background: radial-gradient(closest-side, rgba(255,255,255,.5), transparent 70%); pointer-events: none; }
-.shelf { display: flex; gap: 10px; overflow-x: auto; padding: 4px 0 14px; }
-.shelf img { width: 72px; height: 72px; background: var(--card);
-  border-radius: 20px; box-shadow: var(--shadow); }
 
 /* Type world + detail */
 .type-icon { vertical-align: -3px; }
@@ -116,13 +129,11 @@ button { font: inherit; border: none; cursor: pointer; }
 .evo-strip img.current { outline: 4px solid var(--brand); }
 .evo-arrow { font-size: 20px; }
 
-.tool-row { display: flex; justify-content: center; gap: 18px; margin-top: 22px; }
-.gear { display: block; background: none; font-size: 20px; opacity: .45; }
 .search-panel { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
   padding: 14px; margin-top: 10px; }
 .search-input { width: 100%; padding: 10px 12px; border-radius: 14px; border: 2px solid var(--bg);
   font: inherit; font-size: 16px; background: var(--bg); }
-.search-results { margin-top: 8px; max-height: 260px; overflow-y: auto; }
+.search-results { margin-top: 8px; }
 .search-result { display: flex; align-items: center; gap: 10px; width: 100%; padding: 6px;
   border-radius: 12px; text-align: left; background: none; }
 .search-result img { width: 40px; height: 40px; background: var(--card); border-radius: 10px; }
@@ -189,3 +200,11 @@ button { font: inherit; border: none; cursor: pointer; }
   color: #fff; box-shadow: var(--shadow); font-size: 22px; font-weight: 800; }
 .attack-btn:disabled { opacity: .5; }
 .battle-result { text-align: center; font-size: 22px; font-weight: 800; margin: 16px 0; }
+
+/* Favorites page */
+.empty-favs { display: flex; flex-direction: column; align-items: center; gap: 12px;
+  margin-top: 40px; padding: 28px 20px; border-radius: var(--radius);
+  background: var(--card); box-shadow: var(--shadow); text-align: center; font-size: 18px; }
+.empty-favs .pokeball { width: 72px; height: 72px; }
+.empty-favs .pokeball::after { width: 20px; height: 20px; }
+.empty-favs p { margin: 0; }
